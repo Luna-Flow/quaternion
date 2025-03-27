@@ -1,0 +1,47 @@
+package Luna-Flow/quaternion
+
+alias @Luna-Flow/luna-generic as @luna-generic
+
+// Values
+fn id[T : @luna-generic.Num]() -> Quaternion[T]
+
+fn magnitude[T : @luna-generic.Num + DoubleConvert](Quaternion[T]) -> T
+
+fn normalize[T : @luna-generic.Num + DoubleConvert + Div](Quaternion[T]) -> Quaternion[T]
+
+fn rotate[T : @luna-generic.Num + Sub](Quaternion[T], (T, T, T)) -> (T, T, T)
+
+fn square_len[T : Mul + Add](Quaternion[T]) -> T
+
+// Types and methods
+type Quaternion[T]
+impl Quaternion {
+  dot[T : Mul + Add](Self[T], Self[T]) -> T
+  from_vec[T : @luna-generic.Num]((T, T, T, T)) -> Self[T]
+  magnitude[T : @luna-generic.Num + DoubleConvert](Self[T]) -> T
+  map[T, U](Self[T], (T) -> U) -> Self[U]
+  normalize[T : @luna-generic.Num + DoubleConvert + Div](Self[T]) -> Self[T]
+  rotate[T : @luna-generic.Num + Sub](Self[T], (T, T, T)) -> (T, T, T)
+  scale[T : Mul](Self[T], T) -> Self[T]
+  square_len[T : Mul + Add](Self[T]) -> T
+}
+impl[T : Neg] @luna-generic.Conjugate for Quaternion[T]
+impl[T : Div + @luna-generic.Num] @luna-generic.Inverse for Quaternion[T]
+impl[T : Add] Add for Quaternion[T]
+impl[T : @luna-generic.Num] Default for Quaternion[T]
+impl[T : Add + Mul + Div + Sub] Div for Quaternion[T]
+impl[T : Eq] Eq for Quaternion[T]
+impl[T : Hash] Hash for Quaternion[T]
+impl[T : Mul + Sub + Add] Mul for Quaternion[T]
+impl[T : Neg] Neg for Quaternion[T]
+impl[T : Show] Show for Quaternion[T]
+impl[T : Neg + Add] Sub for Quaternion[T]
+
+// Type aliases
+
+// Traits
+pub trait DoubleConvert {
+  to_double(Self) -> Double
+  from_double(Double) -> Self
+}
+
