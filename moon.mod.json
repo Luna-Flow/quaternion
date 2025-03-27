@@ -1,0 +1,15 @@
+{
+  "name": "Luna-Flow/quaternion",
+  "version": "0.1.0",
+  "deps": {
+    "Luna-Flow/luna-generic": "0.2.0-alpha-1"
+  },
+  "readme": "README.md",
+  "repository": "",
+  "license": "Apache-2.0",
+  "keywords": [
+    "quaternion"
+  ],
+  "description": "MoonBit Quaternion Library",
+  "source": "src"
+}

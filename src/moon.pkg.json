@@ -1,0 +1,8 @@
+{
+    "import": [
+        {
+            "path": "Luna-Flow/luna-generic",
+            "alias": "lg"
+        }
+    ]
+}
