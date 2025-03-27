@@ -1,55 +1,65 @@
-///|
+/// Quaternion struct with real component `r` and vector components `vec`
 struct Quaternion[T] {
   r : T
   vec : (T, T, T)
 } derive(Eq, Hash)
 
 ///|
+/// Computes the cross product of two 3D vectors.
 fn cross[T : Mul + Sub](a : (T, T, T), b : (T, T, T)) -> (T, T, T) {
   (a.1 * b.2 - a.2 * b.1, a.2 * b.0 - a.0 * b.2, a.0 * b.1 - a.1 * b.0)
 }
 
 ///|
+/// Adds two 3D vectors component-wise.
 fn add[T : Add](a : (T, T, T), b : (T, T, T)) -> (T, T, T) {
   (a.0 + b.0, a.1 + b.1, a.2 + b.2)
 }
 
 ///|
+/// Scales a 3D vector by a scalar value.
 fn scale[T : Mul](a : (T, T, T), s : T) -> (T, T, T) {
   (a.0 * s, a.1 * s, a.2 * s)
 }
 
 ///|
+/// Computes the dot product of two 3D vectors.
 fn dot[T : Mul + Add](a : (T, T, T), b : (T, T, T)) -> T {
   a.0 * b.0 + a.1 * b.1 + a.2 * b.2
 }
 
 ///|
+/// Applies a function to each component of a 3D vector.
 fn map[T, U](a : (T, T, T), f : (T) -> U) -> (U, U, U) {
   (f(a.0), f(a.1), f(a.2))
 }
 
 ///|
+/// Returns the identity quaternion (1 + 0i + 0j + 0k).
 pub fn id[T : @lg.Num]() -> Quaternion[T] {
   { r: T::one(), vec: (T::zero(), T::zero(), T::zero()) }
 }
 
 ///|
+/// Default implementation returns the identity quaternion.
 pub impl[T : @lg.Num] Default for Quaternion[T] with default() {
   id()
 }
 
 ///|
+/// Returns a string representation of the quaternion in the form "a + bi + cj + dk".
 pub impl[T : Show] Show for Quaternion[T] with to_string(self) {
   "\{self.r} + \{self.vec.0}i + \{self.vec.1}j + \{self.vec.2}k"
 }
 
 ///|
+/// Outputs the quaternion to a logger.
 pub impl[T : Show] Show for Quaternion[T] with output(self, logger) {
   logger.write_string(self.to_string())
 }
 
 ///|
+/// Adds two quaternions component-wise.
 pub impl[T : Add] Add for Quaternion[T] with op_add(self, other) {
   {
     r: self.r + other.r,
@@ -62,17 +72,20 @@ pub impl[T : Add] Add for Quaternion[T] with op_add(self, other) {
 }
 
 ///|
+/// Scales the quaternion by a scalar value.
 pub fn Quaternion::scale[T : Mul](self : Quaternion[T], s : T) -> Quaternion[T] {
   { r: self.r * s, vec: (self.vec.0 * s, self.vec.1 * s, self.vec.2 * s) }
 }
 
 ///|
+/// Computes the multiplicative inverse of the quaternion.
 pub impl[T : Div + @lg.Num] @lg.Inverse for Quaternion[T] with inv(self) {
   let inv = T::one() / square_len(self)
   self.conjugate() |> Quaternion::scale(inv)
 }
 
 ///|
+/// Computes the dot product of two quaternions.
 pub fn Quaternion::dot[T : Mul + Add](
   self : Quaternion[T],
   other : Quaternion[T]
@@ -84,6 +97,7 @@ pub fn Quaternion::dot[T : Mul + Add](
 }
 
 ///|
+/// Multiplies two quaternions using Hamilton product.
 pub impl[T : Mul + Sub + Add] Mul for Quaternion[T] with op_mul(self, other) {
   {
     r: self.r * other.r - dot(self.vec, other.vec),
@@ -93,6 +107,7 @@ pub impl[T : Mul + Sub + Add] Mul for Quaternion[T] with op_mul(self, other) {
 }
 
 ///|
+/// Divides two quaternions.
 pub impl[T : Add + Mul + Div + Sub] Div for Quaternion[T] with op_div(q, r) {
   let d = r.square_len()
   {
@@ -109,11 +124,13 @@ pub impl[T : Add + Mul + Div + Sub] Div for Quaternion[T] with op_div(q, r) {
 }
 
 ///|
+/// Negates the quaternion.
 pub impl[T : Neg] Neg for Quaternion[T] with op_neg(self) {
   { r: -self.r, vec: map(self.vec, Neg::op_neg) }
 }
 
 ///|
+/// Subtracts two quaternions.
 pub impl[T : Neg + Add] Sub for Quaternion[T] with op_sub(self, other) {
   self + -other
 }
@@ -133,6 +150,7 @@ test "basic arithmetic" {
 }
 
 ///|
+/// Applies a function to each component of the quaternion.
 pub fn Quaternion::map[T, U](
   self : Quaternion[T],
   f : (T) -> U
@@ -141,21 +159,25 @@ pub fn Quaternion::map[T, U](
 }
 
 ///|
+/// Computes the conjugate of the quaternion (negates vector components).
 pub impl[T : Neg] @lg.Conjugate for Quaternion[T] with conjugate(self) {
   { r: self.r, vec: map(self.vec, Neg::op_neg) }
 }
 
 ///|
+/// Computes the squared length (norm) of the quaternion.
 pub fn square_len[T : Mul + Add](self : Quaternion[T]) -> T {
   self.r * self.r + dot(self.vec, self.vec)
 }
 
 ///|
+/// Computes the magnitude (norm) of the quaternion.
 pub fn magnitude[T : @lg.Num + DoubleConvert](self : Quaternion[T]) -> T {
   square_len(self).to_double().sqrt() |> T::from_double()
 }
 
-///| Rotate the given vector using the given quaternion
+///|
+/// Rotates a 3D vector using this unit quaternion.
 pub fn rotate[T : @lg.Num + Sub](
   self : Quaternion[T],
   v : (T, T, T)
@@ -166,6 +188,7 @@ pub fn rotate[T : @lg.Num + Sub](
 }
 
 ///|
+/// Normalizes the quaternion to unit length.
 pub fn normalize[T : @lg.Num + DoubleConvert + Div](
   self : Quaternion[T]
 ) -> Quaternion[T] {
@@ -173,11 +196,12 @@ pub fn normalize[T : @lg.Num + DoubleConvert + Div](
 }
 
 ///|
+/// Creates a quaternion from a 4-component vector (scalar, i, j, k).
 pub fn Quaternion::from_vec[T : @lg.Num](v : (T, T, T, T)) -> Quaternion[T] {
   { r: v.0, vec: (v.1, v.2, v.3) }
 }
 
-///|
+/// Test cases demonstrating other quaternion operations
 test "others" {
   let q : Quaternion[Double] = Quaternion::from_vec((1, 2, 3, 4))
   inspect!(q.square_len(), content="30")

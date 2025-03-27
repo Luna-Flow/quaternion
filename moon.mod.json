@@ -8,7 +8,7 @@
   "repository": "https://github.com/Luna-Flow/quaternion",
   "license": "Apache-2.0",
   "keywords": [
-    "quaternion"
+    "quaternion", "math"
   ],
   "description": "MoonBit Quaternion Library",
   "source": "src"
