@@ -189,10 +189,10 @@ pub fn rotate[T : @lg.Num + Sub](
 
 ///|
 /// Normalizes the quaternion to unit length.
-pub fn normalize[T : @lg.Num + DoubleConvert + Div](
+pub fn normalize[T : @lg.Num + DoubleConvert + Div + Eq](
   self : Quaternion[T]
 ) -> Quaternion[T] {
-  if self.magnitude().to_double() == 0.0 {
+  if self.magnitude() == T::zero() {
     self
   } else {
     self.scale(T::one() / self.magnitude())
@@ -251,7 +251,7 @@ test "from_axis_angle" {
 
 ///|
 /// Performs spherical linear interpolation between two quaternions.
-pub fn slerp[T : DoubleConvert + @lg.Num + Mul + Add + Sub + Div](
+pub fn slerp[T : DoubleConvert + @lg.Num + Mul + Add + Sub + Div + Eq](
   q1 : Quaternion[T],
   q2 : Quaternion[T],
   t : Double
@@ -439,7 +439,7 @@ test "pow" {
   let q : Quaternion[Double] = Quaternion::from_vec((2, 2, 3, 4))
   inspect!(q.pow_by_int(2), content="-25 + 8i + 12j + 16k")
   inspect!(
-    q.pow_by_T(2),
+    q.pow_by_T(2.0),
     content="-25.00000000000001 + 7.999999999999995i + 11.999999999999995j + 15.99999999999999k",
   )
 }
