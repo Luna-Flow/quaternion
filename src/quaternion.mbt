@@ -292,50 +292,205 @@ test "slerp" {
 }
 
 ///| 
-/// Converts the quaternion to Euler angles (roll, pitch, yaw) in ZYX-Order Order
-pub fn to_euler[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div](
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in different Orders, all measured in radians.
+/// 'roll' : the rotation angle around the X-axis
+/// 'pitch' : the rotation angle around the Y-axis
+/// 'yaw' : the rotation angle around the Z-axis
+/// 'order' in {"XYZ", "XZY", "YZX", "ZYX"} 
+/// 'external' is 'true', Result will be External rotation. Otherwise, Result will be Internal rotation
+pub fn to_euler[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+  self : Quaternion[T],
+  order~ : String = "ZYX",
+  external~ : Bool = true
+) -> (T, T, T) {
+  if external {
+    match order {
+      "XYZ" => to_euler_external_XYZ(self)
+      "XZY" => to_euler_external_XZY(self)
+      "YZX" => to_euler_external_YZX(self)
+      "ZYX" => to_euler_external_ZYX(self)
+      _ => abort("order error. Please check input format and retry")
+    }
+  } else {
+    match order {
+      "XYZ" => to_euler_internal_XYZ(self)
+      "YZX" => to_euler_internal_YZX(self)
+      "ZYX" => to_euler_internal_ZYX(self)
+      "XZY" => to_euler_internal_XZY(self)
+      _ => abort("order error. Please check input format and retry")
+    }
+  }
+}
+
+///|
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in external XYZ-Order
+pub fn to_euler_external_XYZ[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
   self : Quaternion[T]
 ) -> (T, T, T) {
-  let sinr_cosp = 2.0 *
-    (self.r * self.vec.0 + self.vec.1 * self.vec.2).to_double()
-  let cosr_cosp = 1.0 -
-    2.0 * (self.vec.0 * self.vec.0 + self.vec.1 * self.vec.1).to_double()
-  let roll = sinr_cosp.to_double().atan2(cosr_cosp.to_double())
-    |> T::from_double()
-  let sinp = 2.0 * (self.r * self.vec.1 - self.vec.2 * self.vec.0).to_double()
-  let pitch = if sinp.abs() >= 1.0 {
-    sinp.to_double().asin().to_double() |> T::from_double()
-  } else {
-    sinp.to_double().asin().to_double() |> T::from_double()
+  let q = self.normalize()
+  let (w, x, y, z) = (q.r, q.vec.0, q.vec.1, q.vec.2)
+  let sp = 2.0 * (w * y - z * x).to_double()
+  // avoid Gimbal Lock
+  guard sp.abs() < 0.9998 else {
+    println(
+      "UserWarning: Gimbal lock detected. Setting third angle to zero since it is not possible to uniquely determine all angles.",
+    )
+    let adjust_cy = 2.0 * (w * y + x * z).to_double()
+    let adjust_cr = 1.0 - 2.0 * (x * x + z * z).to_double()
+    (
+      adjust_cy.atan2(adjust_cr) |> T::from_double(),
+      T::from_double(@math.PI / 2.0 * sp.signum()),
+      T::from_double(0.0),
+    )
   }
-  let siny_cosp = 2.0 *
-    (self.r * self.vec.2 + self.vec.0 * self.vec.1).to_double()
-  let cosy_cosp = 1.0 -
-    2.0 * (self.vec.1 * self.vec.1 + self.vec.2 * self.vec.2).to_double()
-  let yaw = siny_cosp.to_double().atan2(cosy_cosp.to_double())
-    |> T::from_double()
+  let cy = 2.0 * (w * x + z * y).to_double()
+  let cr = 1.0 - 2.0 * (x * x + y * y).to_double()
+  let roll = cy.atan2(cr) |> T::from_double()
+  let pitch = sp.asin() |> T::from_double()
+  let sx = 2.0 * (w * z + x * y).to_double()
+  let cx = 1.0 - 2.0 * (z * z + y * y).to_double()
+  let yaw = sx.atan2(cx) |> T::from_double()
+  (roll, pitch, yaw)
+}
+
+///|
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in external YZX-Order
+pub fn to_euler_external_YZX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+  self : Quaternion[T]
+) -> (T, T, T) {
+  let q = self.normalize()
+  let (w, x, y, z) = (q.r, q.vec.0, q.vec.1, q.vec.2)
+  let cp = 2.0 * (w * y + x * z).to_double()
+  let cr = 1.0 - 2.0 * (z * z + y * y).to_double()
+  let roll = cp.atan2(cr) |> T::from_double()
+  let sp = 2.0 * (w * z - x * y).to_double()
+  // avoid Gimbal Lock
+  guard sp.abs() < 0.9998 else {
+    println(
+      "UserWarning: Gimbal lock detected. Setting third angle to zero since it is not possible to uniquely determine all angles.",
+    )
+    (roll, T::from_double(@math.PI / 2.0 * sp.signum()), T::from_double(0.0))
+  }
+  let pitch = sp.asin() |> T::from_double()
+  let cy = 2.0 * (w * x + z * y).to_double()
+  let cx = 1.0 - 2.0 * (z * z + x * x).to_double()
+  let yaw = cy.atan2(cx) |> T::from_double()
+  (roll, pitch, yaw)
+}
+
+///|
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in external ZYX-Order
+pub fn to_euler_external_ZYX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+  self : Quaternion[T]
+) -> (T, T, T) {
+  let q = self.normalize()
+  let (x, y, z, w) = (q.vec.0, q.vec.1, q.vec.2, q.r)
+  let sinr = 2.0 * (w * z - y * x).to_double()
+  let cosr = 1.0 - 2.0 * (z * z + y * y).to_double()
+  let roll = sinr.atan2(cosr) |> T::from_double()
+  let sp = 2.0 * (w * y + z * x).to_double()
+  guard sp.abs() < 0.9998 else {
+    println(
+      "UserWarning: Gimbal lock detected. Setting pitch to ±90° and yaw to zero.",
+    )
+    (roll, T::from_double(@math.PI / 2.0 * sp.signum()), T::from_double(0.0))
+  }
+  let pitch = sp.asin() |> T::from_double()
+  let siny = 2.0 * (w * x - z * y).to_double()
+  let cosy = 1.0 - 2.0 * (x * x + y * y).to_double()
+  let yaw = siny.atan2(cosy) |> T::from_double()
+  (roll, pitch, yaw)
+}
+
+///|
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in external XZY-Order (active rotation)
+pub fn to_euler_external_XZY[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+  self : Quaternion[T]
+) -> (T, T, T) {
+  let q = self.normalize()
+  let (x, y, z, w) = (q.vec.0, q.vec.1, q.vec.2, q.r)
+  let sinr_cosp = 2.0 * (w * x - y * z).to_double()
+  let cosr_cosp = 1.0 - 2.0 * (x * x + y * y).to_double()
+  let roll = sinr_cosp.atan2(cosr_cosp) |> T::from_double()
+  let sp = 2.0 * (w * y + x * z).to_double()
+  guard sp.abs() < 0.9998 else {
+    println(
+      "UserWarning: Gimbal lock detected. Setting pitch to ±90° and yaw to zero.",
+    )
+    (roll, T::from_double(@math.PI / 2.0 * sp.signum()), T::from_double(0.0))
+  }
+  let pitch = sp.asin() |> T::from_double()
+  let siny_cosp = 2.0 * (w * z - x * y).to_double()
+  let cosy_cosp = 1.0 - 2.0 * (y * y + z * z).to_double()
+  let yaw = siny_cosp.atan2(cosy_cosp) |> T::from_double()
   (roll, pitch, yaw)
 }
 
 ///|
 test "to_euler" {
-  let q1 = Quaternion::{ r: 0.5, vec: (0.5, 0.5, 0.5) }
-  let q2 = Quaternion::{ r: 1.0, vec: (0.0, 0.0, 0.0) }
   let q3 = Quaternion::{ r: 0.258, vec: (0.258, 0.516, 0.775) }
-  inspect!(q1.to_euler(), content="(1.5707963267948966, 0, 1.5707963267948966)")
-  inspect!(q2.to_euler(), content="(0, 0, 0)")
   inspect!(
-    q3.to_euler(),
-    content="(1.2266592237621043, -0.13404506154708215, 2.4044498284179303)",
+    q3.to_euler(order="XYZ"),
+    content="(1.2266506748485178, -0.1340438478746415, 2.4044437241372796)",
+  )
+  inspect!(
+    q3.to_euler(order="XZY"),
+    content="(-1.1059098961604412, 0.7290346960862234, 2.9614299881239803)",
+  )
+  inspect!(
+    q3.to_euler(order="YZX"),
+    content="(2.4044437241372796, 0.1340438478746415, 1.9149419787412751)",
+  )
+  inspect!(
+    q3.to_euler(order="ZYX"),
+    content="(2.9614299881239803, 0.7290346960862234, -1.1059098961604412)",
   )
 }
 
+///|
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
+pub fn to_euler_internal_XYZ[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+  self : Quaternion[T]
+) -> (T, T, T) {
+  let (roll, pitch, yaw) = self.to_euler_external_ZYX()
+  (yaw, pitch, roll)
+}
+
+///|
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
+pub fn to_euler_internal_YZX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+  self : Quaternion[T]
+) -> (T, T, T) {
+  let (roll, pitch, yaw) = self.to_euler_external_XZY()
+  (yaw, pitch, roll)
+}
+
+///|
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
+pub fn to_euler_internal_XZY[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+  self : Quaternion[T]
+) -> (T, T, T) {
+  let (roll, pitch, yaw) = self.to_euler_external_YZX()
+  (yaw, pitch, roll)
+}
+
+///|
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
+pub fn to_euler_internal_ZYX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+  self : Quaternion[T]
+) -> (T, T, T) {
+  let (roll, pitch, yaw) = self.to_euler_external_XYZ()
+  (yaw, pitch, roll)
+}
+
 ///| 
-/// Converts the Euler angles to the quaternion (x, ai, bj, ck) In XYZ-Order Order  
+/// Converts the Euler angles to the quaternion (x, ai, bj, ck) In different Orders 
+/// 'order' in {"XYZ", "YXZ", "ZYX", "YZX", "ZXY"} 
 pub fn from_euler[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div](
   roll : T,
   pitch : T,
-  yaw : T
+  yaw : T,
+  order~ : String = "XYZ"
 ) -> Quaternion[T] {
   let half_roll = roll.to_double() * 0.5
   let half_pitch = pitch.to_double() * 0.5
@@ -346,25 +501,77 @@ pub fn from_euler[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div](
   let sp = half_pitch.sin() |> T::from_double()
   let cy = half_yaw.cos() |> T::from_double()
   let sy = half_yaw.sin() |> T::from_double()
-  Quaternion::{
-    r: cr * cp * cy - sr * sp * sy,
-    vec: (
-      sr * cp * cy + cr * sp * sy,
-      cr * sp * cy - sr * cp * sy,
-      cr * cp * sy + sr * sp * cy,
-    ),
+  match order {
+    "XYZ" =>
+      Quaternion::{
+        r: cr * cp * cy - sr * sp * sy,
+        vec: (
+          sr * cp * cy + cr * sp * sy,
+          cr * sp * cy - sr * cp * sy,
+          cr * cp * sy + sr * sp * cy,
+        ),
+      }
+    "YXZ" =>
+      Quaternion::{
+        r: cr * cp * cy + sr * sp * sy,
+        vec: (
+          cy * sr * cp + cr * sp * sy,
+          cy * cr * sp - sr * cp * sy,
+          cr * cp * sy - sr * sp * cy,
+        ),
+      }
+    "ZYX" =>
+      Quaternion::{
+        r: cy * cr * cp - sy * sr * sp,
+        vec: (
+          cy * sr * cp + cr * sp * sy,
+          cy * cr * sp + sr * cp * sy,
+          cr * cp * sy + sr * sp * cy,
+        ),
+      }
+    "YZX" =>
+      Quaternion::{
+        r: cr * cp * cy - sr * sp * sy,
+        vec: (
+          sr * sp * cy + sy * cr * cp,
+          sr * cp * cy + sp * sy * cr,
+          sy * cr * cy - sr * sy * cp,
+        ),
+      }
+    "ZXY" =>
+      Quaternion::{
+        r: cy * cr * cp - sy * sr * sp,
+        vec: (
+          sp * cr * cy - sr * sy * cp,
+          sr * sp * cy + sy * cr * cp,
+          sr * cp * cy + sp * sy * cr,
+        ),
+      }
+    _ => abort("order error. Please check input format and retry")
   }
 }
 
 ///|
 test "from_euler" {
   inspect!(
-    from_euler(1.0, 1.0, 1.0),
+    from_euler(1.0, 1.0, 1.0, order="XYZ"),
     content="0.5656758145325667 + 0.5709414713577319i + 0.16751879124639693j + 0.5709414713577319k",
   )
   inspect!(
-    from_euler(0.0, 0.0, 1.0),
-    content="0.8775825618903728 + 0i + 0j + 0.479425538604203k",
+    from_euler(0.0, @math.PI / 2, @math.PI / 2, order="YXZ"),
+    content="0.5000000000000001 + 0.4999999999999999i + 0.5j + 0.5k",
+  )
+  inspect!(
+    from_euler(@math.PI / 2, 0.0, @math.PI / 2, order="ZYX"),
+    content="0.5000000000000001 + 0.5i + 0.4999999999999999j + 0.5k",
+  )
+  inspect!(
+    from_euler(1.0, 1.0, 1.0, order="YZX"),
+    content="0.5656758145325667 + 0.5709414713577319i + 0.5709414713577319j + 0.16751879124639693k",
+  )
+  inspect!(
+    from_euler(1.0, 1.0, 1.0, order="ZXY"),
+    content="0.5656758145325667 + 0.16751879124639693i + 0.5709414713577319j + 0.5709414713577319k",
   )
 }
 
