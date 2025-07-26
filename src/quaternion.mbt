@@ -6,37 +6,37 @@ struct Quaternion[T] {
 
 ///|
 /// Computes the cross product of two 3D vectors.
-fn cross[T : Mul + Sub](a : (T, T, T), b : (T, T, T)) -> (T, T, T) {
+fn[T : Mul + Sub] cross(a : (T, T, T), b : (T, T, T)) -> (T, T, T) {
   (a.1 * b.2 - a.2 * b.1, a.2 * b.0 - a.0 * b.2, a.0 * b.1 - a.1 * b.0)
 }
 
 ///|
 /// Adds two 3D vectors component-wise.
-fn add[T : Add](a : (T, T, T), b : (T, T, T)) -> (T, T, T) {
+fn[T : Add] add(a : (T, T, T), b : (T, T, T)) -> (T, T, T) {
   (a.0 + b.0, a.1 + b.1, a.2 + b.2)
 }
 
 ///|
 /// Scales a 3D vector by a scalar value.
-fn scale[T : Mul](a : (T, T, T), s : T) -> (T, T, T) {
+fn[T : Mul] scale(a : (T, T, T), s : T) -> (T, T, T) {
   (a.0 * s, a.1 * s, a.2 * s)
 }
 
 ///|
 /// Computes the dot product of two 3D vectors.
-fn dot[T : Mul + Add](a : (T, T, T), b : (T, T, T)) -> T {
+fn[T : Mul + Add] dot(a : (T, T, T), b : (T, T, T)) -> T {
   a.0 * b.0 + a.1 * b.1 + a.2 * b.2
 }
 
 ///|
 /// Applies a function to each component of a 3D vector.
-fn map[T, U](a : (T, T, T), f : (T) -> U) -> (U, U, U) {
+fn[T, U] map(a : (T, T, T), f : (T) -> U) -> (U, U, U) {
   (f(a.0), f(a.1), f(a.2))
 }
 
 ///|
 /// Returns the identity quaternion (1 + 0i + 0j + 0k).
-pub fn id[T : @lg.Num]() -> Quaternion[T] {
+pub fn[T : @lg.Num] id() -> Quaternion[T] {
   { r: T::one(), vec: (T::zero(), T::zero(), T::zero()) }
 }
 
@@ -73,22 +73,22 @@ pub impl[T : Add] Add for Quaternion[T] with op_add(self, other) {
 
 ///|
 /// Scales the quaternion by a scalar value.
-pub fn Quaternion::scale[T : Mul](self : Quaternion[T], s : T) -> Quaternion[T] {
+pub fn[T : Mul] Quaternion::scale(self : Quaternion[T], s : T) -> Quaternion[T] {
   { r: self.r * s, vec: (self.vec.0 * s, self.vec.1 * s, self.vec.2 * s) }
 }
 
 ///|
 /// Computes the multiplicative inverse of the quaternion.
 pub impl[T : Div + @lg.Num] @lg.Inverse for Quaternion[T] with inv(self) {
-  let inv = T::one() / square_len(self)
+  let inv = T::one() / self.square_len()
   self.conjugate() |> Quaternion::scale(inv)
 }
 
 ///|
 /// Computes the dot product of two quaternions.
-pub fn Quaternion::dot[T : Mul + Add](
+pub fn[T : Mul + Add] Quaternion::dot(
   self : Quaternion[T],
-  other : Quaternion[T]
+  other : Quaternion[T],
 ) -> T {
   self.r * other.r +
   self.vec.0 * other.vec.0 +
@@ -139,11 +139,11 @@ pub impl[T : Neg + Add] Sub for Quaternion[T] with op_sub(self, other) {
 test "basic arithmetic" {
   let q1 = Quaternion::from_vec((1, 2, 3, 4))
   let q2 = Quaternion::from_vec((5, 6, 7, 8))
-  inspect!(q1 + q2, content="6 + 8i + 10j + 12k")
-  inspect!(q1 - q2, content="-4 + -4i + -4j + -4k")
-  inspect!(q1 * q2, content="-60 + 12i + 30j + 24k")
-  inspect!(q2 * q1, content="-60 + 20i + 14j + 32k")
-  inspect!(
+  inspect(q1 + q2, content="6 + 8i + 10j + 12k")
+  inspect(q1 - q2, content="-4 + -4i + -4j + -4k")
+  inspect(q1 * q2, content="-60 + 12i + 30j + 24k")
+  inspect(q2 * q1, content="-60 + 20i + 14j + 32k")
+  inspect(
     q1.map(Int::to_double) / q2.map(Int::to_double),
     content="0.40229885057471265 + 0i + 0.09195402298850575j + 0.04597701149425287k",
   )
@@ -151,9 +151,9 @@ test "basic arithmetic" {
 
 ///|
 /// Applies a function to each component of the quaternion.
-pub fn Quaternion::map[T, U](
+pub fn[T, U] Quaternion::map(
   self : Quaternion[T],
-  f : (T) -> U
+  f : (T) -> U,
 ) -> Quaternion[U] {
   { r: f(self.r), vec: map(self.vec, f) }
 }
@@ -166,21 +166,21 @@ pub impl[T : Neg] @lg.Conjugate for Quaternion[T] with conjugate(self) {
 
 ///|
 /// Computes the squared length (norm) of the quaternion.
-pub fn square_len[T : Mul + Add](self : Quaternion[T]) -> T {
+pub fn[T : Mul + Add] square_len(self : Quaternion[T]) -> T {
   self.r * self.r + dot(self.vec, self.vec)
 }
 
 ///|
 /// Computes the magnitude (norm) of the quaternion.
-pub fn magnitude[T : @lg.Num + DoubleConvert](self : Quaternion[T]) -> T {
-  square_len(self).to_double().sqrt() |> T::from_double()
+pub fn[T : @lg.Num + DoubleConvert] magnitude(self : Quaternion[T]) -> T {
+  self.square_len().to_double().sqrt() |> T::from_double()
 }
 
 ///|
 /// Rotates a 3D vector using this unit quaternion.
-pub fn rotate[T : @lg.Num + Sub](
+pub fn[T : @lg.Num + Sub] rotate(
   self : Quaternion[T],
-  v : (T, T, T)
+  v : (T, T, T),
 ) -> (T, T, T) {
   let _2 = T::one() + T::one()
   let t : (T, T, T) = scale(cross(self.vec, v), _2)
@@ -189,8 +189,8 @@ pub fn rotate[T : @lg.Num + Sub](
 
 ///|
 /// Normalizes the quaternion to unit length.
-pub fn normalize[T : @lg.Num + DoubleConvert + Div + Eq](
-  self : Quaternion[T]
+pub fn[T : @lg.Num + DoubleConvert + Div + Eq] normalize(
+  self : Quaternion[T],
 ) -> Quaternion[T] {
   if self.magnitude() == T::zero() {
     self
@@ -201,21 +201,21 @@ pub fn normalize[T : @lg.Num + DoubleConvert + Div + Eq](
 
 ///|
 /// Creates a quaternion from a 4-component vector (scalar, i, j, k).
-pub fn Quaternion::from_vec[T : @lg.Num](v : (T, T, T, T)) -> Quaternion[T] {
+pub fn[T] Quaternion::from_vec(v : (T, T, T, T)) -> Quaternion[T] {
   { r: v.0, vec: (v.1, v.2, v.3) }
 }
 
 ///| Test cases demonstrating other quaternion operations
 test "others" {
   let q : Quaternion[Double] = Quaternion::from_vec((1, 2, 3, 4))
-  inspect!(q.square_len(), content="30")
-  inspect!(q.magnitude(), content="5.477225575051661")
-  inspect!(q.conjugate(), content="1 + -2i + -3j + -4k")
-  inspect!(
+  inspect(q.square_len(), content="30")
+  inspect(q.magnitude(), content="5.477225575051661")
+  inspect(q.conjugate(), content="1 + -2i + -3j + -4k")
+  inspect(
     q.inv(),
     content="0.03333333333333333 + -0.06666666666666667i + -0.1j + -0.13333333333333333k",
   )
-  inspect!(
+  inspect(
     q.normalize(),
     content="0.18257418583505536 + 0.3651483716701107i + 0.5477225575051661j + 0.7302967433402214k",
   )
@@ -223,13 +223,13 @@ test "others" {
 
 ///|
 /// Creates a quaternion from an axis and angle.
-pub fn from_axis_angle[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div](
+pub fn[T : DoubleConvert + Mul + Add + Div] from_axis_angle(
   axis : (T, T, T),
-  angle : T
+  angle : T,
 ) -> Quaternion[T] {
   let half_angle = angle / T::from_double(2.0)
-  let sin_half = half_angle.to_double().sin() |> T::from_double()
-  let cos_half = half_angle.to_double().cos() |> T::from_double()
+  let sin_half = @math.sin(half_angle.to_double()) |> T::from_double()
+  let cos_half = @math.cos(half_angle.to_double()) |> T::from_double()
   let axis_len = dot(axis, axis).to_double().sqrt() |> T::from_double()
   let axis = (axis.0 / axis_len, axis.1 / axis_len, axis.2 / axis_len)
   {
@@ -243,7 +243,7 @@ test "from_axis_angle" {
   let axis = (1.0, 1.0, 1.0)
   let angle = @math.PI / 4.0
   let res = from_axis_angle(axis, angle)
-  inspect!(
+  inspect(
     res,
     content="0.9238795325112867 + 0.22094238269039457i + 0.22094238269039457j + 0.22094238269039457k",
   )
@@ -251,10 +251,10 @@ test "from_axis_angle" {
 
 ///|
 /// Performs spherical linear interpolation between two quaternions.
-pub fn slerp[T : DoubleConvert + @lg.Num + Mul + Add + Sub + Div + Eq](
+pub fn[T : DoubleConvert + @lg.Num + Mul + Add + Div + Eq] slerp(
   q1 : Quaternion[T],
   q2 : Quaternion[T],
-  t : Double
+  t : Double,
 ) -> Quaternion[T] {
   let q1_standard = q1.normalize()
   let q2_standard = q2.normalize()
@@ -267,10 +267,10 @@ pub fn slerp[T : DoubleConvert + @lg.Num + Mul + Add + Sub + Div + Eq](
   if dot_clamped > 0.9995 {
     (q1_standard + (q2_corrected - q1_standard).scale(T::from_double(t))).normalize()
   } else {
-    let theta = dot_clamped.acos()
-    let sin_theta = theta.sin()
-    let weight1 = T::from_double(((1.0 - t) * theta).sin() / sin_theta)
-    let weight2 = T::from_double((t * theta).sin() / sin_theta)
+    let theta = @math.acos(dot_clamped)
+    let sin_theta = @math.sin(theta)
+    let weight1 = T::from_double(@math.sin((1.0 - t) * theta) / sin_theta)
+    let weight2 = T::from_double(@math.sin(t * theta) / sin_theta)
     q1_standard.scale(weight1) + q2_corrected.scale(weight2)
   }
 }
@@ -279,13 +279,13 @@ pub fn slerp[T : DoubleConvert + @lg.Num + Mul + Add + Sub + Div + Eq](
 test "slerp" {
   let q1 = Quaternion::{ r: 0.7071, vec: (0.7071, 0, 0) }
   let q2 = Quaternion::{ r: 0.7071, vec: (0, 0.7071, 0) }
-  inspect!(
+  inspect(
     slerp(q1, q2, 0.5),
     content="0.816496580927726 + 0.408248290463863i + 0.408248290463863j + 0k",
   )
   let q1 = Quaternion::{ r: 1.0, vec: (1, 1, 1) }
   let q2 = Quaternion::{ r: -1.0, vec: (1, 2, 3) }
-  inspect!(
+  inspect(
     slerp(q1, q2, 0.5),
     content="0.13328912463299897 + 0.41794541888760534i + 0.5602735660149085j + 0.7026017131422118k",
   )
@@ -298,25 +298,25 @@ test "slerp" {
 /// 'yaw' : the rotation angle around the Z-axis
 /// 'order' in {"XYZ", "XZY", "YZX", "ZYX"} 
 /// 'external' is 'true', Result will be External rotation. Otherwise, Result will be Internal rotation
-pub fn to_euler[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] to_euler(
   self : Quaternion[T],
   order~ : String = "ZYX",
-  external~ : Bool = true
+  external~ : Bool = true,
 ) -> (T, T, T) {
   if external {
     match order {
-      "XYZ" => to_euler_external_XYZ(self)
-      "XZY" => to_euler_external_XZY(self)
-      "YZX" => to_euler_external_YZX(self)
-      "ZYX" => to_euler_external_ZYX(self)
+      "XYZ" => self.to_euler_external_XYZ()
+      "XZY" => self.to_euler_external_XZY()
+      "YZX" => self.to_euler_external_YZX()
+      "ZYX" => self.to_euler_external_ZYX()
       _ => abort("order error. Please check input format and retry")
     }
   } else {
     match order {
-      "XYZ" => to_euler_internal_XYZ(self)
-      "YZX" => to_euler_internal_YZX(self)
-      "ZYX" => to_euler_internal_ZYX(self)
-      "XZY" => to_euler_internal_XZY(self)
+      "XYZ" => self.to_euler_internal_XYZ()
+      "YZX" => self.to_euler_internal_YZX()
+      "ZYX" => self.to_euler_internal_ZYX()
+      "XZY" => self.to_euler_internal_XZY()
       _ => abort("order error. Please check input format and retry")
     }
   }
@@ -324,8 +324,8 @@ pub fn to_euler[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
 
 ///|
 /// Converts the quaternion to Euler angles (roll, pitch, yaw) in external XYZ-Order
-pub fn to_euler_external_XYZ[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
-  self : Quaternion[T]
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] to_euler_external_XYZ(
+  self : Quaternion[T],
 ) -> (T, T, T) {
   let q = self.normalize()
   let (w, x, y, z) = (q.r, q.vec.0, q.vec.1, q.vec.2)
@@ -338,31 +338,31 @@ pub fn to_euler_external_XYZ[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div
     let adjust_cy = 2.0 * (w * y + x * z).to_double()
     let adjust_cr = 1.0 - 2.0 * (x * x + z * z).to_double()
     (
-      adjust_cy.atan2(adjust_cr) |> T::from_double(),
+      @math.atan2(adjust_cy, adjust_cr) |> T::from_double(),
       T::from_double(@math.PI / 2.0 * sp.signum()),
       T::from_double(0.0),
     )
   }
   let cy = 2.0 * (w * x + z * y).to_double()
   let cr = 1.0 - 2.0 * (x * x + y * y).to_double()
-  let roll = cy.atan2(cr) |> T::from_double()
-  let pitch = sp.asin() |> T::from_double()
+  let roll = @math.atan2(cy, cr) |> T::from_double()
+  let pitch = @math.asin(sp) |> T::from_double()
   let sx = 2.0 * (w * z + x * y).to_double()
   let cx = 1.0 - 2.0 * (z * z + y * y).to_double()
-  let yaw = sx.atan2(cx) |> T::from_double()
+  let yaw = @math.atan2(sx, cx) |> T::from_double()
   (roll, pitch, yaw)
 }
 
 ///|
 /// Converts the quaternion to Euler angles (roll, pitch, yaw) in external YZX-Order
-pub fn to_euler_external_YZX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
-  self : Quaternion[T]
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] to_euler_external_YZX(
+  self : Quaternion[T],
 ) -> (T, T, T) {
   let q = self.normalize()
   let (w, x, y, z) = (q.r, q.vec.0, q.vec.1, q.vec.2)
   let cp = 2.0 * (w * y + x * z).to_double()
   let cr = 1.0 - 2.0 * (z * z + y * y).to_double()
-  let roll = cp.atan2(cr) |> T::from_double()
+  let roll = @math.atan2(cp, cr) |> T::from_double()
   let sp = 2.0 * (w * z - x * y).to_double()
   // avoid Gimbal Lock
   guard sp.abs() < 0.9998 else {
@@ -371,23 +371,23 @@ pub fn to_euler_external_YZX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div
     )
     (roll, T::from_double(@math.PI / 2.0 * sp.signum()), T::from_double(0.0))
   }
-  let pitch = sp.asin() |> T::from_double()
+  let pitch = @math.asin(sp) |> T::from_double()
   let cy = 2.0 * (w * x + z * y).to_double()
   let cx = 1.0 - 2.0 * (z * z + x * x).to_double()
-  let yaw = cy.atan2(cx) |> T::from_double()
+  let yaw = @math.atan2(cy, cx) |> T::from_double()
   (roll, pitch, yaw)
 }
 
 ///|
 /// Converts the quaternion to Euler angles (roll, pitch, yaw) in external ZYX-Order
-pub fn to_euler_external_ZYX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
-  self : Quaternion[T]
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] to_euler_external_ZYX(
+  self : Quaternion[T],
 ) -> (T, T, T) {
   let q = self.normalize()
   let (x, y, z, w) = (q.vec.0, q.vec.1, q.vec.2, q.r)
   let sinr = 2.0 * (w * z - y * x).to_double()
   let cosr = 1.0 - 2.0 * (z * z + y * y).to_double()
-  let roll = sinr.atan2(cosr) |> T::from_double()
+  let roll = @math.atan2(sinr, cosr) |> T::from_double()
   let sp = 2.0 * (w * y + z * x).to_double()
   guard sp.abs() < 0.9998 else {
     println(
@@ -395,23 +395,23 @@ pub fn to_euler_external_ZYX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div
     )
     (roll, T::from_double(@math.PI / 2.0 * sp.signum()), T::from_double(0.0))
   }
-  let pitch = sp.asin() |> T::from_double()
+  let pitch = @math.asin(sp) |> T::from_double()
   let siny = 2.0 * (w * x - z * y).to_double()
   let cosy = 1.0 - 2.0 * (x * x + y * y).to_double()
-  let yaw = siny.atan2(cosy) |> T::from_double()
+  let yaw = @math.atan2(siny, cosy) |> T::from_double()
   (roll, pitch, yaw)
 }
 
 ///|
 /// Converts the quaternion to Euler angles (roll, pitch, yaw) in external XZY-Order (active rotation)
-pub fn to_euler_external_XZY[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
-  self : Quaternion[T]
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] to_euler_external_XZY(
+  self : Quaternion[T],
 ) -> (T, T, T) {
   let q = self.normalize()
   let (x, y, z, w) = (q.vec.0, q.vec.1, q.vec.2, q.r)
   let sinr_cosp = 2.0 * (w * x - y * z).to_double()
   let cosr_cosp = 1.0 - 2.0 * (x * x + y * y).to_double()
-  let roll = sinr_cosp.atan2(cosr_cosp) |> T::from_double()
+  let roll = @math.atan2(sinr_cosp, cosr_cosp) |> T::from_double()
   let sp = 2.0 * (w * y + x * z).to_double()
   guard sp.abs() < 0.9998 else {
     println(
@@ -419,29 +419,29 @@ pub fn to_euler_external_XZY[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div
     )
     (roll, T::from_double(@math.PI / 2.0 * sp.signum()), T::from_double(0.0))
   }
-  let pitch = sp.asin() |> T::from_double()
+  let pitch = @math.asin(sp) |> T::from_double()
   let siny_cosp = 2.0 * (w * z - x * y).to_double()
   let cosy_cosp = 1.0 - 2.0 * (y * y + z * z).to_double()
-  let yaw = siny_cosp.atan2(cosy_cosp) |> T::from_double()
+  let yaw = @math.atan2(siny_cosp, cosy_cosp) |> T::from_double()
   (roll, pitch, yaw)
 }
 
 ///|
 test "to_euler" {
   let q3 = Quaternion::{ r: 0.258, vec: (0.258, 0.516, 0.775) }
-  inspect!(
+  inspect(
     q3.to_euler(order="XYZ"),
     content="(1.2266506748485178, -0.1340438478746415, 2.4044437241372796)",
   )
-  inspect!(
+  inspect(
     q3.to_euler(order="XZY"),
     content="(-1.1059098961604412, 0.7290346960862234, 2.9614299881239803)",
   )
-  inspect!(
+  inspect(
     q3.to_euler(order="YZX"),
     content="(2.4044437241372796, 0.1340438478746415, 1.9149419787412751)",
   )
-  inspect!(
+  inspect(
     q3.to_euler(order="ZYX"),
     content="(2.9614299881239803, 0.7290346960862234, -1.1059098961604412)",
   )
@@ -449,8 +449,8 @@ test "to_euler" {
 
 ///|
 /// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
-pub fn to_euler_internal_XYZ[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
-  self : Quaternion[T]
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] to_euler_internal_XYZ(
+  self : Quaternion[T],
 ) -> (T, T, T) {
   let (roll, pitch, yaw) = self.to_euler_external_ZYX()
   (yaw, pitch, roll)
@@ -458,8 +458,8 @@ pub fn to_euler_internal_XYZ[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div
 
 ///|
 /// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
-pub fn to_euler_internal_YZX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
-  self : Quaternion[T]
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] to_euler_internal_YZX(
+  self : Quaternion[T],
 ) -> (T, T, T) {
   let (roll, pitch, yaw) = self.to_euler_external_XZY()
   (yaw, pitch, roll)
@@ -467,8 +467,8 @@ pub fn to_euler_internal_YZX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div
 
 ///|
 /// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
-pub fn to_euler_internal_XZY[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
-  self : Quaternion[T]
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] to_euler_internal_XZY(
+  self : Quaternion[T],
 ) -> (T, T, T) {
   let (roll, pitch, yaw) = self.to_euler_external_YZX()
   (yaw, pitch, roll)
@@ -476,8 +476,8 @@ pub fn to_euler_internal_XZY[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div
 
 ///|
 /// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
-pub fn to_euler_internal_ZYX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
-  self : Quaternion[T]
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] to_euler_internal_ZYX(
+  self : Quaternion[T],
 ) -> (T, T, T) {
   let (roll, pitch, yaw) = self.to_euler_external_XYZ()
   (yaw, pitch, roll)
@@ -486,21 +486,21 @@ pub fn to_euler_internal_ZYX[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div
 ///| 
 /// Converts the Euler angles to the quaternion (x, ai, bj, ck) In different Orders 
 /// 'order' in {"XYZ", "YXZ", "ZYX", "YZX", "ZXY"} 
-pub fn from_euler[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div](
+pub fn[T : DoubleConvert + Mul + Add + Sub] from_euler(
   roll : T,
   pitch : T,
   yaw : T,
-  order~ : String = "XYZ"
+  order~ : String = "XYZ",
 ) -> Quaternion[T] {
   let half_roll = roll.to_double() * 0.5
   let half_pitch = pitch.to_double() * 0.5
   let half_yaw = yaw.to_double() * 0.5
-  let cr = half_roll.cos() |> T::from_double()
-  let sr = half_roll.sin() |> T::from_double()
-  let cp = half_pitch.cos() |> T::from_double()
-  let sp = half_pitch.sin() |> T::from_double()
-  let cy = half_yaw.cos() |> T::from_double()
-  let sy = half_yaw.sin() |> T::from_double()
+  let cr = @math.cos(half_roll) |> T::from_double()
+  let sr = @math.sin(half_roll) |> T::from_double()
+  let cp = @math.cos(half_pitch) |> T::from_double()
+  let sp = @math.sin(half_pitch) |> T::from_double()
+  let cy = @math.cos(half_yaw) |> T::from_double()
+  let sy = @math.sin(half_yaw) |> T::from_double()
   match order {
     "XYZ" =>
       Quaternion::{
@@ -553,23 +553,23 @@ pub fn from_euler[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div](
 
 ///|
 test "from_euler" {
-  inspect!(
+  inspect(
     from_euler(1.0, 1.0, 1.0, order="XYZ"),
     content="0.5656758145325667 + 0.5709414713577319i + 0.16751879124639693j + 0.5709414713577319k",
   )
-  inspect!(
+  inspect(
     from_euler(0.0, @math.PI / 2, @math.PI / 2, order="YXZ"),
     content="0.5000000000000001 + 0.4999999999999999i + 0.5j + 0.5k",
   )
-  inspect!(
+  inspect(
     from_euler(@math.PI / 2, 0.0, @math.PI / 2, order="ZYX"),
     content="0.5000000000000001 + 0.5i + 0.4999999999999999j + 0.5k",
   )
-  inspect!(
+  inspect(
     from_euler(1.0, 1.0, 1.0, order="YZX"),
     content="0.5656758145325667 + 0.5709414713577319i + 0.5709414713577319j + 0.16751879124639693k",
   )
-  inspect!(
+  inspect(
     from_euler(1.0, 1.0, 1.0, order="ZXY"),
     content="0.5656758145325667 + 0.16751879124639693i + 0.5709414713577319j + 0.5709414713577319k",
   )
@@ -578,9 +578,9 @@ test "from_euler" {
 ///|
 /// If the exponent isn't of type Int, please use the pow_by_T function to calculate.
 /// Computes the power of a quaternion. Like q^2
-pub fn Quaternion::pow_by_int[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::pow_by_int(
   self : Quaternion[T],
-  exponent : Int
+  exponent : Int,
 ) -> Quaternion[T] {
   if exponent == 0 {
     Quaternion::{ r: T::one(), vec: (T::zero(), T::zero(), T::zero()) }
@@ -601,9 +601,9 @@ pub fn Quaternion::pow_by_int[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Di
 ///|
 /// If the exponent is of type Int, please use the pow_by_int function.
 /// Computes the power of a quaternion. Like q^(2.5)
-pub fn Quaternion::pow_by_T[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](
+pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Div + Eq] Quaternion::pow_by_T(
   self : Quaternion[T],
-  exponent : T
+  exponent : T,
 ) -> Quaternion[T] {
   let len = self.magnitude()
   if self.magnitude() == T::zero() {
@@ -619,12 +619,12 @@ pub fn Quaternion::pow_by_T[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div 
       vec: (T::zero(), T::zero(), T::zero()),
     }
   } else {
-    let theta = 2.0 * v_norm.asin()
+    let theta = 2.0 * @math.asin(v_norm)
     let new_angle = theta * exponent.to_double()
     let half_new_angle = new_angle / 2.0
     let new_len = len.to_double().pow(exponent.to_double()) |> T::from_double()
-    let sin_half = half_new_angle.sin() |> T::from_double()
-    let cos_half = half_new_angle.cos() |> T::from_double()
+    let sin_half = @math.sin(half_new_angle) |> T::from_double()
+    let cos_half = @math.cos(half_new_angle) |> T::from_double()
     let axis = (
       unit.vec.0 / T::from_double(v_norm),
       unit.vec.1 / T::from_double(v_norm),
@@ -644,8 +644,8 @@ pub fn Quaternion::pow_by_T[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div 
 ///|
 test "pow" {
   let q : Quaternion[Double] = Quaternion::from_vec((2, 2, 3, 4))
-  inspect!(q.pow_by_int(2), content="-25 + 8i + 12j + 16k")
-  inspect!(
+  inspect(q.pow_by_int(2), content="-25 + 8i + 12j + 16k")
+  inspect(
     q.pow_by_T(2.0),
     content="-25.00000000000001 + 7.999999999999995i + 11.999999999999995j + 15.99999999999999k",
   )
