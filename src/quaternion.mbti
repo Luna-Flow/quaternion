@@ -1,3 +1,4 @@
+// Generated using `moon info`, DON'T EDIT IT
 package "Luna-Flow/quaternion"
 
 import(
@@ -5,39 +6,35 @@ import(
 )
 
 // Values
-fn from_axis_angle[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div]((T, T, T), T) -> Quaternion[T]
+fn[T : DoubleConvert + Mul + Add + Div] from_axis_angle((T, T, T), T) -> Quaternion[T]
 
-fn from_euler[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div](T, T, T) -> Quaternion[T]
+fn[T : DoubleConvert + Mul + Add + Sub] from_euler(T, T, T, order~ : String = ..) -> Quaternion[T]
 
-fn id[T : @luna-generic.Num]() -> Quaternion[T]
+fn[T : @luna-generic.Num] id() -> Quaternion[T]
 
-fn magnitude[T : @luna-generic.Num + DoubleConvert](Quaternion[T]) -> T
-
-fn normalize[T : @luna-generic.Num + DoubleConvert + Div](Quaternion[T]) -> Quaternion[T]
-
-fn rotate[T : @luna-generic.Num + Sub](Quaternion[T], (T, T, T)) -> (T, T, T)
-
-fn slerp[T : DoubleConvert + @luna-generic.Num + Mul + Add + Sub + Div](Quaternion[T], Quaternion[T], Double) -> Quaternion[T]
-
-fn square_len[T : Mul + Add](Quaternion[T]) -> T
-
-fn to_euler[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div](Quaternion[T]) -> (T, T, T)
+fn[T : DoubleConvert + @luna-generic.Num + Mul + Add + Div + Eq] slerp(Quaternion[T], Quaternion[T], Double) -> Quaternion[T]
 
 // Types and methods
 type Quaternion[T]
-impl Quaternion {
-  dot[T : Mul + Add](Self[T], Self[T]) -> T
-  from_vec[T : @luna-generic.Num]((T, T, T, T)) -> Self[T]
-  magnitude[T : @luna-generic.Num + DoubleConvert](Self[T]) -> T
-  map[T, U](Self[T], (T) -> U) -> Self[U]
-  normalize[T : @luna-generic.Num + DoubleConvert + Div](Self[T]) -> Self[T]
-  pow_by_T[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](Self[T], T) -> Self[T]
-  pow_by_int[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq](Self[T], Int) -> Self[T]
-  rotate[T : @luna-generic.Num + Sub](Self[T], (T, T, T)) -> (T, T, T)
-  scale[T : Mul](Self[T], T) -> Self[T]
-  square_len[T : Mul + Add](Self[T]) -> T
-  to_euler[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div](Self[T]) -> (T, T, T)
-}
+fn[T : Mul + Add] Quaternion::dot(Self[T], Self[T]) -> T
+fn[T] Quaternion::from_vec((T, T, T, T)) -> Self[T]
+fn[T : @luna-generic.Num + DoubleConvert] Quaternion::magnitude(Self[T]) -> T
+fn[T, U] Quaternion::map(Self[T], (T) -> U) -> Self[U]
+fn[T : @luna-generic.Num + DoubleConvert + Div + Eq] Quaternion::normalize(Self[T]) -> Self[T]
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Div + Eq] Quaternion::pow_by_T(Self[T], T) -> Self[T]
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::pow_by_int(Self[T], Int) -> Self[T]
+fn[T : @luna-generic.Num + Sub] Quaternion::rotate(Self[T], (T, T, T)) -> (T, T, T)
+fn[T : Mul] Quaternion::scale(Self[T], T) -> Self[T]
+fn[T : Mul + Add] Quaternion::square_len(Self[T]) -> T
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler(Self[T], order~ : String = .., external~ : Bool = ..) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_XYZ(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_XZY(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_YZX(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_ZYX(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_XYZ(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_XZY(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_YZX(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_ZYX(Self[T]) -> (T, T, T)
 impl[T : Neg] @luna-generic.Conjugate for Quaternion[T]
 impl[T : Div + @luna-generic.Num] @luna-generic.Inverse for Quaternion[T]
 impl[T : Add] Add for Quaternion[T]
@@ -57,4 +54,6 @@ pub trait DoubleConvert {
   to_double(Self) -> Double
   from_double(Double) -> Self
 }
+impl DoubleConvert for Int
+impl DoubleConvert for Double
 
