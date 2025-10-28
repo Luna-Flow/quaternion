@@ -60,7 +60,7 @@ pub impl[T : Show] Show for Quaternion[T] with output(self, logger) {
 
 ///|
 /// Adds two quaternions component-wise.
-pub impl[T : Add] Add for Quaternion[T] with op_add(self, other) {
+pub impl[T : Add] Add for Quaternion[T] with add(self, other) {
   {
     r: self.r + other.r,
     vec: (
@@ -98,7 +98,7 @@ pub fn[T : Mul + Add] Quaternion::dot(
 
 ///|
 /// Multiplies two quaternions using Hamilton product.
-pub impl[T : Mul + Sub + Add] Mul for Quaternion[T] with op_mul(self, other) {
+pub impl[T : Mul + Sub + Add] Mul for Quaternion[T] with mul(self, other) {
   {
     r: self.r * other.r - dot(self.vec, other.vec),
     vec: cross(self.vec, other.vec)
@@ -108,7 +108,7 @@ pub impl[T : Mul + Sub + Add] Mul for Quaternion[T] with op_mul(self, other) {
 
 ///|
 /// Divides two quaternions.
-pub impl[T : Add + Mul + Div + Sub] Div for Quaternion[T] with op_div(q, r) {
+pub impl[T : Add + Mul + Div + Sub] Div for Quaternion[T] with div(q, r) {
   let d = r.square_len()
   {
     r: (q.r * r.r + dot(q.vec, r.vec)) / d,
@@ -125,13 +125,13 @@ pub impl[T : Add + Mul + Div + Sub] Div for Quaternion[T] with op_div(q, r) {
 
 ///|
 /// Negates the quaternion.
-pub impl[T : Neg] Neg for Quaternion[T] with op_neg(self) {
-  { r: -self.r, vec: map(self.vec, Neg::op_neg) }
+pub impl[T : Neg] Neg for Quaternion[T] with neg(self) {
+  { r: -self.r, vec: map(self.vec, Neg::neg) }
 }
 
 ///|
 /// Subtracts two quaternions.
-pub impl[T : Neg + Add] Sub for Quaternion[T] with op_sub(self, other) {
+pub impl[T : Neg + Add] Sub for Quaternion[T] with sub(self, other) {
   self + -other
 }
 
@@ -161,7 +161,7 @@ pub fn[T, U] Quaternion::map(
 ///|
 /// Computes the conjugate of the quaternion (negates vector components).
 pub impl[T : Neg] @lg.Conjugate for Quaternion[T] with conjugate(self) {
-  { r: self.r, vec: map(self.vec, Neg::op_neg) }
+  { r: self.r, vec: map(self.vec, Neg::neg) }
 }
 
 ///|
@@ -578,7 +578,7 @@ test "from_euler" {
 ///|
 /// If the exponent isn't of type Int, please use the pow_by_T function to calculate.
 /// Computes the power of a quaternion. Like q^2
-pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::pow_by_int(
+pub fn[T : @lg.Num + Mul + Add + Sub + Div] Quaternion::pow_by_int(
   self : Quaternion[T],
   exponent : Int,
 ) -> Quaternion[T] {
