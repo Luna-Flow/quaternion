@@ -1,0 +1,86 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Luna-Flow/quaternion"
+
+import(
+  "Luna-Flow/luna-generic"
+)
+
+// Values
+fn[T : DoubleConvert + Mul + Add + Div] from_axis_angle((T, T, T), T) -> Quaternion[T]
+
+fn[T : DoubleConvert + Mul + Add + Sub] from_euler(T, T, T, order? : String) -> Quaternion[T]
+
+fn[T : @luna-generic.Num] id() -> Quaternion[T]
+
+fn[T : DoubleConvert + @luna-generic.Num + Mul + Add + Div + Eq] slerp(Quaternion[T], Quaternion[T], Double) -> Quaternion[T]
+
+// Errors
+
+// Types and methods
+type Quaternion[T]
+fn[T : Add] Quaternion::add(Self[T], Self[T]) -> Self[T] // from trait `Add`
+fn[T : Neg] Quaternion::conjugate(Self[T]) -> Self[T] // from trait `@luna-generic.Conjugate`
+fn[T : @luna-generic.Num] Quaternion::default() -> Self[T] // from trait `Default`
+fn[T : Add + Mul + Div + Sub] Quaternion::div(Self[T], Self[T]) -> Self[T] // from trait `Div`
+fn[T : Mul + Add] Quaternion::dot(Self[T], Self[T]) -> T
+fn[T : Eq] Quaternion::equal(Self[T], Self[T]) -> Bool // from trait `Eq`
+fn[T] Quaternion::from_vec((T, T, T, T)) -> Self[T]
+fn[T : Hash] Quaternion::hash(Self[T]) -> Int // from trait `Hash`
+fn[T : Hash] Quaternion::hash_combine(Self[T], Hasher) -> Unit // from trait `Hash`
+fn[T : Div + @luna-generic.Num] Quaternion::inv(Self[T]) -> Self[T] // from trait `@luna-generic.Inverse`
+fn[T : @luna-generic.Num + DoubleConvert] Quaternion::magnitude(Self[T]) -> T
+fn[T, U] Quaternion::map(Self[T], (T) -> U) -> Self[U]
+fn[T : Mul + Sub + Add] Quaternion::mul(Self[T], Self[T]) -> Self[T] // from trait `Mul`
+fn[T : Neg] Quaternion::neg(Self[T]) -> Self[T] // from trait `Neg`
+fn[T : @luna-generic.Num + DoubleConvert + Div + Eq] Quaternion::normalize(Self[T]) -> Self[T]
+#deprecated
+fn[T : Add] Quaternion::op_add(Self[T], Self[T]) -> Self[T] // from trait `Add`
+#deprecated
+fn[T : Add + Mul + Div + Sub] Quaternion::op_div(Self[T], Self[T]) -> Self[T] // from trait `Div`
+#deprecated
+fn[T : Eq] Quaternion::op_equal(Self[T], Self[T]) -> Bool // from trait `Eq`
+#deprecated
+fn[T : Mul + Sub + Add] Quaternion::op_mul(Self[T], Self[T]) -> Self[T] // from trait `Mul`
+#deprecated
+fn[T : Neg] Quaternion::op_neg(Self[T]) -> Self[T] // from trait `Neg`
+#deprecated
+fn[T : Neg + Add] Quaternion::op_sub(Self[T], Self[T]) -> Self[T] // from trait `Sub`
+fn[T : Show] Quaternion::output(Self[T], &Logger) -> Unit // from trait `Show`
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Div + Eq] Quaternion::pow_by_T(Self[T], T) -> Self[T]
+fn[T : @luna-generic.Num + Mul + Add + Sub + Div] Quaternion::pow_by_int(Self[T], Int) -> Self[T]
+fn[T : @luna-generic.Num + Sub] Quaternion::rotate(Self[T], (T, T, T)) -> (T, T, T)
+fn[T : Mul] Quaternion::scale(Self[T], T) -> Self[T]
+fn[T : Mul + Add] Quaternion::square_len(Self[T]) -> T
+fn[T : Neg + Add] Quaternion::sub(Self[T], Self[T]) -> Self[T] // from trait `Sub`
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler(Self[T], order? : String, external? : Bool) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_XYZ(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_XZY(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_YZX(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_ZYX(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_XYZ(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_XZY(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_YZX(Self[T]) -> (T, T, T)
+fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_ZYX(Self[T]) -> (T, T, T)
+fn[T : Show] Quaternion::to_string(Self[T]) -> String // from trait `Show`
+impl[T : Neg] @luna-generic.Conjugate for Quaternion[T]
+impl[T : Div + @luna-generic.Num] @luna-generic.Inverse for Quaternion[T]
+impl[T : Add] Add for Quaternion[T]
+impl[T : @luna-generic.Num] Default for Quaternion[T]
+impl[T : Add + Mul + Div + Sub] Div for Quaternion[T]
+impl[T : Eq] Eq for Quaternion[T]
+impl[T : Hash] Hash for Quaternion[T]
+impl[T : Mul + Sub + Add] Mul for Quaternion[T]
+impl[T : Neg] Neg for Quaternion[T]
+impl[T : Show] Show for Quaternion[T]
+impl[T : Neg + Add] Sub for Quaternion[T]
+
+// Type aliases
+
+// Traits
+pub trait DoubleConvert {
+  to_double(Self) -> Double
+  from_double(Double) -> Self
+}
+impl DoubleConvert for Int
+impl DoubleConvert for Double
+
