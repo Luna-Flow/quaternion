@@ -1,0 +1,124 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luna-Flow documentation\n"
+"Report-Msgid-Bugs-To: https://github.com/Luna-Flow\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: conf.json:summary
+msgid "Generic quaternions for MoonBit with arithmetic, normalization, 3D rotation, interpolation and Euler-angle conversion."
+msgstr ""
+
+#: manual/index.md:1
+msgid "quaternion"
+msgstr ""
+
+#: manual/index.md:3
+msgid "`quaternion` is the Luna-Flow library for quaternions, the extension of complex numbers that is useful for 3D rotations and orientations. It provides arithmetic, normalization, rotation, interpolation and Euler-angle conversion. Everything lives in one package, `Luna-Flow/quaternion`, under `src`."
+msgstr ""
+
+#: manual/index.md:5
+msgid "The `Quaternion[T]` type"
+msgstr ""
+
+#: manual/index.md:7
+msgid "`Quaternion[T]` stores a real part and a vector part of three components. The type is abstract: build values with the constructors below rather than with a struct literal. The component type `T` is generic, and each operation asks only for the traits it needs, for example `Add` for addition or `@luna-generic.Num` for the identity."
+msgstr ""
+
+#: manual/index.md:9
+msgid "Constructor"
+msgstr ""
+
+#: manual/index.md:9
+msgid "Result"
+msgstr ""
+
+#: manual/index.md:12
+msgid "The identity $1 + 0i + 0j + 0k$; `Quaternion::default()` returns the same value."
+msgstr ""
+
+#: manual/index.md:13
+msgid "The rotation by `angle` radians around `axis`, which does not need to be normalized."
+msgstr ""
+
+#: manual/index.md:14
+msgid "The rotation given by Euler angles in radians; `order` defaults to `\"XYZ\"`."
+msgstr ""
+
+#: manual/index.md:16
+msgid "Operations"
+msgstr ""
+
+#: manual/index.md:18
+msgid "Quaternions support `+`, `-`, unary `-`, and `*` (the Hamilton product), as well as `/`, `Eq`, `Hash` and `Show`; `to_string` prints the form `a + bi + cj + dk`. The type implements `Conjugate` and `Inverse` from `Luna-Flow/luna-generic`."
+msgstr ""
+
+#: manual/index.md:20
+msgid "Method"
+msgstr ""
+
+#: manual/index.md:20
+msgid "Meaning"
+msgstr ""
+
+#: manual/index.md:22
+msgid "Multiplies every component by `s`."
+msgstr ""
+
+#: manual/index.md:23
+msgid "The dot product of the four components."
+msgstr ""
+
+#: manual/index.md:24
+msgid "The squared norm and the norm."
+msgstr ""
+
+#: manual/index.md:25
+msgid "The quaternion scaled to unit length; a zero quaternion is returned unchanged."
+msgstr ""
+
+#: manual/index.md:26
+msgid "Applies `f` to every component, possibly changing the component type."
+msgstr ""
+
+#: manual/index.md:27
+msgid "Integer and real powers."
+msgstr ""
+
+#: manual/index.md:28
+msgid "Rotates a 3D vector; the receiver should be a unit quaternion."
+msgstr ""
+
+#: manual/index.md:29
+msgid "Three Euler angles in radians for the chosen axis order."
+msgstr ""
+
+#: manual/index.md:31
+msgid "`slerp(q1, q2, t)` interpolates spherically between two rotations. It normalizes both inputs, takes the shorter path, and falls back to normalized linear interpolation when the two rotations are almost equal."
+msgstr ""
+
+#: manual/index.md:33
+msgid "`to_euler` accepts the orders `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\"` (the default) and returns extrinsic angles unless `external` is `false`. Each combination is also available directly, as `to_euler_external_ZYX`, `to_euler_internal_XYZ` and so on. `from_euler` accepts `\"XYZ\"`, `\"YXZ\"`, `\"ZYX\"`, `\"YZX\"` and `\"ZXY\"`. An unsupported order aborts. Near gimbal lock, `to_euler` prints a warning and fixes one of the angles."
+msgstr ""
+
+#: manual/index.md:35
+msgid "Converting through `Double`"
+msgstr ""
+
+#: manual/index.md:37
+msgid "Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions."
+msgstr ""
+
+#: manual/index.md:39
+msgid "Example"
+msgstr ""
+
+#: manual/index.md:48
+msgid "`rotated` is approximately `(0.0, 1.0, 0.0)`, and `halfway` is the rotation by $\\pi/4$ around the same axis."
+msgstr ""
+
+#: manual/index.md:50
+msgid "The generated interface `src/pkg.generated.mbti` lists every public signature."
+msgstr ""

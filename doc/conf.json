@@ -1,0 +1,8 @@
+{
+  "title": "quaternion",
+  "summary": "Generic quaternions for MoonBit with arithmetic, normalization, 3D rotation, interpolation and Euler-angle conversion.",
+  "locales": [
+    "zh_CN",
+    "ja_JP"
+  ]
+}

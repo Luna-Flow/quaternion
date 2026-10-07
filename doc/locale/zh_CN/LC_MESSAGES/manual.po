@@ -1,0 +1,124 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luna-Flow documentation\n"
+"Report-Msgid-Bugs-To: https://github.com/Luna-Flow\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: conf.json:summary
+msgid "Generic quaternions for MoonBit with arithmetic, normalization, 3D rotation, interpolation and Euler-angle conversion."
+msgstr "MoonBit 的泛型四元数库，提供算术运算、归一化、三维旋转、插值和欧拉角转换。"
+
+#: manual/index.md:1
+msgid "quaternion"
+msgstr "quaternion"
+
+#: manual/index.md:3
+msgid "`quaternion` is the Luna-Flow library for quaternions, the extension of complex numbers that is useful for 3D rotations and orientations. It provides arithmetic, normalization, rotation, interpolation and Euler-angle conversion. Everything lives in one package, `Luna-Flow/quaternion`, under `src`."
+msgstr "`quaternion` 是 Luna-Flow 的四元数库。四元数是复数的扩展，适用于三维旋转与姿态表示。本库提供算术运算、归一化、旋转、插值和欧拉角转换。所有内容都位于 `src` 下的单个包 `Luna-Flow/quaternion` 中。"
+
+#: manual/index.md:5
+msgid "The `Quaternion[T]` type"
+msgstr "`Quaternion[T]` 类型"
+
+#: manual/index.md:7
+msgid "`Quaternion[T]` stores a real part and a vector part of three components. The type is abstract: build values with the constructors below rather than with a struct literal. The component type `T` is generic, and each operation asks only for the traits it needs, for example `Add` for addition or `@luna-generic.Num` for the identity."
+msgstr "`Quaternion[T]` 保存一个实部和一个由三个分量组成的向量部。该类型是抽象的：请使用下列构造函数创建值，而不是使用结构体字面量。分量类型 `T` 是泛型的，每个操作只要求它实际需要的 trait，例如加法需要 `Add`，单位元需要 `@luna-generic.Num`。"
+
+#: manual/index.md:9
+msgid "Constructor"
+msgstr "构造函数"
+
+#: manual/index.md:9
+msgid "Result"
+msgstr "结果"
+
+#: manual/index.md:12
+msgid "The identity $1 + 0i + 0j + 0k$; `Quaternion::default()` returns the same value."
+msgstr "单位四元数 $1 + 0i + 0j + 0k$；`Quaternion::default()` 返回相同的值。"
+
+#: manual/index.md:13
+msgid "The rotation by `angle` radians around `axis`, which does not need to be normalized."
+msgstr "绕 `axis` 旋转 `angle` 弧度的旋转；`axis` 不必是单位向量。"
+
+#: manual/index.md:14
+msgid "The rotation given by Euler angles in radians; `order` defaults to `\"XYZ\"`."
+msgstr "由弧度制欧拉角给出的旋转；`order` 默认为 `\"XYZ\"`。"
+
+#: manual/index.md:16
+msgid "Operations"
+msgstr "运算"
+
+#: manual/index.md:18
+msgid "Quaternions support `+`, `-`, unary `-`, and `*` (the Hamilton product), as well as `/`, `Eq`, `Hash` and `Show`; `to_string` prints the form `a + bi + cj + dk`. The type implements `Conjugate` and `Inverse` from `Luna-Flow/luna-generic`."
+msgstr "四元数支持 `+`、`-`、一元 `-` 和 `*`（Hamilton 积），以及 `/`、`Eq`、`Hash` 和 `Show`；`to_string` 输出 `a + bi + cj + dk` 的形式。该类型实现 `Luna-Flow/luna-generic` 中的 `Conjugate` 和 `Inverse`。"
+
+#: manual/index.md:20
+msgid "Method"
+msgstr "方法"
+
+#: manual/index.md:20
+msgid "Meaning"
+msgstr "含义"
+
+#: manual/index.md:22
+msgid "Multiplies every component by `s`."
+msgstr "将每个分量乘以 `s`。"
+
+#: manual/index.md:23
+msgid "The dot product of the four components."
+msgstr "四个分量的点积。"
+
+#: manual/index.md:24
+msgid "The squared norm and the norm."
+msgstr "范数的平方与范数。"
+
+#: manual/index.md:25
+msgid "The quaternion scaled to unit length; a zero quaternion is returned unchanged."
+msgstr "缩放到单位长度的四元数；零四元数原样返回。"
+
+#: manual/index.md:26
+msgid "Applies `f` to every component, possibly changing the component type."
+msgstr "对每个分量应用 `f`，分量类型可以随之改变。"
+
+#: manual/index.md:27
+msgid "Integer and real powers."
+msgstr "整数次幂与实数次幂。"
+
+#: manual/index.md:28
+msgid "Rotates a 3D vector; the receiver should be a unit quaternion."
+msgstr "旋转一个三维向量；接收者应为单位四元数。"
+
+#: manual/index.md:29
+msgid "Three Euler angles in radians for the chosen axis order."
+msgstr "按所选轴顺序给出的三个弧度制欧拉角。"
+
+#: manual/index.md:31
+msgid "`slerp(q1, q2, t)` interpolates spherically between two rotations. It normalizes both inputs, takes the shorter path, and falls back to normalized linear interpolation when the two rotations are almost equal."
+msgstr "`slerp(q1, q2, t)` 在两个旋转之间进行球面线性插值。它会先归一化两个输入，沿较短路径插值；当两个旋转几乎相同时，退化为归一化的线性插值。"
+
+#: manual/index.md:33
+msgid "`to_euler` accepts the orders `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\"` (the default) and returns extrinsic angles unless `external` is `false`. Each combination is also available directly, as `to_euler_external_ZYX`, `to_euler_internal_XYZ` and so on. `from_euler` accepts `\"XYZ\"`, `\"YXZ\"`, `\"ZYX\"`, `\"YZX\"` and `\"ZXY\"`. An unsupported order aborts. Near gimbal lock, `to_euler` prints a warning and fixes one of the angles."
+msgstr "`to_euler` 接受 `\"XYZ\"`、`\"XZY\"`、`\"YZX\"` 和 `\"ZYX\"`（默认）几种顺序，除非 `external` 为 `false`，否则返回外旋角。每种组合也可以直接调用，例如 `to_euler_external_ZYX`、`to_euler_internal_XYZ` 等。`from_euler` 接受 `\"XYZ\"`、`\"YXZ\"`、`\"ZYX\"`、`\"YZX\"` 和 `\"ZXY\"`。不支持的顺序会导致中止。在万向节锁附近，`to_euler` 会打印警告并固定其中一个角。"
+
+#: manual/index.md:35
+msgid "Converting through `Double`"
+msgstr "通过 `Double` 转换"
+
+#: manual/index.md:37
+msgid "Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions."
+msgstr "有些函数需要在 `Double` 上计算平方根和三角函数，因此要求分量类型实现 `DoubleConvert` trait，它负责在该类型与 `Double` 之间相互转换。本包为 `Double` 和 `Int` 提供了实现；为其他数值类型实现它之后，就可以将该类型用于 `magnitude`、`normalize`、`slerp` 和欧拉角相关函数。"
+
+#: manual/index.md:39
+msgid "Example"
+msgstr "示例"
+
+#: manual/index.md:48
+msgid "`rotated` is approximately `(0.0, 1.0, 0.0)`, and `halfway` is the rotation by $\\pi/4$ around the same axis."
+msgstr "`rotated` 约为 `(0.0, 1.0, 0.0)`，`halfway` 是绕同一轴旋转 $\\pi/4$ 的旋转。"
+
+#: manual/index.md:50
+msgid "The generated interface `src/pkg.generated.mbti` lists every public signature."
+msgstr "生成的接口文件 `src/pkg.generated.mbti` 列出了全部公开签名。"

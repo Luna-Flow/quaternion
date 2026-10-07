@@ -1,0 +1,124 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luna-Flow documentation\n"
+"Report-Msgid-Bugs-To: https://github.com/Luna-Flow\n"
+"Language: ja_JP\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: conf.json:summary
+msgid "Generic quaternions for MoonBit with arithmetic, normalization, 3D rotation, interpolation and Euler-angle conversion."
+msgstr "算術演算、正規化、3D 回転、補間、オイラー角変換を備えた MoonBit 向けの汎用四元数ライブラリ。"
+
+#: manual/index.md:1
+msgid "quaternion"
+msgstr "quaternion"
+
+#: manual/index.md:3
+msgid "`quaternion` is the Luna-Flow library for quaternions, the extension of complex numbers that is useful for 3D rotations and orientations. It provides arithmetic, normalization, rotation, interpolation and Euler-angle conversion. Everything lives in one package, `Luna-Flow/quaternion`, under `src`."
+msgstr "`quaternion` は Luna-Flow の四元数ライブラリです。四元数は複素数を拡張したもので、3D の回転や姿勢の表現に役立ちます。このライブラリは算術演算、正規化、回転、補間、オイラー角変換を提供します。すべては `src` にある単一のパッケージ `Luna-Flow/quaternion` に含まれます。"
+
+#: manual/index.md:5
+msgid "The `Quaternion[T]` type"
+msgstr "`Quaternion[T]` 型"
+
+#: manual/index.md:7
+msgid "`Quaternion[T]` stores a real part and a vector part of three components. The type is abstract: build values with the constructors below rather than with a struct literal. The component type `T` is generic, and each operation asks only for the traits it needs, for example `Add` for addition or `@luna-generic.Num` for the identity."
+msgstr "`Quaternion[T]` は実部と 3 成分のベクトル部を保持します。型は抽象型なので、構造体リテラルではなく下のコンストラクタで値を作ってください。成分の型 `T` は汎用で、各操作は必要な trait だけを要求します。たとえば加算には `Add`、単位元には `@luna-generic.Num` が必要です。"
+
+#: manual/index.md:9
+msgid "Constructor"
+msgstr "コンストラクタ"
+
+#: manual/index.md:9
+msgid "Result"
+msgstr "結果"
+
+#: manual/index.md:12
+msgid "The identity $1 + 0i + 0j + 0k$; `Quaternion::default()` returns the same value."
+msgstr "単位元 $1 + 0i + 0j + 0k$。`Quaternion::default()` も同じ値を返します。"
+
+#: manual/index.md:13
+msgid "The rotation by `angle` radians around `axis`, which does not need to be normalized."
+msgstr "`axis` のまわりに `angle` ラジアン回す回転。`axis` は正規化されていなくてもかまいません。"
+
+#: manual/index.md:14
+msgid "The rotation given by Euler angles in radians; `order` defaults to `\"XYZ\"`."
+msgstr "ラジアン単位のオイラー角で表した回転。`order` の既定値は `\"XYZ\"` です。"
+
+#: manual/index.md:16
+msgid "Operations"
+msgstr "演算"
+
+#: manual/index.md:18
+msgid "Quaternions support `+`, `-`, unary `-`, and `*` (the Hamilton product), as well as `/`, `Eq`, `Hash` and `Show`; `to_string` prints the form `a + bi + cj + dk`. The type implements `Conjugate` and `Inverse` from `Luna-Flow/luna-generic`."
+msgstr "四元数は `+`、`-`、単項 `-`、`*`（ハミルトン積）に加えて、`/`、`Eq`、`Hash`、`Show` をサポートします。`to_string` は `a + bi + cj + dk` の形式で出力します。この型は `Luna-Flow/luna-generic` の `Conjugate` と `Inverse` を実装します。"
+
+#: manual/index.md:20
+msgid "Method"
+msgstr "メソッド"
+
+#: manual/index.md:20
+msgid "Meaning"
+msgstr "意味"
+
+#: manual/index.md:22
+msgid "Multiplies every component by `s`."
+msgstr "すべての成分に `s` を掛けます。"
+
+#: manual/index.md:23
+msgid "The dot product of the four components."
+msgstr "4 成分の内積です。"
+
+#: manual/index.md:24
+msgid "The squared norm and the norm."
+msgstr "ノルムの 2 乗とノルムです。"
+
+#: manual/index.md:25
+msgid "The quaternion scaled to unit length; a zero quaternion is returned unchanged."
+msgstr "単位長に正規化した四元数です。ゼロ四元数はそのまま返されます。"
+
+#: manual/index.md:26
+msgid "Applies `f` to every component, possibly changing the component type."
+msgstr "各成分に `f` を適用します。成分の型が変わってもかまいません。"
+
+#: manual/index.md:27
+msgid "Integer and real powers."
+msgstr "整数乗と実数乗です。"
+
+#: manual/index.md:28
+msgid "Rotates a 3D vector; the receiver should be a unit quaternion."
+msgstr "3D ベクトルを回転します。レシーバは単位四元数である必要があります。"
+
+#: manual/index.md:29
+msgid "Three Euler angles in radians for the chosen axis order."
+msgstr "選択した軸順序における 3 つのオイラー角（ラジアン）です。"
+
+#: manual/index.md:31
+msgid "`slerp(q1, q2, t)` interpolates spherically between two rotations. It normalizes both inputs, takes the shorter path, and falls back to normalized linear interpolation when the two rotations are almost equal."
+msgstr "`slerp(q1, q2, t)` は 2 つの回転の間を球面線形補間します。両方の入力を正規化して短い方の経路をとり、2 つの回転がほぼ等しい場合は正規化した線形補間に切り替えます。"
+
+#: manual/index.md:33
+msgid "`to_euler` accepts the orders `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\"` (the default) and returns extrinsic angles unless `external` is `false`. Each combination is also available directly, as `to_euler_external_ZYX`, `to_euler_internal_XYZ` and so on. `from_euler` accepts `\"XYZ\"`, `\"YXZ\"`, `\"ZYX\"`, `\"YZX\"` and `\"ZXY\"`. An unsupported order aborts. Near gimbal lock, `to_euler` prints a warning and fixes one of the angles."
+msgstr "`to_euler` は `\"XYZ\"`、`\"XZY\"`、`\"YZX\"`、`\"ZYX\"`（既定）の順序を受け付け、`external` が `false` でない限り外因性（extrinsic）の角度を返します。各組み合わせは `to_euler_external_ZYX` や `to_euler_internal_XYZ` などとして直接呼ぶこともできます。`from_euler` は `\"XYZ\"`、`\"YXZ\"`、`\"ZYX\"`、`\"YZX\"`、`\"ZXY\"` を受け付けます。未対応の順序を指定すると中止します。ジンバルロックの近くでは、`to_euler` は警告を出力し、角度の 1 つを固定します。"
+
+#: manual/index.md:35
+msgid "Converting through `Double`"
+msgstr "`Double` を介した変換"
+
+#: manual/index.md:37
+msgid "Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions."
+msgstr "いくつかの関数は `Double` 上で平方根や三角関数を計算するため、成分の型が `DoubleConvert` trait を実装している必要があります。この trait は値と `Double` の相互変換を行います。パッケージは `Double` と `Int` 向けの実装を提供しています。ほかの数値型に実装すれば、その型を `magnitude`、`normalize`、`slerp`、オイラー角の関数で使えます。"
+
+#: manual/index.md:39
+msgid "Example"
+msgstr "例"
+
+#: manual/index.md:48
+msgid "`rotated` is approximately `(0.0, 1.0, 0.0)`, and `halfway` is the rotation by $\\pi/4$ around the same axis."
+msgstr "`rotated` はおよそ `(0.0, 1.0, 0.0)` になり、`halfway` は同じ軸のまわりに $\\pi/4$ 回す回転になります。"
+
+#: manual/index.md:50
+msgid "The generated interface `src/pkg.generated.mbti` lists every public signature."
+msgstr "生成されたインターフェース `src/pkg.generated.mbti` にすべての公開シグネチャが載っています。"
