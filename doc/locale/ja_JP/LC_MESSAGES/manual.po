@@ -104,21 +104,45 @@ msgid "`to_euler` accepts the orders `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\
 msgstr "`to_euler` は `\"XYZ\"`、`\"XZY\"`、`\"YZX\"`、`\"ZYX\"`（既定）の順序を受け付け、`external` が `false` でない限り外因性（extrinsic）の角度を返します。各組み合わせは `to_euler_external_ZYX` や `to_euler_internal_XYZ` などとして直接呼ぶこともできます。`from_euler` は `\"XYZ\"`、`\"YXZ\"`、`\"ZYX\"`、`\"YZX\"`、`\"ZXY\"` を受け付けます。未対応の順序を指定すると中止します。ジンバルロックの近くでは、`to_euler` は警告を出力し、角度の 1 つを固定します。"
 
 #: manual/index.md:35
+msgid "Algebraic structure and division semantics"
+msgstr "代数構造と除算のセマンティクス"
+
+#: manual/index.md:37
+msgid "`Quaternion[T]` implements `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring` and `Ring` from luna-generic when `T : Ring` (`T` is expected to be commutative, e.g. `Int`, `Double`). Multiplication is the Hamilton product and is **not commutative**."
+msgstr "`T : Ring`（`Int` や `Double` などの可換環を想定）のとき、`Quaternion[T]` は luna-generic の `Zero`、`One`、`AddMonoid`、`MulMonoid`、`Semiring`、`Ring` を実装します。乗算は Hamilton 積で、**可換ではありません**。"
+
+#: manual/index.md:38
+msgid "`Field` is deliberately **not** implemented: quaternions form a division ring (skew field), and generic code written against `Field` may assume `a * b == b * a`."
+msgstr "`Field` は意図的に実装**しません**。四元数は斜体（除算環）であり、`Field` 向けの汎用コードは `a * b == b * a` を仮定する可能性があるためです。"
+
+#: manual/index.md:39
+msgid "`q / r` is **right division**: `q / r == q * r.inv()`, the solution `x` of `x * r == q`. This is the conventional meaning of `/` in a division ring and keeps `Div` consistent with `Inverse`."
+msgstr "`q / r` は**右除算**です：`q / r == q * r.inv()`、すなわち `x * r == q` の解です。除算環における `/` の慣用的な意味であり、`Div` と `Inverse` の整合性を保ちます。"
+
+#: manual/index.md:40
+msgid "`q.left_div(r)` is **left division**: `r.inv() * q`, the solution `x` of `r * x == q`."
+msgstr "`q.left_div(r)` は**左除算**です：`r.inv() * q`、すなわち `r * x == q` の解です。"
+
+#: manual/index.md:41
+msgid "`Quaternion::zero()` / `Quaternion::one()` return the additive and multiplicative identities; `q.inv()` and `q.conjugate()` are available as methods."
+msgstr "`Quaternion::zero()` / `Quaternion::one()` は加法・乗法の単位元を返します。`q.inv()` と `q.conjugate()` はメソッドとして呼び出せます。"
+
+#: manual/index.md:43
 msgid "Converting through `Double`"
 msgstr "`Double` を介した変換"
 
-#: manual/index.md:37
+#: manual/index.md:45
 msgid "Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions."
 msgstr "いくつかの関数は `Double` 上で平方根や三角関数を計算するため、成分の型が `DoubleConvert` trait を実装している必要があります。この trait は値と `Double` の相互変換を行います。パッケージは `Double` と `Int` 向けの実装を提供しています。ほかの数値型に実装すれば、その型を `magnitude`、`normalize`、`slerp`、オイラー角の関数で使えます。"
 
-#: manual/index.md:39
+#: manual/index.md:47
 msgid "Example"
 msgstr "例"
 
-#: manual/index.md:48
+#: manual/index.md:56
 msgid "`rotated` is approximately `(0.0, 1.0, 0.0)`, and `halfway` is the rotation by $\\pi/4$ around the same axis."
 msgstr "`rotated` はおよそ `(0.0, 1.0, 0.0)` になり、`halfway` は同じ軸のまわりに $\\pi/4$ 回す回転になります。"
 
-#: manual/index.md:50
+#: manual/index.md:58
 msgid "The generated interface `src/pkg.generated.mbti` lists every public signature."
 msgstr "生成されたインターフェース `src/pkg.generated.mbti` にすべての公開シグネチャが載っています。"

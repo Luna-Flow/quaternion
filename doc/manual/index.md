@@ -32,6 +32,14 @@ Quaternions support `+`, `-`, unary `-`, and `*` (the Hamilton product), as well
 
 `to_euler` accepts the orders `"XYZ"`, `"XZY"`, `"YZX"` and `"ZYX"` (the default) and returns extrinsic angles unless `external` is `false`. Each combination is also available directly, as `to_euler_external_ZYX`, `to_euler_internal_XYZ` and so on. `from_euler` accepts `"XYZ"`, `"YXZ"`, `"ZYX"`, `"YZX"` and `"ZXY"`. An unsupported order aborts. Near gimbal lock, `to_euler` prints a warning and fixes one of the angles.
 
+## Algebraic structure and division semantics
+
+- `Quaternion[T]` implements `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring` and `Ring` from luna-generic when `T : Ring` (`T` is expected to be commutative, e.g. `Int`, `Double`). Multiplication is the Hamilton product and is **not commutative**.
+- `Field` is deliberately **not** implemented: quaternions form a division ring (skew field), and generic code written against `Field` may assume `a * b == b * a`.
+- `q / r` is **right division**: `q / r == q * r.inv()`, the solution `x` of `x * r == q`. This is the conventional meaning of `/` in a division ring and keeps `Div` consistent with `Inverse`.
+- `q.left_div(r)` is **left division**: `r.inv() * q`, the solution `x` of `r * x == q`.
+- `Quaternion::zero()` / `Quaternion::one()` return the additive and multiplicative identities; `q.inv()` and `q.conjugate()` are available as methods.
+
 ## Converting through `Double`
 
 Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions.

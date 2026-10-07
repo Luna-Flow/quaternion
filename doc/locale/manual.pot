@@ -104,21 +104,45 @@ msgid "`to_euler` accepts the orders `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\
 msgstr ""
 
 #: manual/index.md:35
-msgid "Converting through `Double`"
+msgid "Algebraic structure and division semantics"
 msgstr ""
 
 #: manual/index.md:37
-msgid "Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions."
+msgid "`Quaternion[T]` implements `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring` and `Ring` from luna-generic when `T : Ring` (`T` is expected to be commutative, e.g. `Int`, `Double`). Multiplication is the Hamilton product and is **not commutative**."
+msgstr ""
+
+#: manual/index.md:38
+msgid "`Field` is deliberately **not** implemented: quaternions form a division ring (skew field), and generic code written against `Field` may assume `a * b == b * a`."
 msgstr ""
 
 #: manual/index.md:39
+msgid "`q / r` is **right division**: `q / r == q * r.inv()`, the solution `x` of `x * r == q`. This is the conventional meaning of `/` in a division ring and keeps `Div` consistent with `Inverse`."
+msgstr ""
+
+#: manual/index.md:40
+msgid "`q.left_div(r)` is **left division**: `r.inv() * q`, the solution `x` of `r * x == q`."
+msgstr ""
+
+#: manual/index.md:41
+msgid "`Quaternion::zero()` / `Quaternion::one()` return the additive and multiplicative identities; `q.inv()` and `q.conjugate()` are available as methods."
+msgstr ""
+
+#: manual/index.md:43
+msgid "Converting through `Double`"
+msgstr ""
+
+#: manual/index.md:45
+msgid "Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions."
+msgstr ""
+
+#: manual/index.md:47
 msgid "Example"
 msgstr ""
 
-#: manual/index.md:48
+#: manual/index.md:56
 msgid "`rotated` is approximately `(0.0, 1.0, 0.0)`, and `halfway` is the rotation by $\\pi/4$ around the same axis."
 msgstr ""
 
-#: manual/index.md:50
+#: manual/index.md:58
 msgid "The generated interface `src/pkg.generated.mbti` lists every public signature."
 msgstr ""

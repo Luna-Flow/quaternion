@@ -104,21 +104,45 @@ msgid "`to_euler` accepts the orders `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\
 msgstr "`to_euler` 接受 `\"XYZ\"`、`\"XZY\"`、`\"YZX\"` 和 `\"ZYX\"`（默认）几种顺序，除非 `external` 为 `false`，否则返回外旋角。每种组合也可以直接调用，例如 `to_euler_external_ZYX`、`to_euler_internal_XYZ` 等。`from_euler` 接受 `\"XYZ\"`、`\"YXZ\"`、`\"ZYX\"`、`\"YZX\"` 和 `\"ZXY\"`。不支持的顺序会导致中止。在万向节锁附近，`to_euler` 会打印警告并固定其中一个角。"
 
 #: manual/index.md:35
+msgid "Algebraic structure and division semantics"
+msgstr "代数结构与除法语义"
+
+#: manual/index.md:37
+msgid "`Quaternion[T]` implements `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring` and `Ring` from luna-generic when `T : Ring` (`T` is expected to be commutative, e.g. `Int`, `Double`). Multiplication is the Hamilton product and is **not commutative**."
+msgstr "当 `T : Ring`（应为交换环，如 `Int`、`Double`）时，`Quaternion[T]` 实现 luna-generic 的 `Zero`、`One`、`AddMonoid`、`MulMonoid`、`Semiring` 与 `Ring`。乘法为 Hamilton 积，**不满足交换律**。"
+
+#: manual/index.md:38
+msgid "`Field` is deliberately **not** implemented: quaternions form a division ring (skew field), and generic code written against `Field` may assume `a * b == b * a`."
+msgstr "刻意**不**实现 `Field`：四元数构成除环（斜域），而面向 `Field` 编写的泛型代码可能假设 `a * b == b * a`。"
+
+#: manual/index.md:39
+msgid "`q / r` is **right division**: `q / r == q * r.inv()`, the solution `x` of `x * r == q`. This is the conventional meaning of `/` in a division ring and keeps `Div` consistent with `Inverse`."
+msgstr "`q / r` 为**右除**：`q / r == q * r.inv()`，即方程 `x * r == q` 的解。这是除环中 `/` 的惯用含义，并保持 `Div` 与 `Inverse` 一致。"
+
+#: manual/index.md:40
+msgid "`q.left_div(r)` is **left division**: `r.inv() * q`, the solution `x` of `r * x == q`."
+msgstr "`q.left_div(r)` 为**左除**：`r.inv() * q`，即方程 `r * x == q` 的解。"
+
+#: manual/index.md:41
+msgid "`Quaternion::zero()` / `Quaternion::one()` return the additive and multiplicative identities; `q.inv()` and `q.conjugate()` are available as methods."
+msgstr "`Quaternion::zero()` / `Quaternion::one()` 返回加法与乘法单位元；`q.inv()`、`q.conjugate()` 可作为方法调用。"
+
+#: manual/index.md:43
 msgid "Converting through `Double`"
 msgstr "通过 `Double` 转换"
 
-#: manual/index.md:37
+#: manual/index.md:45
 msgid "Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions."
 msgstr "有些函数需要在 `Double` 上计算平方根和三角函数，因此要求分量类型实现 `DoubleConvert` trait，它负责在该类型与 `Double` 之间相互转换。本包为 `Double` 和 `Int` 提供了实现；为其他数值类型实现它之后，就可以将该类型用于 `magnitude`、`normalize`、`slerp` 和欧拉角相关函数。"
 
-#: manual/index.md:39
+#: manual/index.md:47
 msgid "Example"
 msgstr "示例"
 
-#: manual/index.md:48
+#: manual/index.md:56
 msgid "`rotated` is approximately `(0.0, 1.0, 0.0)`, and `halfway` is the rotation by $\\pi/4$ around the same axis."
 msgstr "`rotated` 约为 `(0.0, 1.0, 0.0)`，`halfway` 是绕同一轴旋转 $\\pi/4$ 的旋转。"
 
-#: manual/index.md:50
+#: manual/index.md:58
 msgid "The generated interface `src/pkg.generated.mbti` lists every public signature."
 msgstr "生成的接口文件 `src/pkg.generated.mbti` 列出了全部公开签名。"
