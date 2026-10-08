@@ -1,6 +1,6 @@
 name = "Luna-Flow/quaternion"
 
-version = "0.1.3"
+version = "0.2.0"
 
 import {
   "Luna-Flow/luna-generic@0.3.3",
