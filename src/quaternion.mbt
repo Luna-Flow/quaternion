@@ -111,18 +111,20 @@ pub impl[T : Mul + Sub + Add] Mul for Quaternion[T] with fn mul(self, other) {
 }
 
 ///|
-/// Divides two quaternions.
+/// Divides two quaternions (right division): `q / r == q * r.inv()`, the
+/// solution `x` of `x * r == q`. This matches the usual meaning of `/` in a
+/// division ring and the `Div`/`Inverse` relationship assumed by luna-generic.
+/// For `r.inv() * q` (the solution of `r * x == q`) use `Quaternion::left_div`.
 pub impl[T : Add + Mul + Div + Sub] Div for Quaternion[T] with fn div(q, r) {
+  // q * conj(r) / |r|^2, with conj(r) = (r.r, -r.vec)
   let d = r.square_len()
+  let c = cross(q.vec, r.vec)
   {
     r: (q.r * r.r + dot(q.vec, r.vec)) / d,
     vec: (
-      (q.vec.0 * r.r - r.vec.0 * q.r - r.vec.1 * q.vec.2 + r.vec.2 * q.vec.1) /
-      d,
-      (q.vec.1 * r.r + r.vec.0 * q.vec.2 - r.vec.1 * q.r - r.vec.2 * q.vec.0) /
-      d,
-      (q.vec.2 * r.r - r.vec.0 * q.vec.1 + r.vec.1 * q.vec.0 - r.vec.2 * q.r) /
-      d,
+      (q.vec.0 * r.r - r.vec.0 * q.r - c.0) / d,
+      (q.vec.1 * r.r - r.vec.1 * q.r - c.1) / d,
+      (q.vec.2 * r.r - r.vec.2 * q.r - c.2) / d,
     ),
   }
 }
@@ -140,6 +142,65 @@ pub impl[T : Neg + Add] Sub for Quaternion[T] with fn sub(self, other) {
 }
 
 ///|
+/// The additive identity `0 + 0i + 0j + 0k`.
+pub impl[T : @lg.Zero] @lg.Zero for Quaternion[T] with fn zero() {
+  let z : T = @lg.Zero::zero()
+  { r: z, vec: (z, z, z), }
+}
+
+///|
+/// The multiplicative identity `1 + 0i + 0j + 0k`.
+pub impl[T : @lg.Zero + @lg.One] @lg.One for Quaternion[T] with fn one() {
+  let z : T = @lg.Zero::zero()
+  { r: @lg.One::one(), vec: (z, z, z), }
+}
+
+///|
+pub impl[T : @lg.AddMonoid] @lg.AddMonoid for Quaternion[T]
+
+///|
+pub impl[T : @lg.Ring] @lg.MulMonoid for Quaternion[T]
+
+///|
+pub impl[T : @lg.Ring] @lg.Semiring for Quaternion[T]
+
+///|
+/// Quaternions over a commutative ring `T` form a (non-commutative) ring under
+/// the Hamilton product. They are a division ring, not a field: `q * r != r * q`
+/// in general, so `Field` is deliberately not implemented. Division is provided
+/// separately through `Div` (right division, `q / r == q * r.inv()`) and
+/// `Quaternion::left_div` (`r.inv() * q`).
+pub impl[T : @lg.Ring] @lg.Ring for Quaternion[T]
+
+///|
+fn[R : @lg.Ring + Eq] ring_laws_hold(a : R, b : R, c : R) -> Bool {
+  let zero : R = @lg.Zero::zero()
+  let one : R = @lg.One::one()
+  a + b == b + a &&
+  a + b + c == a + (b + c) &&
+  a + zero == a &&
+  a - a == zero &&
+  a * b * c == a * (b * c) &&
+  a * one == a &&
+  one * a == a &&
+  a * (b + c) == a * b + a * c &&
+  (a + b) * c == a * c + b * c
+}
+
+///|
+test "quaternions form a ring" {
+  let q1 = Quaternion::from_vec((1, 2, 3, 4))
+  let q2 = Quaternion::from_vec((5, 6, 7, 8))
+  let q3 = Quaternion::from_vec((-2, 0, 9, 1))
+  assert_true(ring_laws_hold(q1, q2, q3))
+  assert_true(ring_laws_hold(q3, q1, q2))
+  // non-commutative, which is why `Field` is not implemented
+  assert_true(q1 * q2 != q2 * q1)
+  inspect((Quaternion::zero() : Quaternion[Int]), content="0 + 0i + 0j + 0k")
+  inspect((Quaternion::one() : Quaternion[Int]), content="1 + 0i + 0j + 0k")
+}
+
+///|
 test "basic arithmetic" {
   let q1 = Quaternion::from_vec((1, 2, 3, 4))
   let q2 = Quaternion::from_vec((5, 6, 7, 8))
@@ -149,7 +210,9 @@ test "basic arithmetic" {
   inspect(q2 * q1, content="-60 + 20i + 14j + 32k")
   inspect(
     q1.map(Int::to_double) / q2.map(Int::to_double),
-    content="0.40229885057471265 + 0i + 0.09195402298850575j + 0.04597701149425287k",
+    content=(
+      #|0.40229885057471265 + 0.04597701149425287i + 0j + 0.09195402298850575k
+    ),
   )
 }
 

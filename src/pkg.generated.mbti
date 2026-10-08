@@ -32,6 +32,7 @@ pub fn[T, U] Quaternion::map(Self[T], (T) -> U) -> Self[U]
 pub fn[T : Mul + Sub + Add] Quaternion::mul(Self[T], Self[T]) -> Self[T]
 pub fn[T : Neg] Quaternion::neg(Self[T]) -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert + Div + Eq] Quaternion::normalize(Self[T]) -> Self[T]
+pub fn[T : @luna-generic.Zero + @luna-generic.One] Quaternion::one() -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Div + Eq] Quaternion::pow_by_T(Self[T], T) -> Self[T]
 pub fn[T : @luna-generic.Num + Mul + Add + Sub + Div] Quaternion::pow_by_int(Self[T], Int) -> Self[T]
 pub fn[T : @luna-generic.Num + Sub] Quaternion::rotate(Self[T], (T, T, T)) -> (T, T, T)
@@ -48,8 +49,15 @@ pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quate
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_YZX(Self[T]) -> (T, T, T)
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_ZYX(Self[T]) -> (T, T, T)
 pub fn[T : Show] Quaternion::to_string(Self[T]) -> String
+pub fn[T : @luna-generic.Zero] Quaternion::zero() -> Self[T]
+pub impl[T : @luna-generic.AddMonoid] @luna-generic.AddMonoid for Quaternion[T]
 pub impl[T : Neg] @luna-generic.Conjugate for Quaternion[T]
 pub impl[T : Div + @luna-generic.Num] @luna-generic.Inverse for Quaternion[T]
+pub impl[T : @luna-generic.Ring] @luna-generic.MulMonoid for Quaternion[T]
+pub impl[T : @luna-generic.Zero + @luna-generic.One] @luna-generic.One for Quaternion[T]
+pub impl[T : @luna-generic.Ring] @luna-generic.Ring for Quaternion[T]
+pub impl[T : @luna-generic.Ring] @luna-generic.Semiring for Quaternion[T]
+pub impl[T : @luna-generic.Zero] @luna-generic.Zero for Quaternion[T]
 pub impl[T : Add] Add for Quaternion[T]
 pub impl[T : @luna-generic.Num] Default for Quaternion[T]
 pub impl[T : Add + Mul + Div + Sub] Div for Quaternion[T]

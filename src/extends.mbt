@@ -30,6 +30,14 @@ pub extend Quaternion with Show::{to_string}
 pub extend Quaternion with @lg.Conjugate::{conjugate}
 
 ///|
+/// `Quaternion::zero()` is the additive identity.
+pub extend Quaternion with @lg.Zero::{zero}
+
+///|
+/// `Quaternion::one()` is the multiplicative identity.
+pub extend Quaternion with @lg.One::{one}
+
+///|
 /// The two-sided multiplicative inverse `conj(q) / |q|^2`.
 pub extend Quaternion with @lg.Inverse::{inv}
 
