@@ -16,482 +16,516 @@ msgid "core API"
 msgstr "core API"
 
 #: manual/api/core.md:3
-msgid "This page lists every public item of the package `Luna-Flow/quaternion` (source root `src`), grouped by purpose. The [generated interface](../../../src/pkg.generated.mbti) is the authority for signatures. The examples import the package under its default alias `@quaternion` and luna-generic as `@lf_alg`:"
-msgstr "本页按用途分组列出包 `Luna-Flow/quaternion`（源码根目录 `src`）的全部公开项。签名以[生成的接口文件](../../../src/pkg.generated.mbti)为准。示例以默认别名 `@quaternion` 导入本包，并以 `@lf_alg` 导入 luna-generic："
+msgid "Purpose"
+msgstr "作用"
 
-#: manual/api/core.md:13
-msgid "The mathematics behind the operations is derived in the [core design](../design/core.md); the [core tutorial](../tutorial/core.md) walks through typical tasks."
-msgstr "各运算背后的数学推导见 [core 设计](../design/core.md)；[core 教程](../tutorial/core.md)则演示常见任务。"
+#: manual/api/core.md:5
+msgid "The package `Luna-Flow/quaternion` (source root `src`) provides `Quaternion[T]`, Hamilton's quaternions over a component type `T`, with ring arithmetic, right and left division, norms, rotation of 3D vectors, spherical interpolation and Euler-angle conversion. This page lists every public item, grouped by purpose. The [generated interface](../../../src/pkg.generated.mbti) is the authority for signatures. The mathematics behind the operations is derived in the [core design](../design/core.md); the [core tutorial](../tutorial/core.md) walks through typical tasks."
+msgstr "包 `Luna-Flow/quaternion`（源码根目录 `src`）提供 `Quaternion[T]`，即分量类型为 `T` 的 Hamilton 四元数，包含环运算、右除与左除、范数、三维向量旋转、球面插值以及欧拉角转换。本页按用途分组列出每个公开项。签名以[生成的接口文件](../../../src/pkg.generated.mbti)为准。各运算背后的数学推导见 [core 设计](../design/core.md)；[core 教程](../tutorial/core.md)演示典型任务。"
 
-#: manual/api/core.md:15
+#: manual/api/core.md:7
+msgid "Importing"
+msgstr "导入"
+
+#: manual/api/core.md:9
+msgid "Import the package under its default alias `@quaternion`. The examples on this page also use luna-generic as `@lf_alg` and `moonbitlang/core/math` for `@math.PI`:"
+msgstr "以默认别名 `@quaternion` 导入本包。本页示例还以 `@lf_alg` 使用 luna-generic，并用 `moonbitlang/core/math` 获取 `@math.PI`："
+
+#: manual/api/core.md:19
 msgid "The quaternion type"
 msgstr "四元数类型"
 
-#: manual/api/core.md:19
+#: manual/api/core.md:23
 msgid "`Quaternion[T]` is the quaternion $w + xi + yj + zk$ with components of type `T`."
 msgstr "`Quaternion[T]` 是分量类型为 `T` 的四元数 $w + xi + yj + zk$。"
 
-#: manual/api/core.md:25
+#: manual/api/core.md:29
 msgid "A value stores a scalar (real) part $w$ and a vector part $(x, y, z)$. The type is abstract: build values with `Quaternion::from_vec`, `id`, `Quaternion::zero`, `Quaternion::one`, `from_axis_angle` or `from_euler`, and read them through `Quaternion::dot`, `Quaternion::map`, `to_string` or `Debug`. There are no component accessors (see [reading components](../tutorial/core.md#read-the-components-back))."
 msgstr "一个值由标量（实）部 $w$ 与向量部 $(x, y, z)$ 组成。该类型是抽象类型：请用 `Quaternion::from_vec`、`id`、`Quaternion::zero`、`Quaternion::one`、`from_axis_angle` 或 `from_euler` 构造值，并通过 `Quaternion::dot`、`Quaternion::map`、`to_string` 或 `Debug` 读取。本类型没有分量访问器（参见[读取分量](../tutorial/core.md#read-the-components-back)）。"
 
-#: manual/api/core.md:27
+#: manual/api/core.md:31
 msgid "`T` is not constrained by the type. Each function asks only for the traits it uses: addition needs `Add`, the Hamilton product needs `Mul + Sub + Add`, the luna-generic structure needs `@lf_alg.Ring`, and anything with square roots or trigonometry needs `DoubleConvert`."
 msgstr "类型本身不约束 `T`。每个函数只要求它用到的 trait：加法需要 `Add`，Hamilton 积需要 `Mul + Sub + Add`，luna-generic 代数结构需要 `@lf_alg.Ring`，凡涉及平方根或三角函数的都需要 `DoubleConvert`。"
 
-#: manual/api/core.md:29
+#: manual/api/core.md:33
 msgid "The derived `Eq` and `Hash` compare components exactly. `Debug` shows the stored fields:"
 msgstr "派生的 `Eq` 与 `Hash` 对分量做精确比较。`Debug` 显示存储的字段："
 
-#: manual/api/core.md:39
+#: manual/api/core.md:43
 msgid "[!NOTE] `q` and `-q` describe the same rotation, but they are different quaternions and compare unequal. Compare rotations with `Quaternion::dot` instead (see the [tutorial](../tutorial/core.md#compare-two-rotations))."
 msgstr "[!NOTE] `q` 与 `-q` 表示同一个旋转，但它们是不同的四元数，比较结果为不相等。请改用 `Quaternion::dot` 比较旋转（参见[教程](../tutorial/core.md#compare-two-rotations)）。"
 
-#: manual/api/core.md:42
+#: manual/api/core.md:46
 msgid "Construction"
 msgstr "构造"
 
-#: manual/api/core.md:46
+#: manual/api/core.md:50
 msgid "`Quaternion::from_vec((w, x, y, z))` builds $w + xi + yj + zk$."
 msgstr "`Quaternion::from_vec((w, x, y, z))` 构造 $w + xi + yj + zk$。"
 
-#: manual/api/core.md:52
+#: manual/api/core.md:56
 msgid "The first tuple element is the scalar part. No trait is required, so any component type works."
 msgstr "元组的第一个元素是标量部。该函数不要求任何 trait，因此适用于任意分量类型。"
 
-#: manual/api/core.md:63
+#: manual/api/core.md:67
 msgid "`id()` returns the identity $1 + 0i + 0j + 0k$."
 msgstr "`id()` 返回单位元 $1 + 0i + 0j + 0k$。"
 
-#: manual/api/core.md:69
+#: manual/api/core.md:73
 msgid "It equals `Quaternion::one()` but asks for `Num`, which every luna-generic numeric type (`Int`, `Int64`, `Double`, ...) implements. As a rotation it is the identity rotation."
 msgstr "它与 `Quaternion::one()` 相等，但要求 `Num`，而 luna-generic 的每个数值类型（`Int`、`Int64`、`Double` 等）都实现了 `Num`。作为旋转，它是恒等旋转。"
 
-#: manual/api/core.md:73
+#: manual/api/core.md:77
 msgid "`Quaternion::zero()` returns the additive identity $0 + 0i + 0j + 0k$."
 msgstr "`Quaternion::zero()` 返回加法单位元 $0 + 0i + 0j + 0k$。"
 
-#: manual/api/core.md:81
+#: manual/api/core.md:85
 msgid "`Quaternion::one()` returns the multiplicative identity $1 + 0i + 0j + 0k$."
 msgstr "`Quaternion::one()` 返回乘法单位元 $1 + 0i + 0j + 0k$。"
 
-#: manual/api/core.md:87
+#: manual/api/core.md:91
 msgid "`zero` and `one` are the luna-generic `Zero` and `One` methods promoted to static methods. They need fewer traits than `id`:"
 msgstr "`zero` 与 `one` 是被提升为静态方法的 luna-generic `Zero`、`One` 方法。它们所需的 trait 比 `id` 少："
 
-#: manual/api/core.md:101
+#: manual/api/core.md:105
 msgid "`from_axis_angle(axis, angle)` returns the unit quaternion of the rotation by `angle` radians around `axis`."
 msgstr "`from_axis_angle(axis, angle)` 返回绕 `axis` 旋转 `angle` 弧度所对应的单位四元数。"
 
-#: manual/api/core.md:107
+#: manual/api/core.md:111
 msgid "The result is $\\cos\\frac{\\theta}{2} + \\sin\\frac{\\theta}{2}\\,\\hat n$ with $\\hat n = \\text{axis}/|\\text{axis}|$. The axis does not have to be normalized, but it must be non-zero: a zero axis divides by zero and gives NaN components for `Double`. The rotation is counter-clockwise when you look down the axis toward the origin (right-hand rule). Sines, cosines and the axis length are computed in `Double`, so `T` needs `DoubleConvert`."
 msgstr "结果为 $\\cos\\frac{\\theta}{2} + \\sin\\frac{\\theta}{2}\\,\\hat n$，其中 $\\hat n = \\text{axis}/|\\text{axis}|$。轴不必归一化，但不能为零：零轴会导致除以零，对 `Double` 得到 NaN 分量。沿轴向原点看去，旋转为逆时针方向（右手定则）。正弦、余弦与轴长都在 `Double` 中计算，因此 `T` 需要 `DoubleConvert`。"
 
-#: manual/api/core.md:118
+#: manual/api/core.md:122
 msgid "`from_euler(roll, pitch, yaw, order~)` builds a quaternion from three angles in radians."
 msgstr "`from_euler(roll, pitch, yaw, order~)` 由三个以弧度表示的角构造四元数。"
 
-#: manual/api/core.md:124
+#: manual/api/core.md:128
 msgid "`order` defaults to `\"XYZ\"`. Write $q_X(\\alpha)$, $q_Y(\\alpha)$, $q_Z(\\alpha)$ for the rotations by $\\alpha$ around the coordinate axes. The accepted orders compute:"
 msgstr "`order` 默认为 `\"XYZ\"`。记 $q_X(\\alpha)$、$q_Y(\\alpha)$、$q_Z(\\alpha)$ 为绕各坐标轴旋转 $\\alpha$。可接受的顺序计算如下："
 
-#: manual/api/core.md:126
+#: manual/api/core.md:130
 msgid "Result"
 msgstr "结果"
 
-#: manual/api/core.md:126
+#: manual/api/core.md:130
 msgid "Reading"
 msgstr "含义"
 
-#: manual/api/core.md:128
+#: manual/api/core.md:132
 msgid "`\"XYZ\"` (default)"
 msgstr "`\"XYZ\"`（默认）"
 
-#: manual/api/core.md:128
+#: manual/api/core.md:132
 msgid "intrinsic X-Y-Z, equal to extrinsic Z-Y-X"
 msgstr "内旋 X-Y-Z，等同于外旋 Z-Y-X"
 
-#: manual/api/core.md:129
+#: manual/api/core.md:133
 msgid "intrinsic Y-X-Z"
 msgstr "内旋 Y-X-Z"
 
-#: manual/api/core.md:130
+#: manual/api/core.md:134
 msgid "intrinsic Z-X-Y, angles taken by position"
 msgstr "内旋 Z-X-Y，角度按位置取用"
 
-#: manual/api/core.md:131
+#: manual/api/core.md:135
 msgid "see the warning below"
 msgstr "见下方警告"
 
-#: manual/api/core.md:133
+#: manual/api/core.md:137
 msgid "Any other string aborts with `order error. Please check input format and retry`."
 msgstr "其他字符串会以 `order error. Please check input format and retry` 中止。"
 
-#: manual/api/core.md:145
+#: manual/api/core.md:149
 msgid "[!WARNING] Known issues in the current implementation: `\"ZYX\"` and `\"YZX\"` return quaternions that are not unit length and do not correspond to any product of three axis rotations, so do not use them. `\"YXZ\"` assigns the angles by axis (roll about X, pitch about Y, yaw about Z), while `\"ZXY\"` assigns them by position (the first angle about Z). Prefer `\"XYZ\"`, or compose `from_axis_angle` rotations yourself."
 msgstr "[!WARNING] 当前实现的已知问题：`\"ZYX\"` 与 `\"YZX\"` 返回的四元数不是单位长度，也不对应任何三个轴旋转的乘积，请勿使用。`\"YXZ\"` 按轴分配角度（roll 绕 X、pitch 绕 Y、yaw 绕 Z），而 `\"ZXY\"` 按位置分配（第一个角绕 Z）。请优先使用 `\"XYZ\"`，或自行组合 `from_axis_angle` 旋转。"
 
-#: manual/api/core.md:148
+#: manual/api/core.md:152
 msgid "`Quaternion::default` (deprecated method form)"
 msgstr "`Quaternion::default`（已弃用的方法形式）"
 
-#: manual/api/core.md:150
+#: manual/api/core.md:154
 msgid "`Default::default()` returns `id()`; the method form is deprecated, see [Deprecated](#deprecated)."
 msgstr "`Default::default()` 返回 `id()`；其方法形式已弃用，参见[已弃用](#deprecated)。"
 
-#: manual/api/core.md:152
+#: manual/api/core.md:156
+#: manual/index.md:36
 msgid "Arithmetic"
 msgstr "算术"
 
-#: manual/api/core.md:156
+#: manual/api/core.md:160
 msgid "`q + r` adds component-wise."
 msgstr "`q + r` 按分量相加。"
 
-#: manual/api/core.md:164
+#: manual/api/core.md:168
 msgid "`q - r` subtracts component-wise; it is computed as `q + -r`."
 msgstr "`q - r` 按分量相减，计算方式为 `q + -r`。"
 
-#: manual/api/core.md:172
+#: manual/api/core.md:176
 msgid "`-q` negates every component."
 msgstr "`-q` 对每个分量取负。"
 
-#: manual/api/core.md:180
+#: manual/api/core.md:184
 msgid "`q * r` is the Hamilton product."
 msgstr "`q * r` 是 Hamilton 积。"
 
-#: manual/api/core.md:186
+#: manual/api/core.md:190
 msgid "In scalar–vector form, $(s_1, \\mathbf v_1)(s_2, \\mathbf v_2) = (s_1 s_2 - \\mathbf v_1\\cdot\\mathbf v_2,\\ s_1\\mathbf v_2 + s_2\\mathbf v_1 + \\mathbf v_1\\times\\mathbf v_2)$. The product is associative and distributes over `+`, but it is **not commutative**: $qr - rq = 2\\,\\mathbf v_q \\times \\mathbf v_r$. For rotations, `q * r` applies `r` first and then `q`."
 msgstr "写成标量–向量形式为 $(s_1, \\mathbf v_1)(s_2, \\mathbf v_2) = (s_1 s_2 - \\mathbf v_1\\cdot\\mathbf v_2,\\ s_1\\mathbf v_2 + s_2\\mathbf v_1 + \\mathbf v_1\\times\\mathbf v_2)$。该乘积满足结合律并对 `+` 满足分配律，但**不满足交换律**：$qr - rq = 2\\,\\mathbf v_q \\times \\mathbf v_r$。对旋转而言，`q * r` 先施加 `r`，再施加 `q`。"
 
-#: manual/api/core.md:188
+#: manual/api/core.md:192
 msgid "The four operators are also available as methods (`q.add(r)`, `q.mul(r)`, ...):"
 msgstr "这四个运算符也可以作为方法调用（`q.add(r)`、`q.mul(r)` 等）："
 
-#: manual/api/core.md:205
+#: manual/api/core.md:209
 msgid "`q / r` is right division: $q\\,r^{-1}$, the solution $x$ of $x\\,r = q$."
 msgstr "`q / r` 是右除：$q\\,r^{-1}$，即方程 $x\\,r = q$ 的解 $x$。"
 
-#: manual/api/core.md:211
+#: manual/api/core.md:215
 msgid "It computes $q\\,\\bar r / |r|^2$ with one division per component and no intermediate inverse. Dividing by the zero quaternion divides by zero in `T`: NaN components for `Double`, a runtime trap for `Int`. Over `Int` every component is truncated by integer division, so the result is only meaningful when the divisions are exact."
 msgstr "它计算 $q\\,\\bar r / |r|^2$，每个分量只做一次除法，不构造中间的逆元。除以零四元数时会在 `T` 中除以零：`Double` 得到 NaN 分量，`Int` 则触发运行时陷阱。对 `Int`，每个分量都会被整数除法截断，因此只有在除法恰好整除时结果才有意义。"
 
-#: manual/api/core.md:213
+#: manual/api/core.md:217
 msgid "[!IMPORTANT] Since 0.2.0, `/` is right division. Before 0.2.0 it computed the left quotient $r^{-1} q$; use `Quaternion::left_div` for that."
 msgstr "[!IMPORTANT] 自 0.2.0 起，`/` 是右除。0.2.0 之前它计算的是左商 $r^{-1} q$；如需该结果请使用 `Quaternion::left_div`。"
 
-#: manual/api/core.md:218
+#: manual/api/core.md:222
 msgid "`q.left_div(r)` is left division: $r^{-1} q$, the solution $x$ of $r\\,x = q$."
 msgstr "`q.left_div(r)` 是左除：$r^{-1} q$，即方程 $r\\,x = q$ 的解 $x$。"
 
-#: manual/api/core.md:224
-msgid "It computes $\\bar r\\,q / |r|^2$. The two quotients differ by $2\\,(\\mathbf v_q \\times \\mathbf v_r)/|r|^2$, so they agree exactly when the vector parts are parallel."
-msgstr "它计算 $\\bar r\\,q / |r|^2$。两种商相差 $2\\,(\\mathbf v_q \\times \\mathbf v_r)/|r|^2$，因此恰在向量部平行时二者相等。"
+#: manual/api/core.md:228
+msgid "It computes $\\bar r\\,q / |r|^2$. The two quotients have the same scalar part, and $q / r - r^{-1} q = -2\\,(\\mathbf v_q \\times \\mathbf v_r)/|r|^2$, so they agree exactly when the vector parts are parallel."
+msgstr "它计算 $\\bar r\\,q / |r|^2$。两种商的标量部相同，且 $q / r - r^{-1} q = -2\\,(\\mathbf v_q \\times \\mathbf v_r)/|r|^2$，因此恰在向量部平行时二者相等。"
 
-#: manual/api/core.md:239
+#: manual/api/core.md:243
 msgid "`q.scale(s)` multiplies every component by the scalar `s`."
 msgstr "`q.scale(s)` 将每个分量乘以标量 `s`。"
 
-#: manual/api/core.md:245
+#: manual/api/core.md:249
 msgid "Scalars are central in $\\mathbb H$, so `q.scale(s)` equals both `q * s` and `s * q` with `s` read as a real quaternion."
 msgstr "标量位于 $\\mathbb H$ 的中心，因此把 `s` 看作实四元数时，`q.scale(s)` 既等于 `q * s` 也等于 `s * q`。"
 
-#: manual/api/core.md:249
+#: manual/api/core.md:253
 msgid "`q.conjugate()` returns $\\bar q = w - xi - yj - zk$."
 msgstr "`q.conjugate()` 返回 $\\bar q = w - xi - yj - zk$。"
 
-#: manual/api/core.md:255
+#: manual/api/core.md:259
 msgid "It is the luna-generic `Conjugate` method, promoted. Conjugation reverses products: $\\overline{qr} = \\bar r\\,\\bar q$."
 msgstr "它是被提升为方法的 luna-generic `Conjugate` 方法。共轭会反转乘积顺序：$\\overline{qr} = \\bar r\\,\\bar q$。"
 
-#: manual/api/core.md:259
+#: manual/api/core.md:263
 msgid "`q.inv()` returns the two-sided inverse $q^{-1} = \\bar q / |q|^2$."
 msgstr "`q.inv()` 返回双边逆元 $q^{-1} = \\bar q / |q|^2$。"
 
-#: manual/api/core.md:265
+#: manual/api/core.md:269
 msgid "It is the luna-generic `Inverse` method, promoted; generic code calls it as `@lf_alg.Inverse::inv(q)`. For a unit quaternion the inverse is the conjugate. The zero quaternion has no inverse: over `Double` the result has NaN components. Over `Int` the factor `1 / |q|^2` is truncated, so `inv` returns zero unless $|q|^2 = 1$."
 msgstr "它是被提升为方法的 luna-generic `Inverse` 方法；泛型代码以 `@lf_alg.Inverse::inv(q)` 调用它。单位四元数的逆就是它的共轭。零四元数没有逆元：在 `Double` 上结果为 NaN 分量。在 `Int` 上因子 `1 / |q|^2` 会被截断，因此除非 $|q|^2 = 1$，`inv` 都返回零。"
 
-#: manual/api/core.md:278
+#: manual/api/core.md:282
 msgid "`q.pow_by_int(n)` returns $q^n$ for an `Int` exponent."
 msgstr "`q.pow_by_int(n)` 返回整数指数 `Int` 的幂 $q^n$。"
 
-#: manual/api/core.md:284
-msgid "`n = 0` gives the identity and a negative `n` gives $(q^{-1})^{|n|}$. The power is computed by repeated squaring with $O(\\log |n|)$ multiplications. Powers of one quaternion commute with each other, so the order of the factors does not matter."
-msgstr "`n = 0` 得到单位元，负的 `n` 得到 $(q^{-1})^{|n|}$。幂通过反复平方计算，需要 $O(\\log |n|)$ 次乘法。同一个四元数的各次幂彼此可交换，因此因子顺序无关紧要。"
-
 #: manual/api/core.md:288
+msgid "`n = 0` gives the identity and a negative `n` gives $(q^{-1})^{|n|}$. The power is computed by repeated squaring with $O(\\log |n|)$ multiplications. Powers of one quaternion commute with each other, so the order of the factors does not matter. Over `Int`, a negative exponent goes through `inv`, which truncates (see `Quaternion::inv`)."
+msgstr "`n = 0` 得到单位元，负的 `n` 得到 $(q^{-1})^{|n|}$。幂通过反复平方计算，需要 $O(\\log |n|)$ 次乘法。同一个四元数的各次幂彼此可交换，因此因子顺序无关紧要。在 `Int` 上，负指数要经过会截断的 `inv`（见 `Quaternion::inv`）。"
+
+#: manual/api/core.md:290
+msgid "[!WARNING] `pow_by_int(-2147483648)` does not terminate: negating the smallest `Int` overflows back to itself, so the negative-exponent branch calls itself forever. Every other exponent is handled."
+msgstr "[!WARNING] `pow_by_int(-2147483648)` 不会终止：对最小的 `Int` 取负会溢出回它自身，因此负指数分支会无限地调用自己。其他所有指数都能正常处理。"
+
+#: manual/api/core.md:295
 msgid "`q.pow_by_T(t)` returns the real power $q^t$ through the polar form."
 msgstr "`q.pow_by_T(t)` 通过极形式返回实数次幂 $q^t$。"
 
-#: manual/api/core.md:294
+#: manual/api/core.md:301
 msgid "Writing $q = |q|(\\cos\\varphi + \\hat n \\sin\\varphi)$, the result is $|q|^t(\\cos t\\varphi + \\hat n\\sin t\\varphi)$. The zero quaternion is returned unchanged. A real quaternion ($x = y = z = 0$) uses `@math.pow` on its scalar part, so a negative real part with a non-integer exponent gives NaN."
 msgstr "记 $q = |q|(\\cos\\varphi + \\hat n \\sin\\varphi)$，结果为 $|q|^t(\\cos t\\varphi + \\hat n\\sin t\\varphi)$。零四元数原样返回。实四元数（$x = y = z = 0$）对其标量部使用 `@math.pow`，因此负实部配合非整数指数会得到 NaN。"
 
-#: manual/api/core.md:305
-msgid "[!WARNING] Known issue: `pow_by_T` recovers the angle as $\\varphi = \\arcsin|\\hat{\\mathbf v}|$, which lies in $[0, \\pi/2]$. It is wrong when the scalar part is negative ($\\varphi > \\pi/2$): the function then uses $\\pi - \\varphi$, so for example `q.pow_by_T(1.0)` returns `q` with the sign of its scalar part flipped. Use `pow_by_int` for integer exponents, and negate `q` first (which does not change the rotation) when you need fractional powers of a rotation with a negative scalar part."
-msgstr "[!WARNING] 已知问题：`pow_by_T` 以 $\\varphi = \\arcsin|\\hat{\\mathbf v}|$ 求角，其值落在 $[0, \\pi/2]$。当标量部为负（$\\varphi > \\pi/2$）时结果错误：此时函数使用的是 $\\pi - \\varphi$，例如 `q.pow_by_T(1.0)` 会返回标量部符号被翻转的 `q`。整数指数请使用 `pow_by_int`；若需要标量部为负的旋转的分数次幂，请先对 `q` 取负（这不改变旋转）。"
+#: manual/api/core.md:312
+msgid "[!WARNING] Known issues: `pow_by_T` recovers the angle as $\\varphi = \\arcsin(|\\mathbf u| / |q|)$ for $q = (w, \\mathbf u)$, which lies in $[0, \\pi/2]$."
+msgstr "[!WARNING] 已知问题：对 $q = (w, \\mathbf u)$，`pow_by_T` 以 $\\varphi = \\arcsin(|\\mathbf u| / |q|)$ 恢复角度，该值位于 $[0, \\pi/2]$。"
 
-#: manual/api/core.md:308
+#: manual/api/core.md:315
+msgid "It is wrong when the scalar part is negative ($\\varphi > \\pi/2$): the function then uses $\\pi - \\varphi$, so for example `q.pow_by_T(1.0)` returns `q` with the sign of its scalar part flipped."
+msgstr "当标量部为负（$\\varphi > \\pi/2$）时结果错误：函数此时使用的是 $\\pi - \\varphi$，例如 `q.pow_by_T(1.0)` 返回的是标量部符号被翻转的 `q`。"
+
+#: manual/api/core.md:316
+msgid "For a pure quaternion ($w = 0$), the computed $|\\mathbf u| / |q|$ can round to $1 + 2^{-52}$, and `asin` of it is NaN, so every component of the result is NaN. About 3% of random pure quaternions hit this, for example `Quaternion::from_vec((0.0, -2.523514049577659, -2.0461018341440185, 2.794490941831807))`."
+msgstr "对纯四元数（$w = 0$），计算出的 $|\\mathbf u| / |q|$ 可能舍入为 $1 + 2^{-52}$，其 `asin` 为 NaN，于是结果的每个分量都是 NaN。随机纯四元数中约有 3% 会遇到这种情况，例如 `Quaternion::from_vec((0.0, -2.523514049577659, -2.0461018341440185, 2.794490941831807))`。"
+
+#: manual/api/core.md:318
+msgid "Use `pow_by_int` for integer exponents, and negate `q` first (which does not change the rotation) when you need fractional powers of a rotation with a negative scalar part."
+msgstr "整数指数请使用 `pow_by_int`；若需要标量部为负的旋转的分数次幂，请先对 `q` 取负（这不改变旋转）。"
+
+#: manual/api/core.md:320
 msgid "Norms and inner product"
 msgstr "范数与内积"
 
-#: manual/api/core.md:312
+#: manual/api/core.md:324
 msgid "`q.dot(r)` is the Euclidean inner product $w_q w_r + x_q x_r + y_q y_r + z_q z_r$ of the four components."
 msgstr "`q.dot(r)` 是四个分量的欧氏内积 $w_q w_r + x_q x_r + y_q y_r + z_q z_r$。"
 
-#: manual/api/core.md:318
+#: manual/api/core.md:330
 msgid "For unit quaternions, $|q\\cdot r| = \\cos(\\theta/2)$ where $\\theta$ is the angle of the rotation that takes one orientation to the other."
 msgstr "对单位四元数，$|q\\cdot r| = \\cos(\\theta/2)$，其中 $\\theta$ 是把一个姿态转到另一个姿态的旋转角。"
 
-#: manual/api/core.md:322
+#: manual/api/core.md:334
 msgid "`q.square_len()` returns $|q|^2 = w^2 + x^2 + y^2 + z^2 = q\\,\\bar q$."
 msgstr "`q.square_len()` 返回 $|q|^2 = w^2 + x^2 + y^2 + z^2 = q\\,\\bar q$。"
 
-#: manual/api/core.md:328
+#: manual/api/core.md:340
 msgid "It needs only `Mul + Add`, so it is exact over `Int` and `BigInt`. The squared norm is multiplicative: $|qr|^2 = |q|^2|r|^2$."
 msgstr "它只需要 `Mul + Add`，因此在 `Int` 与 `BigInt` 上是精确的。平方范数是可乘的：$|qr|^2 = |q|^2|r|^2$。"
 
-#: manual/api/core.md:332
+#: manual/api/core.md:344
 msgid "`q.magnitude()` returns $|q|$."
 msgstr "`q.magnitude()` 返回 $|q|$。"
 
-#: manual/api/core.md:338
+#: manual/api/core.md:350
 msgid "The square root is taken in `Double` and converted back with `DoubleConvert::from_double`, which truncates for `Int`."
 msgstr "平方根在 `Double` 中计算，再用 `DoubleConvert::from_double` 转换回来，对 `Int` 会截断。"
 
-#: manual/api/core.md:342
+#: manual/api/core.md:354
 msgid "`q.normalize()` returns $q / |q|$, the unit quaternion in the direction of `q`."
 msgstr "`q.normalize()` 返回 $q / |q|$，即与 `q` 同方向的单位四元数。"
 
-#: manual/api/core.md:348
+#: manual/api/core.md:360
 msgid "The zero quaternion is returned unchanged. The result has norm 1 up to rounding. Over `Int` the computation truncates and is not meaningful."
 msgstr "零四元数原样返回。结果的范数在舍入误差范围内为 1。在 `Int` 上计算会被截断，没有意义。"
 
-#: manual/api/core.md:361
+#: manual/api/core.md:373
+#: manual/index.md:45
 msgid "Rotations"
 msgstr "旋转"
 
-#: manual/api/core.md:365
+#: manual/api/core.md:377
 msgid "`q.rotate(v)` rotates the 3D vector `v` by the unit quaternion `q`, that is it computes the vector part of $q\\,v\\,q^{-1}$."
 msgstr "`q.rotate(v)` 用单位四元数 `q` 旋转三维向量 `v`，即计算 $q\\,v\\,q^{-1}$ 的向量部。"
 
-#: manual/api/core.md:371
-msgid "The implementation uses $\\mathbf t = 2\\,\\mathbf u \\times \\mathbf v$ and $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u \\times \\mathbf t$ for $q = (w, \\mathbf u)$, which needs no division. That formula equals $q v q^{-1}$ only when $|q| = 1$; `rotate` does not normalize for you. The rotation follows the right-hand rule around the axis of `q`."
-msgstr "对 $q = (w, \\mathbf u)$，实现使用 $\\mathbf t = 2\\,\\mathbf u \\times \\mathbf v$ 与 $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u \\times \\mathbf t$，无需除法。该公式仅在 $|q| = 1$ 时等于 $q v q^{-1}$；`rotate` 不会替你归一化。旋转方向遵循绕 `q` 的轴的右手定则。"
+#: manual/api/core.md:383
+msgid "The implementation uses $\\mathbf t = 2\\,\\mathbf u \\times \\mathbf v$ and $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u \\times \\mathbf t$ for $q = (w, \\mathbf u)$, which needs no division. That formula equals $q v q^{-1}$ only when $|q| = 1$; `rotate` does not normalize for you. For any non-zero `q` it returns"
+msgstr "对 $q = (w, \\mathbf u)$，实现使用 $\\mathbf t = 2\\,\\mathbf u \\times \\mathbf v$ 与 $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u \\times \\mathbf t$，无需除法。该公式仅在 $|q| = 1$ 时等于 $q v q^{-1}$；`rotate` 不会替你归一化。对任意非零的 `q`，它返回"
 
-#: manual/api/core.md:385
+#: manual/api/core.md:389
+msgid "where $R(\\hat q)\\,\\mathbf v$ is the correct rotation, so a norm off by $\\delta$ moves the result by about $2\\delta\\,|R(\\hat q)\\mathbf v - \\mathbf v| \\le 4\\delta\\,|\\mathbf v|$ (the [design](../design/core.md#unit-quaternions-and-rotations) derives this). The rotation follows the right-hand rule around the axis of `q`."
+msgstr "其中 $R(\\hat q)\\,\\mathbf v$ 是正确的旋转结果，因此范数偏差为 $\\delta$ 时，结果大约偏离 $2\\delta\\,|R(\\hat q)\\mathbf v - \\mathbf v| \\le 4\\delta\\,|\\mathbf v|$（推导见[设计页](../design/core.md#unit-quaternions-and-rotations)）。旋转方向遵循绕 `q` 的轴的右手定则。"
+
+#: manual/api/core.md:403
 msgid "`slerp(q1, q2, t)` interpolates spherically between the rotations `q1` and `q2`."
 msgstr "`slerp(q1, q2, t)` 在旋转 `q1` 与 `q2` 之间做球面插值。"
 
-#: manual/api/core.md:391
+#: manual/api/core.md:409
 msgid "Both inputs are normalized first. If their dot product is negative, `q2` is replaced by `-q2` (the same rotation) so the interpolation takes the shorter arc. With $\\cos\\Omega = q_1\\cdot q_2$ the result is"
 msgstr "两个输入先被归一化。若它们的点积为负，则用 `-q2`（同一旋转）替换 `q2`，使插值走较短的弧。记 $\\cos\\Omega = q_1\\cdot q_2$，结果为"
 
-#: manual/api/core.md:397
+#: manual/api/core.md:415
 msgid "When $\\cos\\Omega > 0.9995$ the function uses normalized linear interpolation instead, to avoid dividing by a tiny $\\sin\\Omega$. `t = 0` gives `q1` (normalized) and `t = 1` gives `q2` or `-q2`. Values of `t` outside $[0, 1]$ extrapolate along the same great circle."
 msgstr "当 $\\cos\\Omega > 0.9995$ 时，函数改用归一化的线性插值，以避免除以很小的 $\\sin\\Omega$。`t = 0` 给出（归一化后的）`q1`，`t = 1` 给出 `q2` 或 `-q2`。$[0, 1]$ 之外的 `t` 会沿同一大圆外推。"
 
-#: manual/api/core.md:411
+#: manual/api/core.md:429
 msgid "`q.to_euler(order~, external~)` decomposes the rotation of `q` into three angles in radians."
 msgstr "`q.to_euler(order~, external~)` 将 `q` 的旋转分解为三个以弧度表示的角。"
 
-#: manual/api/core.md:417
+#: manual/api/core.md:435
 msgid "`q` is normalized first. `order` names three distinct axes and defaults to `\"ZYX\"`; `external` defaults to `true`. The k-th returned angle belongs to the k-th axis of `order`:"
 msgstr "`q` 会先被归一化。`order` 指定三个不同的轴，默认为 `\"ZYX\"`；`external` 默认为 `true`。返回的第 k 个角属于 `order` 的第 k 个轴："
 
-#: manual/api/core.md:419
+#: manual/api/core.md:437
 msgid "extrinsic (`external=true`), order $ABC$ with angles $(a, b, c)$: rotate about the fixed axis $A$ by $a$, then the fixed $B$ by $b$, then the fixed $C$ by $c$, so $q = \\pm\\,q_C(c)\\,q_B(b)\\,q_A(a)$;"
 msgstr "外旋（`external=true`），顺序 $ABC$、角度 $(a, b, c)$：先绕固定轴 $A$ 转 $a$，再绕固定轴 $B$ 转 $b$，最后绕固定轴 $C$ 转 $c$，因此 $q = \\pm\\,q_C(c)\\,q_B(b)\\,q_A(a)$；"
 
-#: manual/api/core.md:420
+#: manual/api/core.md:438
 msgid "intrinsic (`external=false`): rotate about $A$, then about the moved $B$, then the moved $C$, so $q = \\pm\\,q_A(a)\\,q_B(b)\\,q_C(c)$."
 msgstr "内旋（`external=false`）：先绕 $A$ 转，再绕转动后的 $B$，最后绕再次转动后的 $C$，因此 $q = \\pm\\,q_A(a)\\,q_B(b)\\,q_C(c)$。"
 
-#: manual/api/core.md:422
-msgid "The supported orders are `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\"`; any other string aborts with `order error. Please check input format and retry`. The middle angle lies in $[-\\pi/2, \\pi/2]$ and the outer angles in $(-\\pi, \\pi]$."
-msgstr "支持的顺序为 `\"XYZ\"`、`\"XZY\"`、`\"YZX\"` 与 `\"ZYX\"`；其他字符串会以 `order error. Please check input format and retry` 中止。中间角位于 $[-\\pi/2, \\pi/2]$，两端的角位于 $(-\\pi, \\pi]$。"
+#: manual/api/core.md:440
+msgid "The supported orders are `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\"`; any other string aborts with `order error. Please check input format and retry`. The middle angle lies in $[-\\pi/2, \\pi/2]$ and the outer angles, computed with `atan2`, in $[-\\pi, \\pi]$. The zero quaternion gives `(0, 0, 0)`."
+msgstr "支持的顺序为 `\"XYZ\"`、`\"XZY\"`、`\"YZX\"` 与 `\"ZYX\"`；其他字符串会以 `order error. Please check input format and retry` 中止。中间角位于 $[-\\pi/2, \\pi/2]$，两端的角由 `atan2` 计算，位于 $[-\\pi, \\pi]$。零四元数得到 `(0, 0, 0)`。"
 
-#: manual/api/core.md:424
+#: manual/api/core.md:442
 msgid "When the sine of the middle angle reaches $|\\sin b| \\ge 0.9998$ (about $88.85^\\circ$), the decomposition is near gimbal lock: the function prints a `UserWarning: Gimbal lock detected...` line to standard output, sets the middle angle to exactly $\\pm\\pi/2$ and the third angle to $0$."
 msgstr "当中间角的正弦达到 $|\\sin b| \\ge 0.9998$（约 $88.85^\\circ$）时，分解接近万向节锁：函数向标准输出打印一行 `UserWarning: Gimbal lock detected...`，把中间角精确设为 $\\pm\\pi/2$，并把第三个角设为 $0$。"
 
-#: manual/api/core.md:436
+#: manual/api/core.md:454
 msgid "[!WARNING] Known issues in the current implementation:"
 msgstr "[!WARNING] 当前实现的已知问题："
 
-#: manual/api/core.md:439
+#: manual/api/core.md:457
 msgid "`order=\"XZY\"` with `external=true`, and `order=\"YZX\"` with `external=false`, do not compute the named sequence; they return the angles of intrinsic X-Y-Z (in the order X, Y, Z for the first and Z, Y, X for the second). The other six combinations are correct away from gimbal lock."
 msgstr "`external=true` 时的 `order=\"XZY\"` 与 `external=false` 时的 `order=\"YZX\"` 并不计算所指定的序列；它们返回的是内旋 X-Y-Z 的角（前者按 X、Y、Z 的顺序，后者按 Z、Y、X 的顺序）。其余六种组合在远离万向节锁时是正确的。"
 
-#: manual/api/core.md:440
-msgid "In the gimbal-lock branch the returned angles do not reproduce the input rotation: the first angle is computed from a formula that does not isolate the remaining degree of freedom. Treat results with $|b| \\approx \\pi/2$ as unreliable."
-msgstr "在万向节锁分支中，返回的角不能复现输入的旋转：第一个角所用的公式没有分离出剩余的自由度。请把 $|b| \\approx \\pi/2$ 时的结果视为不可靠。"
+#: manual/api/core.md:458
+msgid "In the gimbal-lock branch the returned angles do not reproduce the input rotation. For extrinsic `\"XYZ\"` (and so intrinsic `\"ZYX\"`) the first angle is $\\operatorname{atan2}(R_{13}, R_{22})$, and at exact lock both entries equal $\\cos(a \\mp c)$, so it is always $\\pm\\pi/4$ or $\\pm 3\\pi/4$. For the other orders it is the regular-branch formula, whose two arguments are rounding noise at exact lock. Treat results with $|b| \\approx \\pi/2$ as unreliable."
+msgstr "在万向节锁分支中，返回的角度无法还原输入的旋转。对外旋 `\"XYZ\"`（因而也对内旋 `\"ZYX\"`），第一个角取 $\\operatorname{atan2}(R_{13}, R_{22})$，而在严格锁定时这两个元素都等于 $\\cos(a \\mp c)$，因此结果总是 $\\pm\\pi/4$ 或 $\\pm 3\\pi/4$。对其他顺序，它是常规分支的公式，而在严格锁定时其两个参数只是舍入噪声。请把 $|b| \\approx \\pi/2$ 的结果视为不可靠。"
 
-#: manual/api/core.md:441
-msgid "Between $|\\sin b| = 0.9998$ and $1$ the middle angle is snapped to $\\pm\\pi/2$, an error of up to about $0.02$ rad."
-msgstr "在 $|\\sin b| = 0.9998$ 与 $1$ 之间，中间角会被吸附到 $\\pm\\pi/2$，误差最多约 $0.02$ rad。"
+#: manual/api/core.md:459
+msgid "Between $|\\sin b| = 0.9998$ and $1$ the middle angle is snapped to $\\pm\\pi/2$, an error of up to about $0.02$ rad, and the third angle is set to $0$ although it is still determined there, so the result is off by the whole third rotation."
+msgstr "在 $|\\sin b| = 0.9998$ 与 $1$ 之间，中间角会被吸附到 $\\pm\\pi/2$，误差最多约 $0.02$ rad；第三个角此时仍可确定，却被置为 $0$，因此结果会差掉整个第三次旋转。"
 
-#: manual/api/core.md:445
+#: manual/api/core.md:463
 msgid "`q.to_euler_external_XYZ()` is `q.to_euler(order=\"XYZ\", external=true)`: angles $(a, b, c)$ about X, Y, Z with $q = \\pm q_Z(c)\\,q_Y(b)\\,q_X(a)$."
 msgstr "`q.to_euler_external_XYZ()` 即 `q.to_euler(order=\"XYZ\", external=true)`：绕 X、Y、Z 的角 $(a, b, c)$，满足 $q = \\pm q_Z(c)\\,q_Y(b)\\,q_X(a)$。"
 
-#: manual/api/core.md:453
+#: manual/api/core.md:471
 msgid "`q.to_euler_external_XZY()` is `q.to_euler(order=\"XZY\", external=true)`."
 msgstr "`q.to_euler_external_XZY()` 即 `q.to_euler(order=\"XZY\", external=true)`。"
 
-#: manual/api/core.md:459
+#: manual/api/core.md:477
 msgid "It currently returns the intrinsic X-Y-Z angles $(a, b, c)$ with $q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$, not an X-Z-Y decomposition (see the warning above)."
 msgstr "它目前返回内旋 X-Y-Z 的角 $(a, b, c)$，满足 $q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$，而不是 X-Z-Y 分解（见上方警告）。"
 
-#: manual/api/core.md:463
+#: manual/api/core.md:481
 msgid "`q.to_euler_external_YZX()` is `q.to_euler(order=\"YZX\", external=true)`: angles about Y, Z, X with $q = \\pm q_X(c)\\,q_Z(b)\\,q_Y(a)$."
 msgstr "`q.to_euler_external_YZX()` 即 `q.to_euler(order=\"YZX\", external=true)`：绕 Y、Z、X 的角，满足 $q = \\pm q_X(c)\\,q_Z(b)\\,q_Y(a)$。"
 
-#: manual/api/core.md:471
+#: manual/api/core.md:489
 msgid "`q.to_euler_external_ZYX()` is `q.to_euler()`: angles about Z, Y, X with $q = \\pm q_X(c)\\,q_Y(b)\\,q_Z(a)$."
 msgstr "`q.to_euler_external_ZYX()` 即 `q.to_euler()`：绕 Z、Y、X 的角，满足 $q = \\pm q_X(c)\\,q_Y(b)\\,q_Z(a)$。"
 
-#: manual/api/core.md:479
+#: manual/api/core.md:497
 msgid "`q.to_euler_internal_XYZ()` is `q.to_euler(order=\"XYZ\", external=false)`: angles about X, Y, Z with $q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$. It inverts `from_euler(a, b, c)` with the default order."
 msgstr "`q.to_euler_internal_XYZ()` 即 `q.to_euler(order=\"XYZ\", external=false)`：绕 X、Y、Z 的角，满足 $q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$。它是默认顺序下 `from_euler(a, b, c)` 的逆。"
 
-#: manual/api/core.md:487
+#: manual/api/core.md:505
 msgid "`q.to_euler_internal_XZY()` is `q.to_euler(order=\"XZY\", external=false)`: angles about X, Z, Y with $q = \\pm q_X(a)\\,q_Z(b)\\,q_Y(c)$."
 msgstr "`q.to_euler_internal_XZY()` 即 `q.to_euler(order=\"XZY\", external=false)`：绕 X、Z、Y 的角，满足 $q = \\pm q_X(a)\\,q_Z(b)\\,q_Y(c)$。"
 
-#: manual/api/core.md:495
+#: manual/api/core.md:513
 msgid "`q.to_euler_internal_YZX()` is `q.to_euler(order=\"YZX\", external=false)`."
 msgstr "`q.to_euler_internal_YZX()` 即 `q.to_euler(order=\"YZX\", external=false)`。"
 
-#: manual/api/core.md:501
+#: manual/api/core.md:519
 msgid "It currently returns $(c, b, a)$ with $q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$, the reversed intrinsic X-Y-Z angles, not a Y-Z-X decomposition (see the warning above)."
 msgstr "它目前返回 $(c, b, a)$，满足 $q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$，即逆序的内旋 X-Y-Z 角，而不是 Y-Z-X 分解（见上方警告）。"
 
-#: manual/api/core.md:505
+#: manual/api/core.md:523
 msgid "`q.to_euler_internal_ZYX()` is `q.to_euler(order=\"ZYX\", external=false)`: angles about Z, Y, X with $q = \\pm q_Z(a)\\,q_Y(b)\\,q_X(c)$."
 msgstr "`q.to_euler_internal_ZYX()` 即 `q.to_euler(order=\"ZYX\", external=false)`：绕 Z、Y、X 的角，满足 $q = \\pm q_Z(a)\\,q_Y(b)\\,q_X(c)$。"
 
-#: manual/api/core.md:511
+#: manual/api/core.md:529
 msgid "Every intrinsic variant is the extrinsic variant of the reversed order with the result reversed, because $q_A(a)\\,q_B(b)\\,q_C(c)$ is both intrinsic $ABC$ and extrinsic $CBA$."
 msgstr "每个内旋变体都是逆序顺序的外旋变体再把结果反转，因为 $q_A(a)\\,q_B(b)\\,q_C(c)$ 既是内旋 $ABC$ 也是外旋 $CBA$。"
 
-#: manual/api/core.md:513
+#: manual/api/core.md:531
 msgid "Conversion through `Double`"
 msgstr "通过 `Double` 转换"
 
-#: manual/api/core.md:517
+#: manual/api/core.md:535
 msgid "`DoubleConvert` converts a component type to and from `Double`."
 msgstr "`DoubleConvert` 在分量类型与 `Double` 之间相互转换。"
 
-#: manual/api/core.md:528
+#: manual/api/core.md:546
 msgid "Square roots, trigonometric functions and `@math.pow` are only available on `Double`, so `magnitude`, `normalize`, `from_axis_angle`, `from_euler`, `slerp`, `pow_by_T` and the Euler-angle conversions go through this trait. For `Double` both directions are the identity. For `Int`, `from_double` is `Double::to_int`, which truncates toward zero, so results of these functions over `Int` are truncated."
 msgstr "平方根、三角函数与 `@math.pow` 只对 `Double` 可用，因此 `magnitude`、`normalize`、`from_axis_angle`、`from_euler`、`slerp`、`pow_by_T` 以及欧拉角转换都经由此 trait。对 `Double`，两个方向都是恒等映射。对 `Int`，`from_double` 即 `Double::to_int`，向零截断，因此这些函数在 `Int` 上的结果会被截断。"
 
-#: manual/api/core.md:530
+#: manual/api/core.md:548
 msgid "The trait is declared `pub`, not `pub(open)`, so code outside this package cannot implement it: `Int` and `Double` are the only component types that work with the functions above. You can still call its methods directly:"
 msgstr "该 trait 声明为 `pub` 而非 `pub(open)`，因此本包之外的代码无法实现它：`Int` 与 `Double` 是上述函数仅能使用的分量类型。不过仍可直接调用它的方法："
 
-#: manual/api/core.md:540
+#: manual/api/core.md:558
 msgid "Other methods"
 msgstr "其他方法"
 
-#: manual/api/core.md:544
+#: manual/api/core.md:562
 msgid "`q.map(f)` applies `f` to every component, possibly changing the component type."
 msgstr "`q.map(f)` 对每个分量应用 `f`，分量类型可以随之改变。"
 
-#: manual/api/core.md:559
+#: manual/api/core.md:577
 msgid "`q.to_string()` renders `q` as `w + xi + yj + zk` using `Show` of the components."
 msgstr "`q.to_string()` 使用分量的 `Show` 把 `q` 渲染为 `w + xi + yj + zk`。"
 
-#: manual/api/core.md:565
+#: manual/api/core.md:583
 msgid "Negative components keep their sign after the plus, as in `1 + -2i + 3j + 4k`. String interpolation `\"\\{q}\"` and `inspect` use the same text."
 msgstr "负分量在加号后保留其符号，例如 `1 + -2i + 3j + 4k`。字符串插值 `\"\\{q}\"` 与 `inspect` 使用同样的文本。"
 
-#: manual/api/core.md:569
+#: manual/api/core.md:587
 msgid "`q.equal(r)` (the `==` operator) compares the four components exactly."
 msgstr "`q.equal(r)`（即 `==` 运算符）精确比较四个分量。"
 
-#: manual/api/core.md:575
+#: manual/api/core.md:593
 msgid "For `Double` components this is IEEE equality: `0.0 == -0.0`, and a quaternion with a NaN component is not equal to itself."
 msgstr "对 `Double` 分量，这是 IEEE 相等：`0.0 == -0.0`，而含 NaN 分量的四元数不等于自身。"
 
-#: manual/api/core.md:579
+#: manual/api/core.md:597
 msgid "`q.hash()` hashes the four components, consistently with `equal`."
 msgstr "`q.hash()` 对四个分量求哈希，与 `equal` 保持一致。"
 
-#: manual/api/core.md:585
+#: manual/api/core.md:603
 msgid "Trait implementations"
 msgstr "trait 实现"
 
-#: manual/api/core.md:587
+#: manual/api/core.md:605
 msgid "`Quaternion[T]` implements these traits:"
 msgstr "`Quaternion[T]` 实现了以下 trait："
 
-#: manual/api/core.md:589
+#: manual/api/core.md:607
 msgid "Trait"
 msgstr "Trait"
 
-#: manual/api/core.md:589
+#: manual/api/core.md:607
 msgid "Requirement on `T`"
 msgstr "对 `T` 的要求"
 
-#: manual/api/core.md:589
+#: manual/api/core.md:607
 msgid "Meaning"
 msgstr "含义"
 
-#: manual/api/core.md:591
+#: manual/api/core.md:609
 msgid "component-wise"
 msgstr "按分量"
 
-#: manual/api/core.md:592
+#: manual/api/core.md:610
 msgid "Hamilton product"
 msgstr "Hamilton 积"
 
-#: manual/api/core.md:593
+#: manual/api/core.md:611
 msgid "right division $q r^{-1}$"
 msgstr "右除 $q r^{-1}$"
 
-#: manual/api/core.md:594
+#: manual/api/core.md:612
 msgid "the same trait"
 msgstr "同一 trait"
 
-#: manual/api/core.md:594
+#: manual/api/core.md:612
 msgid "derived, component-wise"
 msgstr "派生，按分量"
 
-#: manual/api/core.md:597
+#: manual/api/core.md:615
 msgid "$0$ and $1$"
 msgstr "$0$ 与 $1$"
 
-#: manual/api/core.md:603
-msgid "The `Ring` instance assumes that multiplication of `T` is commutative, as it is for `Int`, `Int64`, `BigInt`, `Float` and `Double`; the Hamilton product is associative only over a commutative ring of scalars. `@lf_alg.Field` is deliberately **not** implemented, because quaternion multiplication is not commutative and luna-generic's `Field` is meant for commutative fields. `@lf_alg.Num` is not implemented either: quaternions have no `signum`/`abs` with the meaning `Num` expects."
-msgstr "`Ring` 实例假定 `T` 的乘法可交换，`Int`、`Int64`、`BigInt`、`Float` 与 `Double` 都满足这一点；只有在标量构成交换环时，Hamilton 积才满足结合律。本包**刻意不**实现 `@lf_alg.Field`，因为四元数乘法不可交换，而 luna-generic 的 `Field` 面向交换域。`@lf_alg.Num` 同样未实现：四元数没有符合 `Num` 预期含义的 `signum`/`abs`。"
+#: manual/api/core.md:621
+msgid "The `Ring` instance assumes that multiplication of `T` is commutative, as it is for `Int`, `Int16`, `Int64`, `BigInt`, `Float` and `Double`; the Hamilton product is associative only over a commutative ring of scalars. `@lf_alg.Field` is deliberately **not** implemented, because quaternion multiplication is not commutative and luna-generic's `Field` is meant for commutative fields. `@lf_alg.Num` is not implemented either: quaternions have no `signum`/`abs` with the meaning `Num` expects. `@lf_alg.MulGroup` is not implemented, although the non-zero quaternions form a group; generic code that needs inverses asks for `Inverse` and `Div` directly."
+msgstr "`Ring` 实例假定 `T` 的乘法可交换，`Int`、`Int16`、`Int64`、`BigInt`、`Float` 与 `Double` 都满足这一点；只有在可交换的标量环上 Hamilton 积才满足结合律。本包刻意**不**实现 `@lf_alg.Field`，因为四元数乘法不可交换，而 luna-generic 的 `Field` 面向可交换的域。也不实现 `@lf_alg.Num`：四元数没有 `Num` 所期望含义的 `signum`/`abs`。虽然非零四元数构成群，本包也不实现 `@lf_alg.MulGroup`；需要逆元的泛型代码应直接要求 `Inverse` 与 `Div`。"
 
-#: manual/api/core.md:617
+#: manual/api/core.md:623
+msgid "[!WARNING] The bound `T : @lf_alg.Ring` does not require commutativity, so `Quaternion[Quaternion[Int]]` type-checks as a `Ring` but is not one: its multiplication is not associative. Use the `Ring` instance only over commutative component types."
+msgstr "[!WARNING] 约束 `T : @lf_alg.Ring` 并不要求可交换性，因此 `Quaternion[Quaternion[Int]]` 能作为 `Ring` 通过类型检查，但它并不是环：其乘法不满足结合律。请只在可交换的分量类型上使用 `Ring` 实例。"
+
+#: manual/api/core.md:651
 msgid "Deprecated"
 msgstr "已弃用"
 
-#: manual/api/core.md:619
+#: manual/api/core.md:653
 msgid "These method forms come from trait implementations and are kept for compatibility. They are deprecated and hidden from the documentation index; the traits themselves stay implemented."
 msgstr "这些方法形式来自 trait 实现，为兼容而保留。它们已被弃用并从文档索引中隐藏；trait 本身仍然实现。"
 
-#: manual/api/core.md:621
+#: manual/api/core.md:655
 msgid "Deprecated method"
 msgstr "已弃用的方法"
 
-#: manual/api/core.md:621
+#: manual/api/core.md:655
 msgid "Use instead"
 msgstr "替代用法"
 
-#: manual/api/core.md:625
+#: manual/api/core.md:659
 msgid "`q.to_string()` or `\"\\{q}\"`"
 msgstr "`q.to_string()` 或 `\"\\{q}\"`"
 
-#: manual/api/core.md:626
+#: manual/api/core.md:660
 msgid "`id()` or `Default::default()`"
 msgstr "`id()` 或 `Default::default()`"
 
-#: manual/api/core.md:627
+#: manual/api/core.md:661
 msgid "`Repr(q)` or `@debug.Debug::to_repr(q)`"
 msgstr "`Repr(q)` 或 `@debug.Debug::to_repr(q)`"
 
@@ -524,559 +558,607 @@ msgid "Both are served by the same generic type. Each operation asks only for th
 msgstr "两者由同一个泛型类型服务。每个运算只要求 `T` 上它所需的 trait，因此环运算可以在 `Int` 上精确进行，而需要平方根或三角函数的运算则经由 `Double`。"
 
 #: manual/design/core.md:14
+msgid "Constraints"
+msgstr "约束"
+
+#: manual/design/core.md:16
+msgid "The only Luna-Flow dependency is luna-generic 0.3.3, which provides algebraic traits (`Ring`, `Inverse`, `Conjugate`, `Field`, ...) but no analytic ones: there is no trait for square roots or trigonometric functions."
+msgstr "唯一的 Luna-Flow 依赖是 luna-generic 0.3.3，它提供代数 trait（`Ring`、`Inverse`、`Conjugate`、`Field` 等），但没有分析类 trait：没有表示平方根或三角函数的 trait。"
+
+#: manual/design/core.md:17
+msgid "luna-generic's `Field` is commutative, while $\\mathbb H$ is not."
+msgstr "luna-generic 的 `Field` 是可交换的，而 $\\mathbb H$ 不是。"
+
+#: manual/design/core.md:18
+msgid "MoonBit traits have only the `Self` parameter, so \"a scalar type with `sqrt` and `sin`\" cannot be expressed as a relation between `T` and another type; it has to be a trait on `T` itself."
+msgstr "MoonBit 的 trait 只有 `Self` 一个参数，因此“带有 `sqrt` 与 `sin` 的标量类型”无法表达为 `T` 与另一类型之间的关系，只能是 `T` 自身上的 trait。"
+
+#: manual/design/core.md:19
+msgid "Since MoonBit 0.10, trait implementations do not become methods unless they are promoted explicitly."
+msgstr "自 MoonBit 0.10 起，trait 实现除非显式提升，否则不会成为方法。"
+
+#: manual/design/core.md:20
+msgid "The type is used in rotation-heavy code, so the common operations must be branch-free and allocation-light: no `Result`, no checks on unit length."
+msgstr "该类型用于大量旋转计算的代码，因此常用运算必须无分支、少分配：不返回 `Result`，也不检查单位长度。"
+
+#: manual/design/core.md:22
 msgid "Mathematical background"
 msgstr "数学背景"
 
-#: manual/design/core.md:16
+#: manual/design/core.md:24
 msgid "Quaternions as a real algebra"
 msgstr "作为实代数的四元数"
 
-#: manual/design/core.md:18
+#: manual/design/core.md:26
 msgid "The quaternions $\\mathbb H$ are the 4-dimensional real vector space with basis $1, i, j, k$,"
 msgstr "四元数 $\\mathbb H$ 是以 $1, i, j, k$ 为基的 4 维实向量空间，"
 
-#: manual/design/core.md:24
+#: manual/design/core.md:32
 msgid "with a bilinear multiplication fixed by Hamilton's relations[^hamilton]"
 msgstr "其双线性乘法由 Hamilton 关系确定[^hamilton]"
 
-#: manual/design/core.md:30
+#: manual/design/core.md:38
 msgid "W. R. Hamilton, \"On quaternions; or on a new system of imaginaries in algebra\", 1843. The relations are the ones he carved into Brougham Bridge in Dublin."
 msgstr "W. R. Hamilton，\"On quaternions; or on a new system of imaginaries in algebra\"，1843 年。这些关系正是他刻在都柏林布鲁姆桥（Brougham Bridge）上的那几个式子。"
 
-#: manual/design/core.md:32
+#: manual/design/core.md:40
 msgid "We write $q = (w, \\mathbf u)$ with the scalar part $w$ and the vector part $\\mathbf u = (x, y, z)$, and identify $\\mathbb R^3$ with the pure quaternions $\\{(0, \\mathbf u)\\}$. `Quaternion[T]` stores exactly this pair: a field `r` for $w$ and a triple `vec` for $\\mathbf u$. Real numbers $(s, \\mathbf 0)$ commute with everything, because the multiplication is $\\mathbb R$-bilinear."
 msgstr "记 $q = (w, \\mathbf u)$，其中 $w$ 为标量部，$\\mathbf u = (x, y, z)$ 为向量部，并把 $\\mathbb R^3$ 等同于纯四元数 $\\{(0, \\mathbf u)\\}$。`Quaternion[T]` 恰好存储这一对：字段 `r` 存 $w$，三元组 `vec` 存 $\\mathbf u$。由于乘法是 $\\mathbb R$-双线性的，实数 $(s, \\mathbf 0)$ 与一切元素可交换。"
 
-#: manual/design/core.md:34
+#: manual/design/core.md:42
 msgid "Products of the units"
 msgstr "基元的乘积"
 
-#: manual/design/core.md:36
+#: manual/design/core.md:44
 msgid "Everything about the product follows from the four relations. Multiply $ijk = -1$ on the right by $k$ and use $k^2 = -1$:"
 msgstr "乘积的一切性质都源自这四个关系。在 $ijk = -1$ 两边右乘 $k$，并利用 $k^2 = -1$："
 
-#: manual/design/core.md:46
+#: manual/design/core.md:54
 msgid "Multiply $ijk = -1$ on the left by $i$ and use $i^2 = -1$: $-jk = -i$, so $jk = i$. The reversed products follow from these two:"
 msgstr "在 $ijk = -1$ 两边左乘 $i$，并利用 $i^2 = -1$：$-jk = -i$，故 $jk = i$。反向的乘积可由这两式得出："
 
-#: manual/design/core.md:57
+#: manual/design/core.md:65
 msgid "So the units multiply like the cross product of the standard basis, with an extra $-1$ on the diagonal:"
 msgstr "因此基元的乘法与标准基的叉积相同，只是对角线上多了 $-1$："
 
-#: manual/design/core.md:65
+#: manual/design/core.md:73
 msgid "The eight elements $\\pm 1, \\pm i, \\pm j, \\pm k$ form the quaternion group $Q_8$, which can be realized by $2\\times 2$ complex matrices.[^q8] The multiplication of $Q_8$ is associative, and by bilinearity so is the product of $\\mathbb H$."
 msgstr "八个元素 $\\pm 1, \\pm i, \\pm j, \\pm k$ 构成四元数群 $Q_8$，它可以用 $2\\times 2$ 复矩阵实现。[^q8] $Q_8$ 的乘法满足结合律，由双线性可知 $\\mathbb H$ 的乘积也满足结合律。"
 
-#: manual/design/core.md:67
+#: manual/design/core.md:75
 msgid "For example $1 \\mapsto I$, $i \\mapsto \\begin{pmatrix} i & 0 \\\\ 0 & -i\\end{pmatrix}$, $j \\mapsto \\begin{pmatrix} 0 & 1 \\\\ -1 & 0\\end{pmatrix}$, $k \\mapsto \\begin{pmatrix} 0 & i \\\\ i & 0\\end{pmatrix}$. These matrices satisfy Hamilton's relations, and matrix multiplication is associative."
 msgstr "例如 $1 \\mapsto I$、$i \\mapsto \\begin{pmatrix} i & 0 \\\\ 0 & -i\\end{pmatrix}$、$j \\mapsto \\begin{pmatrix} 0 & 1 \\\\ -1 & 0\\end{pmatrix}$、$k \\mapsto \\begin{pmatrix} 0 & i \\\\ i & 0\\end{pmatrix}$。这些矩阵满足 Hamilton 关系，而矩阵乘法满足结合律。"
 
-#: manual/design/core.md:69
+#: manual/design/core.md:77
 msgid "The Hamilton product"
 msgstr "Hamilton 积"
 
-#: manual/design/core.md:71
+#: manual/design/core.md:79
 msgid "Expanding $p = w_1 + x_1 i + y_1 j + z_1 k$ times $q = w_2 + x_2 i + y_2 j + z_2 k$ term by term with the table gives"
 msgstr "按乘法表把 $p = w_1 + x_1 i + y_1 j + z_1 k$ 与 $q = w_2 + x_2 i + y_2 j + z_2 k$ 逐项展开相乘，得到"
 
-#: manual/design/core.md:82
+#: manual/design/core.md:90
 msgid "The same product is clearer in scalar–vector form. For two pure quaternions $\\mathbf a$ and $\\mathbf b$, the squares of the units contribute $-a_1 b_1 - a_2 b_2 - a_3 b_3$, and the mixed terms pair up, for example $a_1 b_2\\, ij + a_2 b_1\\, ji = (a_1 b_2 - a_2 b_1)k$. Hence"
 msgstr "同一乘积用标量–向量形式表达更为清晰。对两个纯四元数 $\\mathbf a$ 与 $\\mathbf b$，基元的平方贡献 $-a_1 b_1 - a_2 b_2 - a_3 b_3$，混合项两两配对，例如 $a_1 b_2\\, ij + a_2 b_1\\, ji = (a_1 b_2 - a_2 b_1)k$。因此"
 
-#: manual/design/core.md:88
+#: manual/design/core.md:96
 msgid "With bilinearity and the fact that scalars commute,"
 msgstr "结合双线性以及标量可交换这一事实，"
 
-#: manual/design/core.md:97
+#: manual/design/core.md:105
 msgid "This is literally the `Mul` implementation: the scalar part is `self.r * other.r - dot(self.vec, other.vec)` and the vector part is `cross(self.vec, other.vec)` plus the two scaled vectors."
 msgstr "这正是 `Mul` 的实现：标量部为 `self.r * other.r - dot(self.vec, other.vec)`，向量部为 `cross(self.vec, other.vec)` 加上两个缩放后的向量。"
 
-#: manual/design/core.md:99
+#: manual/design/core.md:107
 msgid "Swapping the factors only flips the sign of the cross product, so"
 msgstr "交换两个因子只会翻转叉积的符号，因此"
 
-#: manual/design/core.md:105
+#: manual/design/core.md:113
 msgid "and two quaternions commute exactly when their vector parts are parallel. In particular $\\mathbb H$ is not commutative: $ij = k$ but $ji = -k$."
 msgstr "两个四元数可交换当且仅当它们的向量部平行。特别地，$\\mathbb H$ 不可交换：$ij = k$ 而 $ji = -k$。"
 
-#: manual/design/core.md:107
+#: manual/design/core.md:115
 msgid "The derivation used that the components commute with each other ($s_1\\mathbf v_2 = \\mathbf v_2 s_1$ and so on). The generic implementation therefore assumes that `T` has a commutative multiplication, which holds for every numeric type luna-generic provides."
 msgstr "上述推导用到了分量彼此可交换（$s_1\\mathbf v_2 = \\mathbf v_2 s_1$ 等）。因此泛型实现假定 `T` 的乘法可交换，luna-generic 提供的所有数值类型都满足这一点。"
 
-#: manual/design/core.md:109
+#: manual/design/core.md:117
 msgid "Conjugate and norm"
 msgstr "共轭与范数"
 
-#: manual/design/core.md:111
+#: manual/design/core.md:119
 msgid "The conjugate is $\\bar q = (w, -\\mathbf u)$. Multiplying a quaternion by its conjugate leaves a real number, because the cross product of parallel vectors vanishes:"
 msgstr "共轭为 $\\bar q = (w, -\\mathbf u)$。四元数乘以其共轭得到一个实数，因为平行向量的叉积为零："
 
-#: manual/design/core.md:117
+#: manual/design/core.md:125
 msgid "and in the same way $\\bar q q = |q|^2$. `Quaternion::square_len` computes this $|q|^2$, and `Quaternion::dot` is the inner product of $\\mathbb R^4$ whose norm it is."
 msgstr "同理 $\\bar q q = |q|^2$。`Quaternion::square_len` 计算的就是这个 $|q|^2$，而 `Quaternion::dot` 是以它为范数的 $\\mathbb R^4$ 内积。"
 
-#: manual/design/core.md:119
+#: manual/design/core.md:127
 msgid "Conjugation reverses products. With $p = (s_1, \\mathbf v_1)$ and $q = (s_2, \\mathbf v_2)$,"
 msgstr "共轭会反转乘积顺序。设 $p = (s_1, \\mathbf v_1)$、$q = (s_2, \\mathbf v_2)$，"
 
-#: manual/design/core.md:128
+#: manual/design/core.md:136
 msgid "and the two agree because $\\mathbf v_2\\times\\mathbf v_1 = -\\mathbf v_1\\times\\mathbf v_2$. So $\\overline{pq} = \\bar q\\,\\bar p$."
 msgstr "由于 $\\mathbf v_2\\times\\mathbf v_1 = -\\mathbf v_1\\times\\mathbf v_2$，二者相等。所以 $\\overline{pq} = \\bar q\\,\\bar p$。"
 
-#: manual/design/core.md:130
+#: manual/design/core.md:138
 msgid "The norm is multiplicative. Using associativity, $\\overline{pq} = \\bar q\\bar p$, and the fact that the real number $|q|^2$ commutes with $p$:"
 msgstr "范数是可乘的。利用结合律、$\\overline{pq} = \\bar q\\bar p$，以及实数 $|q|^2$ 与 $p$ 可交换这一事实："
 
-#: manual/design/core.md:139
+#: manual/design/core.md:147
 msgid "Over the integers this is Euler's four-square identity, which the [tutorial](../tutorial/core.md#exact-identities-over-int) checks with `Quaternion[Int]`."
 msgstr "在整数上，这就是欧拉四平方恒等式，[教程](../tutorial/core.md#exact-identities-over-int)用 `Quaternion[Int]` 验证了它。"
 
-#: manual/design/core.md:141
+#: manual/design/core.md:149
 msgid "Inverse and the two divisions"
 msgstr "逆元与两种除法"
 
-#: manual/design/core.md:143
+#: manual/design/core.md:151
 msgid "If $q$ is not zero, then $|q|^2 > 0$, and $q\\bar q = \\bar q q = |q|^2$ shows that"
 msgstr "若 $q$ 不为零，则 $|q|^2 > 0$，而 $q\\bar q = \\bar q q = |q|^2$ 表明"
 
-#: manual/design/core.md:149
+#: manual/design/core.md:157
 msgid "is a two-sided inverse. This is the `Inverse` implementation: the conjugate scaled by `one() / square_len()`. Every non-zero quaternion is invertible, so $\\mathbb H$ is a *division ring* (a skew field). It is not a field, because it is not commutative."
 msgstr "是双边逆元。这就是 `Inverse` 的实现：用 `one() / square_len()` 缩放共轭。每个非零四元数都可逆，因此 $\\mathbb H$ 是一个*除环*（斜域）。由于不可交换，它不是域。"
 
-#: manual/design/core.md:151
+#: manual/design/core.md:159
 msgid "Without commutativity, \"$q$ divided by $r$\" has two meanings, one for each side on which the unknown sits:"
 msgstr "没有交换律时，“$q$ 除以 $r$”有两种含义，取决于未知数位于哪一侧："
 
-#: manual/design/core.md:160
+#: manual/design/core.md:168
 msgid "The implementation avoids forming $r^{-1}$ and divides once at the end. With $q = (s_q, \\mathbf v_q)$, $r = (s_r, \\mathbf v_r)$ and $\\bar r = (s_r, -\\mathbf v_r)$, the scalar–vector product gives"
 msgstr "实现避免构造 $r^{-1}$，只在最后做一次除法。设 $q = (s_q, \\mathbf v_q)$、$r = (s_r, \\mathbf v_r)$、$\\bar r = (s_r, -\\mathbf v_r)$，由标量–向量乘积得"
 
-#: manual/design/core.md:169
+#: manual/design/core.md:177
 msgid "which are the `Div` implementation (with `c = cross(q.vec, r.vec)`) and `Quaternion::left_div` (with `c = cross(r.vec, self.vec)`). The quotients have the same scalar part and differ by"
 msgstr "它们分别是 `Div` 的实现（其中 `c = cross(q.vec, r.vec)`）与 `Quaternion::left_div`（其中 `c = cross(r.vec, self.vec)`）。两种商的标量部相同，差为"
 
-#: manual/design/core.md:175
+#: manual/design/core.md:183
 msgid "**Example.** Take $q = 1 + 2i + 3j + 4k$ and $r = 5 + 6i + 7j + 8k$. Then $|r|^2 = 174$, $s_q s_r + \\mathbf v_q\\cdot\\mathbf v_r = 5 + 12 + 21 + 32 = 70$, $s_r\\mathbf v_q - s_q\\mathbf v_r = (4, 8, 12)$ and $\\mathbf v_q\\times\\mathbf v_r = (-4, 8, -4)$, so"
 msgstr "**示例。** 取 $q = 1 + 2i + 3j + 4k$、$r = 5 + 6i + 7j + 8k$。则 $|r|^2 = 174$，$s_q s_r + \\mathbf v_q\\cdot\\mathbf v_r = 5 + 12 + 21 + 32 = 70$，$s_r\\mathbf v_q - s_q\\mathbf v_r = (4, 8, 12)$，$\\mathbf v_q\\times\\mathbf v_r = (-4, 8, -4)$，所以"
 
-#: manual/design/core.md:184
+#: manual/design/core.md:192
 msgid "The [API page](../api/core.md#quaternionleft_div) checks these values and both defining equations."
 msgstr "[API 页面](../api/core.md#quaternionleft_div)验证了这些数值以及两个定义方程。"
 
-#: manual/design/core.md:186
+#: manual/design/core.md:194
 msgid "Unit quaternions and rotations"
 msgstr "单位四元数与旋转"
 
-#: manual/design/core.md:188
+#: manual/design/core.md:196
 msgid "A unit quaternion ($|q| = 1$) can be written"
 msgstr "单位四元数（$|q| = 1$）可以写成"
 
-#: manual/design/core.md:194
+#: manual/design/core.md:202
 msgid "which is exactly what `from_axis_angle(axis, angle)` returns, with $\\mathbf n$ the normalized axis. For unit $q$ we have $q^{-1} = \\bar q$. Consider the map $\\mathbf v \\mapsto q\\,\\mathbf v\\,\\bar q$ on pure quaternions. Write $q = (w, \\mathbf u)$. First,"
 msgstr "这正是 `from_axis_angle(axis, angle)` 的返回值，其中 $\\mathbf n$ 为归一化后的轴。对单位 $q$ 有 $q^{-1} = \\bar q$。考虑纯四元数上的映射 $\\mathbf v \\mapsto q\\,\\mathbf v\\,\\bar q$。记 $q = (w, \\mathbf u)$。首先，"
 
-#: manual/design/core.md:200
+#: manual/design/core.md:208
 msgid "Multiplying on the right by $\\bar q = (w, -\\mathbf u)$, the scalar part is"
 msgstr "再右乘 $\\bar q = (w, -\\mathbf u)$，标量部为"
 
-#: manual/design/core.md:206
+#: manual/design/core.md:214
 msgid "so the image is again a pure quaternion, and the vector part is"
 msgstr "因此像仍是纯四元数，其向量部为"
 
-#: manual/design/core.md:216
+#: manual/design/core.md:224
 msgid "using $\\mathbf a\\times\\mathbf u = -\\mathbf u\\times\\mathbf a$ and $\\mathbf u\\times(\\mathbf u\\times\\mathbf v) = (\\mathbf u\\cdot\\mathbf v)\\mathbf u - |\\mathbf u|^2\\mathbf v$. Substituting $w = \\cos\\frac\\theta2$ and $\\mathbf u = \\sin\\frac\\theta2\\,\\mathbf n$, and the half-angle identities $\\cos^2\\frac\\theta2 - \\sin^2\\frac\\theta2 = \\cos\\theta$, $2\\sin^2\\frac\\theta2 = 1 - \\cos\\theta$, $2\\sin\\frac\\theta2\\cos\\frac\\theta2 = \\sin\\theta$:"
 msgstr "这里用到 $\\mathbf a\\times\\mathbf u = -\\mathbf u\\times\\mathbf a$ 与 $\\mathbf u\\times(\\mathbf u\\times\\mathbf v) = (\\mathbf u\\cdot\\mathbf v)\\mathbf u - |\\mathbf u|^2\\mathbf v$。代入 $w = \\cos\\frac\\theta2$、$\\mathbf u = \\sin\\frac\\theta2\\,\\mathbf n$，并利用半角公式 $\\cos^2\\frac\\theta2 - \\sin^2\\frac\\theta2 = \\cos\\theta$、$2\\sin^2\\frac\\theta2 = 1 - \\cos\\theta$、$2\\sin\\frac\\theta2\\cos\\frac\\theta2 = \\sin\\theta$："
 
-#: manual/design/core.md:222
+#: manual/design/core.md:230
 msgid "This is Rodrigues' rotation formula: $\\mathbf v \\mapsto q\\mathbf v q^{-1}$ is the rotation by $\\theta$ about $\\mathbf n$, counter-clockwise by the right-hand rule. Since $|q\\mathbf v\\bar q| = |q||\\mathbf v||\\bar q| = |\\mathbf v|$, the map is an isometry, as a rotation must be."
 msgstr "这就是 Rodrigues 旋转公式：$\\mathbf v \\mapsto q\\mathbf v q^{-1}$ 是绕 $\\mathbf n$ 旋转 $\\theta$，按右手定则为逆时针方向。由于 $|q\\mathbf v\\bar q| = |q||\\mathbf v||\\bar q| = |\\mathbf v|$，该映射是等距映射，正如旋转所应满足的那样。"
 
-#: manual/design/core.md:224
+#: manual/design/core.md:232
 msgid "Three consequences shape the API:"
 msgstr "由此得到三个塑造 API 的结论："
 
-#: manual/design/core.md:226
+#: manual/design/core.md:234
 msgid "**Composition is multiplication.** $p\\,(q\\mathbf v q^{-1})\\,p^{-1} = (pq)\\,\\mathbf v\\,(pq)^{-1}$, so the rotation \"first $q$, then $p$\" is `p * q`."
 msgstr "**复合即乘法。** $p\\,(q\\mathbf v q^{-1})\\,p^{-1} = (pq)\\,\\mathbf v\\,(pq)^{-1}$，因此“先 $q$ 后 $p$”的旋转是 `p * q`。"
 
-#: manual/design/core.md:227
+#: manual/design/core.md:235
 msgid "**Double cover.** $(-q)\\,\\mathbf v\\,(-q)^{-1} = q\\mathbf v q^{-1}$, so $q$ and $-q$ are the same rotation. Indeed the angle $\\theta + 2\\pi$ gives $-q$. Every rotation has exactly two unit quaternions, which is why `==` does not compare rotations and why `slerp` flips the sign of one input."
 msgstr "**双重覆盖。** $(-q)\\,\\mathbf v\\,(-q)^{-1} = q\\mathbf v q^{-1}$，所以 $q$ 与 $-q$ 是同一个旋转。事实上角度 $\\theta + 2\\pi$ 给出 $-q$。每个旋转恰好对应两个单位四元数，这就是 `==` 不能用于比较旋转、而 `slerp` 要翻转某个输入符号的原因。"
 
-#: manual/design/core.md:228
+#: manual/design/core.md:236
 msgid "**Cheap evaluation.** `Quaternion::rotate` evaluates $\\mathbf t = 2\\,\\mathbf u\\times\\mathbf v$ and $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u\\times\\mathbf t$. Expanding, $\\mathbf u\\times\\mathbf t = 2(\\mathbf u\\cdot\\mathbf v)\\mathbf u - 2|\\mathbf u|^2\\mathbf v$, so"
 msgstr "**廉价求值。** `Quaternion::rotate` 计算 $\\mathbf t = 2\\,\\mathbf u\\times\\mathbf v$ 与 $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u\\times\\mathbf t$。展开得 $\\mathbf u\\times\\mathbf t = 2(\\mathbf u\\cdot\\mathbf v)\\mathbf u - 2|\\mathbf u|^2\\mathbf v$，所以"
 
-#: manual/design/core.md:232
+#: manual/design/core.md:240
 msgid "which equals the formula above exactly when $1 - 2|\\mathbf u|^2 = w^2 - |\\mathbf u|^2$, that is when $w^2 + |\\mathbf u|^2 = 1$. This is why `rotate` requires a unit quaternion: it needs no division, but it relies on the norm being 1."
 msgstr "它与上面的公式相等，当且仅当 $1 - 2|\\mathbf u|^2 = w^2 - |\\mathbf u|^2$，即 $w^2 + |\\mathbf u|^2 = 1$。这就是 `rotate` 要求单位四元数的原因：它无需除法，但依赖于范数为 1。"
 
-#: manual/design/core.md:234
+#: manual/design/core.md:242
+msgid "For a non-zero $q$ that is not unit, write $q = \\lambda\\hat q$ with $\\lambda = |q|$ and $\\hat q = (\\hat w, \\hat{\\mathbf u})$ unit. Every term of the expansion except $\\mathbf v$ is quadratic in the components of $q$, so"
+msgstr "对不是单位四元数的非零 $q$，记 $q = \\lambda\\hat q$，其中 $\\lambda = |q|$，$\\hat q = (\\hat w, \\hat{\\mathbf u})$ 为单位四元数。展开式中除 $\\mathbf v$ 以外的每一项都是 $q$ 分量的二次式，因此"
+
+#: manual/design/core.md:249
+msgid "where $R(\\hat q)\\,\\mathbf v$ is the correct rotation. The result is not the rotated vector scaled: components along the axis are unchanged, and the rest is moved $\\lambda^2$ times as far as it should be. With $\\lambda = 1 + \\delta$ the error is $(2\\delta + \\delta^2)\\,|R(\\hat q)\\mathbf v - \\mathbf v| \\le 2(2\\delta + \\delta^2)\\,|\\mathbf v|$."
+msgstr "其中 $R(\\hat q)\\,\\mathbf v$ 是正确的旋转结果。该结果并不是把旋转后的向量缩放：沿轴的分量保持不变，其余部分被移动了应有距离的 $\\lambda^2$ 倍。当 $\\lambda = 1 + \\delta$ 时，误差为 $(2\\delta + \\delta^2)\\,|R(\\hat q)\\mathbf v - \\mathbf v| \\le 2(2\\delta + \\delta^2)\\,|\\mathbf v|$。"
+
+#: manual/design/core.md:251
 msgid "The same formula, applied to the basis vectors, gives the rotation matrix of a unit quaternion:"
 msgstr "把同一公式作用于基向量，就得到单位四元数的旋转矩阵："
 
-#: manual/design/core.md:244
+#: manual/design/core.md:261
 msgid "The package does not return this matrix, but the Euler-angle extraction below reads its entries."
 msgstr "本包不返回这个矩阵，但下文的欧拉角提取会读取它的元素。"
 
-#: manual/design/core.md:246
+#: manual/design/core.md:263
 msgid "Euler angles"
 msgstr "欧拉角"
 
-#: manual/design/core.md:248
+#: manual/design/core.md:265
 msgid "Write $q_X(\\alpha)$, $q_Y(\\alpha)$, $q_Z(\\alpha)$ for the rotations by $\\alpha$ about the coordinate axes, and $R_X, R_Y, R_Z$ for their matrices. A sequence of three rotations about axes $A, B, C$ with angles $a, b, c$ can be read in two ways:"
 msgstr "记 $q_X(\\alpha)$、$q_Y(\\alpha)$、$q_Z(\\alpha)$ 为绕各坐标轴旋转 $\\alpha$，$R_X, R_Y, R_Z$ 为对应的矩阵。绕轴 $A, B, C$、角度为 $a, b, c$ 的三次旋转序列有两种解读："
 
-#: manual/design/core.md:250
+#: manual/design/core.md:267
 msgid "**extrinsic** (`external=true`): about the fixed axes, first $A$, then $B$, then $C$. Later rotations multiply on the left: $q = q_C(c)\\,q_B(b)\\,q_A(a)$."
 msgstr "**外旋**（`external=true`）：绕固定轴，先 $A$，再 $B$，最后 $C$。后发生的旋转乘在左边：$q = q_C(c)\\,q_B(b)\\,q_A(a)$。"
 
-#: manual/design/core.md:251
+#: manual/design/core.md:268
 msgid "**intrinsic** (`external=false`): about the axes of the moving body, first $A$, then the moved $B$, then the twice-moved $C$: $q = q_A(a)\\,q_B(b)\\,q_C(c)$."
 msgstr "**内旋**（`external=false`）：绕随物体转动的轴，先 $A$，再转动后的 $B$，最后两次转动后的 $C$：$q = q_A(a)\\,q_B(b)\\,q_C(c)$。"
 
-#: manual/design/core.md:253
+#: manual/design/core.md:270
 msgid "The same product read in both ways shows that intrinsic $ABC$ with angles $(a, b, c)$ is extrinsic $CBA$ with angles $(c, b, a)$. The implementation uses exactly this: every `to_euler_internal_*` function calls the extrinsic function of the reversed order and reverses the triple."
 msgstr "同一乘积的两种解读表明：角度为 $(a, b, c)$ 的内旋 $ABC$ 就是角度为 $(c, b, a)$ 的外旋 $CBA$。实现正是这样做的：每个 `to_euler_internal_*` 函数都调用逆序顺序的外旋函数，再把三元组反转。"
 
-#: manual/design/core.md:255
+#: manual/design/core.md:272
 msgid "**Extraction, extrinsic XYZ.** For $R = R_Z(c)\\,R_Y(b)\\,R_X(a)$, multiplying out the elementary matrices gives"
 msgstr "**提取：外旋 XYZ。** 对 $R = R_Z(c)\\,R_Y(b)\\,R_X(a)$，把基本矩阵相乘得到"
 
-#: manual/design/core.md:265
+#: manual/design/core.md:282
 msgid "Comparing with $R(q)$ entry by entry:"
 msgstr "与 $R(q)$ 逐元素比较："
 
-#: manual/design/core.md:275
+#: manual/design/core.md:292
 msgid "valid while $\\cos b > 0$ (dividing both atan2 arguments by $\\cos b$ does not change the angle). These are the expressions in `to_euler_external_XYZ`, with $b = \\arcsin(\\cdot) \\in [-\\pi/2, \\pi/2]$. The functions `to_euler_external_YZX` and `to_euler_external_ZYX` are the same derivation with the axes permuted; a permutation that is not cyclic flips the sign inside the arcsine and the atan2 numerators. The module normalizes `q` before extracting, so the identities $w^2 + x^2 + y^2 + z^2 = 1$ used in the diagonal of $R(q)$ hold up to rounding."
 msgstr "在 $\\cos b > 0$ 时成立（把 atan2 的两个参数同除以 $\\cos b$ 不改变角度）。这些就是 `to_euler_external_XYZ` 中的表达式，其中 $b = \\arcsin(\\cdot) \\in [-\\pi/2, \\pi/2]$。`to_euler_external_YZX` 与 `to_euler_external_ZYX` 是把轴置换后的同一推导；非循环置换会翻转反正弦内以及 atan2 分子的符号。模块在提取前会归一化 `q`，因此 $R(q)$ 对角线所用的恒等式 $w^2 + x^2 + y^2 + z^2 = 1$ 在舍入误差范围内成立。"
 
-#: manual/design/core.md:277
+#: manual/design/core.md:294
 msgid "**Gimbal lock.** When $\\cos b = 0$, the entries $R_{32}, R_{33}, R_{21}, R_{11}$ all vanish and the first and third rotations act about the same physical axis. For $b = \\pi/2$ in the XYZ case,"
 msgstr "**万向节锁。** 当 $\\cos b = 0$ 时，元素 $R_{32}, R_{33}, R_{21}, R_{11}$ 全部为零，第一次与第三次旋转作用于同一个物理轴。在 XYZ 情形下，对 $b = \\pi/2$，"
 
-#: manual/design/core.md:283
+#: manual/design/core.md:300
 msgid "so only $a - c$ is determined (and $a + c$ for $b = -\\pi/2$). A conventional fix sets $c = 0$ and recovers $a$ from the entries that remain, here $a = \\operatorname{atan2}(R_{12}, R_{22})$. The implementation switches to a special branch when $|\\sin b| \\ge 0.9998$ (about $88.85^\\circ$): it prints a warning, sets $b = \\pm\\pi/2$ and $c = 0$, but takes the first angle from $\\operatorname{atan2}(R_{13}, R_{22})$ for XYZ, and from the regular-branch formula (whose arguments are near zero) for the other orders. Neither isolates $a \\mp c$, so the branch currently returns angles that do not reproduce the input; see [known deviations](#known-deviations)."
 msgstr "因此只有 $a - c$ 是确定的（$b = -\\pi/2$ 时为 $a + c$）。常规做法是令 $c = 0$，再从剩余元素恢复 $a$，此处为 $a = \\operatorname{atan2}(R_{12}, R_{22})$。实现在 $|\\sin b| \\ge 0.9998$（约 $88.85^\\circ$）时切换到特殊分支：打印警告，令 $b = \\pm\\pi/2$、$c = 0$，但对 XYZ 用 $\\operatorname{atan2}(R_{13}, R_{22})$ 求第一个角，对其他顺序则沿用常规分支的公式（其参数接近零）。两者都没有分离出 $a \\mp c$，因此该分支目前返回的角不能复现输入；参见[已知偏差](#known-deviations)。"
 
-#: manual/design/core.md:285
+#: manual/design/core.md:302
 msgid "**Construction.** `from_euler(roll, pitch, yaw)` with the default `\"XYZ\"` multiplies out $q_X(\\text{roll})\\,q_Y(\\text{pitch})\\,q_Z(\\text{yaw})$ in closed form. With $c_r = \\cos\\frac{\\text{roll}}{2}$, $s_r = \\sin\\frac{\\text{roll}}{2}$ and so on, two applications of the Hamilton product give"
 msgstr "**构造。** 默认顺序 `\"XYZ\"` 下的 `from_euler(roll, pitch, yaw)` 以闭式展开 $q_X(\\text{roll})\\,q_Y(\\text{pitch})\\,q_Z(\\text{yaw})$。记 $c_r = \\cos\\frac{\\text{roll}}{2}$、$s_r = \\sin\\frac{\\text{roll}}{2}$ 等，两次应用 Hamilton 积得到"
 
-#: manual/design/core.md:291
+#: manual/design/core.md:308
 msgid "the expression in the source. `to_euler_internal_XYZ` inverts it."
 msgstr "即源码中的表达式。`to_euler_internal_XYZ` 是它的逆。"
 
-#: manual/design/core.md:293
+#: manual/design/core.md:310
 msgid "Spherical linear interpolation"
 msgstr "球面线性插值"
 
-#: manual/design/core.md:295
+#: manual/design/core.md:312
 msgid "Unit quaternions form the 3-sphere $S^3 \\subset \\mathbb R^4$, and the shortest path between two orientations is a great-circle arc. Let $q_1, q_2$ be unit with $\\cos\\Omega = q_1\\cdot q_2$, $0 < \\Omega < \\pi$. The unit vector"
 msgstr "单位四元数构成三维球面 $S^3 \\subset \\mathbb R^4$，两个姿态之间的最短路径是一段大圆弧。设 $q_1, q_2$ 为单位四元数，$\\cos\\Omega = q_1\\cdot q_2$，$0 < \\Omega < \\pi$。单位向量"
 
-#: manual/design/core.md:301
+#: manual/design/core.md:318
 msgid "is orthogonal to $q_1$, and the arc is $\\gamma(\\varphi) = \\cos\\varphi\\, q_1 + \\sin\\varphi\\, q_\\perp$. At $\\varphi = t\\Omega$,"
 msgstr "与 $q_1$ 正交，弧为 $\\gamma(\\varphi) = \\cos\\varphi\\, q_1 + \\sin\\varphi\\, q_\\perp$。在 $\\varphi = t\\Omega$ 处，"
 
-#: manual/design/core.md:310
+#: manual/design/core.md:327
 msgid "which is the formula `slerp` evaluates. It moves at constant angular speed, and the rotation angle grows linearly in $t$. Because of the double cover, `slerp` first replaces $q_2$ by $-q_2$ when $q_1\\cdot q_2 < 0$, so that $\\Omega \\le \\pi/2$ and the rotation takes the short way around. It clamps $\\cos\\Omega$ to $[-1, 1]$ before `acos`, since rounding can push the dot product of two unit quaternions slightly past 1."
 msgstr "这就是 `slerp` 计算的公式。它以恒定角速度运动，旋转角随 $t$ 线性增长。由于双重覆盖，当 $q_1\\cdot q_2 < 0$ 时 `slerp` 先把 $q_2$ 替换为 $-q_2$，使 $\\Omega \\le \\pi/2$，旋转走较短的一侧。它在调用 `acos` 前把 $\\cos\\Omega$ 截断到 $[-1, 1]$，因为舍入可能使两个单位四元数的点积略微超过 1。"
 
-#: manual/design/core.md:312
+#: manual/design/core.md:329
 msgid "Powers"
 msgstr "幂"
 
-#: manual/design/core.md:314
+#: manual/design/core.md:331
 msgid "`pow_by_int` uses $q^{2m} = (q^m)^2$ and $q^{2m+1} = q\\,(q^m)^2$, which needs only associativity; all factors are powers of the same $q$, so they commute with each other. Negative exponents use $q^{-n} = (q^{-1})^n$."
 msgstr "`pow_by_int` 利用 $q^{2m} = (q^m)^2$ 与 $q^{2m+1} = q\\,(q^m)^2$，只需要结合律；所有因子都是同一个 $q$ 的幂，因此彼此可交换。负指数利用 $q^{-n} = (q^{-1})^n$。"
 
-#: manual/design/core.md:316
+#: manual/design/core.md:333
 msgid "`pow_by_T` uses the polar form. Every non-zero $q$ is $q = |q|\\,(\\cos\\varphi + \\hat{\\mathbf n}\\sin\\varphi)$ with $\\varphi \\in [0, \\pi]$ and a unit vector $\\hat{\\mathbf n}$, and the span of $1$ and $\\hat{\\mathbf n}$ is a copy of $\\mathbb C$ (because $\\hat{\\mathbf n}^2 = -1$). De Moivre's formula then defines"
 msgstr "`pow_by_T` 使用极形式。每个非零 $q$ 都可写成 $q = |q|\\,(\\cos\\varphi + \\hat{\\mathbf n}\\sin\\varphi)$，其中 $\\varphi \\in [0, \\pi]$，$\\hat{\\mathbf n}$ 为单位向量，而 $1$ 与 $\\hat{\\mathbf n}$ 张成的空间是 $\\mathbb C$ 的一个副本（因为 $\\hat{\\mathbf n}^2 = -1$）。于是棣莫弗公式定义了"
 
-#: manual/design/core.md:322
+#: manual/design/core.md:339
 msgid "The implementation computes $\\varphi = \\arcsin\\lvert\\mathbf u\\rvert/|q|$, which is correct only for $\\varphi \\le \\pi/2$, that is for a non-negative scalar part; see [known deviations](#known-deviations)."
 msgstr "实现以 $\\varphi = \\arcsin\\lvert\\mathbf u\\rvert/|q|$ 计算角度，只在 $\\varphi \\le \\pi/2$ 时正确，即标量部非负时；参见[已知偏差](#known-deviations)。"
 
-#: manual/design/core.md:324
+#: manual/design/core.md:341
 msgid "Design decisions"
 msgstr "设计决策"
 
-#: manual/design/core.md:326
+#: manual/design/core.md:343
 msgid "Generic components with per-function bounds"
 msgstr "泛型分量与逐函数约束"
 
-#: manual/design/core.md:328
+#: manual/design/core.md:345
 msgid "**Problem.** Quaternions are useful over exact integers (number theory, testing identities) and over `Double` (geometry), and the luna-generic ecosystem wants one type that fits both."
 msgstr "**问题。** 四元数在精确整数上（数论、验证恒等式）和在 `Double` 上（几何）都很有用，而 luna-generic 生态希望由一个类型同时满足两者。"
 
-#: manual/design/core.md:330
+#: manual/design/core.md:347
 msgid "**Options.** A `Double`-only type; a type parameterized by a single \"real number\" trait; or a type with no bound on `T` whose functions each require only what they use."
 msgstr "**选项。** 仅支持 `Double` 的类型；由单一“实数”trait 参数化的类型；或对 `T` 不加约束、每个函数只要求自己所用 trait 的类型。"
 
-#: manual/design/core.md:332
+#: manual/design/core.md:349
 msgid "**Choice.** The last. `Quaternion[T]` has no bound; `+` needs `Add`, `*` needs `Mul + Sub + Add`, `square_len` needs `Mul + Add`, and only functions with square roots or trigonometry ask for `DoubleConvert`. This follows the Luna-Flow principle that code depends on the smallest trait composition that states its needs, and it lets `Quaternion[Int]` check algebraic identities exactly."
 msgstr "**选择。** 最后一种。`Quaternion[T]` 不加约束；`+` 需要 `Add`，`*` 需要 `Mul + Sub + Add`，`square_len` 需要 `Mul + Add`，只有涉及平方根或三角函数的函数才要求 `DoubleConvert`。这遵循 Luna-Flow 的原则——代码依赖能表达其需求的最小 trait 组合，也使 `Quaternion[Int]` 能精确验证代数恒等式。"
 
-#: manual/design/core.md:334
+#: manual/design/core.md:351
 msgid "Scalar–vector storage"
 msgstr "标量–向量存储"
 
-#: manual/design/core.md:336
+#: manual/design/core.md:353
 msgid "The type stores `r : T` and `vec : (T, T, T)` rather than four separate fields. The scalar–vector form is how the product, the conjugate, the inverse and the rotation are derived above, so the code reads like the derivations (`dot`, `cross`, `scale` on `vec`). The type is abstract, which keeps the representation free to change; the cost is that there are no component accessors yet."
 msgstr "该类型存储 `r : T` 与 `vec : (T, T, T)`，而不是四个独立字段。上文的乘积、共轭、逆元与旋转都是以标量–向量形式推导的，因此代码读起来就像推导本身（在 `vec` 上使用 `dot`、`cross`、`scale`）。类型是抽象的，表示形式因而可以自由改变；代价是目前还没有分量访问器。"
 
-#: manual/design/core.md:338
+#: manual/design/core.md:355
 msgid "Why `Ring` and not `Field`"
 msgstr "为什么是 `Ring` 而不是 `Field`"
 
-#: manual/design/core.md:340
+#: manual/design/core.md:357
 msgid "luna-generic's `Field` is `Ring + Inverse + Div`, and generic code written against it is entitled to the laws of a commutative field, such as $a b = b a$ or $a / b \\cdot c = a c / b$. Quaternions satisfy every ring law and have inverses, but not commutativity, so claiming `Field` would let such code compute wrong answers silently. The package therefore implements `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring` and `Ring` (all lawful for $\\mathbb H$ over a commutative `T`), plus the operation traits `Inverse` and `Conjugate`, and stops there. Division is still available through `Div` and `left_div`, but generic code has to ask for it explicitly."
 msgstr "luna-generic 的 `Field` 是 `Ring + Inverse + Div`，针对它编写的泛型代码有权依赖交换域的定律，例如 $a b = b a$ 或 $a / b \\cdot c = a c / b$。四元数满足所有环公理且有逆元，但不满足交换律，因此声明 `Field` 会让这类代码悄无声息地算出错误结果。所以本包实现 `Zero`、`One`、`AddMonoid`、`MulMonoid`、`Semiring` 与 `Ring`（对交换的 `T`，它们在 $\\mathbb H$ 上都成立），外加运算 trait `Inverse` 与 `Conjugate`，到此为止。除法仍可通过 `Div` 与 `left_div` 使用，但泛型代码必须显式要求它。"
 
-#: manual/design/core.md:342
+#: manual/design/core.md:359
 msgid "`/` is right division"
 msgstr "`/` 是右除"
 
-#: manual/design/core.md:344
+#: manual/design/core.md:361
 msgid "**Problem.** With non-commuting multiplication, `q / r` must pick a side. Before 0.2.0 it computed $r^{-1} q$."
 msgstr "**问题。** 乘法不可交换时，`q / r` 必须选定一侧。0.2.0 之前它计算 $r^{-1} q$。"
 
-#: manual/design/core.md:346
+#: manual/design/core.md:363
 msgid "**Choice.** Since 0.2.0, `q / r` is $q\\,r^{-1}$, the solution of $x r = q$. This is the usual convention for a division ring and keeps `Div` consistent with `Inverse` in the way it is for the luna-generic scalar types: `a / b == a * b.inv()`. It also reads naturally for rotations: `to / from` is the rotation that, applied after `from`, gives `to`. The other quotient stays available as `left_div`, with a name that says which side the inverse is on. The change is breaking and is recorded in the changelog."
 msgstr "**选择。** 自 0.2.0 起，`q / r` 为 $q\\,r^{-1}$，即 $x r = q$ 的解。这是除环的通常约定，并让 `Div` 与 `Inverse` 保持与 luna-generic 标量类型相同的一致关系：`a / b == a * b.inv()`。对旋转而言它也读起来自然：`to / from` 是在 `from` 之后施加便得到 `to` 的旋转。另一种商仍以 `left_div` 提供，名字表明逆元位于哪一侧。这一变更是破坏性的，已记录在变更日志中。"
 
-#: manual/design/core.md:348
+#: manual/design/core.md:365
 msgid "The `Double` bridge"
 msgstr "`Double` 桥接"
 
-#: manual/design/core.md:350
+#: manual/design/core.md:367
 msgid "Square roots and trigonometric functions exist for `Double` only, and the package depends on nothing but luna-generic, which has no analytic traits. `DoubleConvert` is a two-method trait that converts a component to `Double` and back, so `magnitude`, `normalize`, `slerp`, `pow_by_T` and the Euler conversions stay generic in signature while computing in `Double`. It is implemented for `Double` (as the identity) and `Int` (truncating `from_double`). The trait is declared `pub` rather than `pub(open)`, so other packages cannot implement it for their own types."
 msgstr "平方根与三角函数只存在于 `Double` 上，而本包只依赖 luna-generic，后者没有分析类 trait。`DoubleConvert` 是一个双方法 trait，把分量转换到 `Double` 再转换回来，使 `magnitude`、`normalize`、`slerp`、`pow_by_T` 与欧拉角转换在签名上保持泛型，同时在 `Double` 中计算。它为 `Double`（恒等映射）与 `Int`（`from_double` 截断）实现。该 trait 声明为 `pub` 而非 `pub(open)`，因此其他包无法为自己的类型实现它。"
 
-#: manual/design/core.md:352
+#: manual/design/core.md:369
 msgid "Exact structural equality"
 msgstr "精确的结构相等"
 
-#: manual/design/core.md:354
+#: manual/design/core.md:371
 msgid "`Eq` and `Hash` are derived and compare components exactly. Equality \"as rotations\" ($q \\sim -q$) or \"within a tolerance\" depends on the application, so it is left to the caller (the tutorial shows one way). Exact equality also keeps `Eq` consistent with `Hash`."
 msgstr "`Eq` 与 `Hash` 由派生得到，对分量做精确比较。“作为旋转”相等（$q \\sim -q$）或“在容差内”相等取决于具体应用，因此交由调用者决定（教程给出了一种做法）。精确相等还使 `Eq` 与 `Hash` 保持一致。"
 
-#: manual/design/core.md:356
+#: manual/design/core.md:373
 msgid "Explicit method promotion"
 msgstr "显式方法提升"
 
-#: manual/design/core.md:358
+#: manual/design/core.md:375
 msgid "MoonBit 0.10 no longer turns trait implementations into methods implicitly. [`src/extends.mbt`](../../../src/extends.mbt) promotes the operators, `equal`, `hash`, `to_string`, `conjugate`, `zero`, `one` and `inv`, which are natural operations on a quaternion. The method forms `not_equal`, `hash_combine`, `output`, `default` and `to_repr` are kept, deprecated and hidden, for compatibility."
 msgstr "MoonBit 0.10 不再把 trait 实现隐式变为方法。[`src/extends.mbt`](../../../src/extends.mbt) 提升了运算符、`equal`、`hash`、`to_string`、`conjugate`、`zero`、`one` 与 `inv`，它们都是四元数上的自然运算。方法形式 `not_equal`、`hash_combine`、`output`、`default` 与 `to_repr` 为兼容而保留，但已弃用并隐藏。"
 
-#: manual/design/core.md:360
+#: manual/design/core.md:377
 msgid "Correctness and invariants"
 msgstr "正确性与不变量"
 
-#: manual/design/core.md:362
+#: manual/design/core.md:379
 msgid "Algebraic laws"
 msgstr "代数定律"
 
-#: manual/design/core.md:364
+#: manual/design/core.md:381
 msgid "Over a commutative ring `T` with exact arithmetic (`Int`, `BigInt`), the implementation satisfies:"
 msgstr "在具有精确算术的交换环 `T`（`Int`、`BigInt`）上，实现满足："
 
-#: manual/design/core.md:366
+#: manual/design/core.md:383
 msgid "the ring laws: $(\\mathbb H, +, 0)$ is an abelian group, $(\\mathbb H, \\cdot, 1)$ a monoid, and $\\cdot$ distributes over $+$ on both sides;"
 msgstr "环公理：$(\\mathbb H, +, 0)$ 是阿贝尔群，$(\\mathbb H, \\cdot, 1)$ 是幺半群，且 $\\cdot$ 对 $+$ 满足双侧分配律；"
 
-#: manual/design/core.md:367
+#: manual/design/core.md:384
 msgid "$\\overline{pq} = \\bar q\\,\\bar p$, $\\bar{\\bar q} = q$, $q\\bar q = \\bar q q = |q|^2$ and $|pq|^2 = |p|^2|q|^2$;"
 msgstr "$\\overline{pq} = \\bar q\\,\\bar p$、$\\bar{\\bar q} = q$、$q\\bar q = \\bar q q = |q|^2$ 以及 $|pq|^2 = |p|^2|q|^2$；"
 
-#: manual/design/core.md:368
+#: manual/design/core.md:385
 msgid "for exact division (a field `T` such as rationals): $q\\,q^{-1} = q^{-1}q = 1$, $(q / r)\\,r = q$ and $r\\,(q.\\mathrm{left\\_div}(r)) = q$."
 msgstr "对精确除法（`T` 为域，例如有理数）：$q\\,q^{-1} = q^{-1}q = 1$、$(q / r)\\,r = q$ 以及 $r\\,(q.\\mathrm{left\\_div}(r)) = q$。"
 
-#: manual/design/core.md:370
+#: manual/design/core.md:387
 msgid "The package tests check the ring laws on integer samples, non-commutativity, and the two division identities."
 msgstr "本包的测试在整数样本上检查环公理、不可交换性以及两个除法恒等式。"
 
-#: manual/design/core.md:372
+#: manual/design/core.md:389
 msgid "Floating-point error"
 msgstr "浮点误差"
 
-#: manual/design/core.md:374
+#: manual/design/core.md:391
 msgid "Over `Double` the laws hold up to rounding. Each component of $pq$ is a sum of four products of a component of $p$ with a component of $q$, evaluated with four roundings of products and three of additions. The standard bound for such an inner product[^higham] gives, componentwise,"
 msgstr "在 `Double` 上，这些定律在舍入误差范围内成立。$pq$ 的每个分量是 $p$ 的分量与 $q$ 的分量的四个乘积之和，计算时乘积有四次舍入、加法有三次舍入。对这类内积的标准界[^higham]逐分量给出"
 
-#: manual/design/core.md:380
+#: manual/design/core.md:397
 msgid "where $\\sigma_m$ is the permutation of $q$'s components that appears in component $m$ and the second inequality is Cauchy–Schwarz. Summing over the four components, $\\lVert\\mathrm{fl}(pq) - pq\\rVert \\le 2\\gamma_4 |p||q|$, so by the multiplicativity of the norm"
 msgstr "其中 $\\sigma_m$ 是第 $m$ 个分量中出现的 $q$ 的分量置换，第二个不等式即 Cauchy–Schwarz 不等式。对四个分量求和得 $\\lVert\\mathrm{fl}(pq) - pq\\rVert \\le 2\\gamma_4 |p||q|$，于是由范数的可乘性"
 
-#: manual/design/core.md:386
+#: manual/design/core.md:403
 msgid "N. J. Higham, *Accuracy and Stability of Numerical Algorithms*, 2nd ed., SIAM 2002, §3.1: $\\lvert\\mathrm{fl}(x^{\\mathsf T}y) - x^{\\mathsf T}y\\rvert \\le \\gamma_n \\lvert x\\rvert^{\\mathsf T}\\lvert y\\rvert$ for any order of summation."
 msgstr "N. J. Higham，*Accuracy and Stability of Numerical Algorithms*，第 2 版，SIAM 2002，§3.1：对任意求和顺序，$\\lvert\\mathrm{fl}(x^{\\mathsf T}y) - x^{\\mathsf T}y\\rvert \\le \\gamma_n \\lvert x\\rvert^{\\mathsf T}\\lvert y\\rvert$。"
 
-#: manual/design/core.md:388
-msgid "A product of $n$ unit quaternions therefore has norm $1 + \\delta$ with $|\\delta| \\lesssim 8nu$ to first order, where $u = 2^{-53} \\approx 1.1 \\times 10^{-16}$; in practice the errors partly cancel and the drift is smaller. Because `rotate` assumes $|q| = 1$, a drifted quaternion scales vectors by about $1 + 2\\delta$. Long chains should call `normalize` periodically; its result has norm $1$ within a few units of $u$ (for example $1 + 2i + 3j + 4k$ normalizes to a quaternion of computed norm $0.9999999999999999$)."
-msgstr "因此 $n$ 个单位四元数之积的范数为 $1 + \\delta$，一阶意义下 $|\\delta| \\lesssim 8nu$，其中 $u = 2^{-53} \\approx 1.1 \\times 10^{-16}$；实践中误差会部分抵消，漂移更小。由于 `rotate` 假定 $|q| = 1$，漂移后的四元数会把向量缩放约 $1 + 2\\delta$ 倍。长的乘积链应定期调用 `normalize`；其结果的范数与 $1$ 相差在几个 $u$ 之内（例如 $1 + 2i + 3j + 4k$ 归一化后计算得到的范数为 $0.9999999999999999$）。"
+#: manual/design/core.md:405
+msgid "A product of $n$ unit quaternions therefore has norm $1 + \\delta$ with $|\\delta| \\lesssim 8nu$ to first order, where $u = 2^{-53} \\approx 1.1 \\times 10^{-16}$; in practice the errors partly cancel and the drift is smaller. Because `rotate` assumes $|q| = 1$, a drifted quaternion moves each vector by up to about $4\\delta\\,|\\mathbf v|$ away from its correct image (see [unit quaternions and rotations](#unit-quaternions-and-rotations)). Long chains should call `normalize` periodically; its result has norm $1$ within a few units of $u$ (for example $1 + 2i + 3j + 4k$ normalizes to a quaternion of computed norm $0.9999999999999999$)."
+msgstr "因此 $n$ 个单位四元数之积的范数为 $1 + \\delta$，一阶近似下 $|\\delta| \\lesssim 8nu$，其中 $u = 2^{-53} \\approx 1.1 \\times 10^{-16}$；实际中误差会部分抵消，漂移更小。由于 `rotate` 假定 $|q| = 1$，漂移后的四元数会把每个向量从正确的像移开至多约 $4\\delta\\,|\\mathbf v|$（见[单位四元数与旋转](#unit-quaternions-and-rotations)）。长链运算应定期调用 `normalize`；其结果的范数与 $1$ 相差在几个 $u$ 以内（例如 $1 + 2i + 3j + 4k$ 归一化后的计算范数为 $0.9999999999999999$）。"
 
-#: manual/design/core.md:390
+#: manual/design/core.md:407
 msgid "Division by zero and degenerate inputs"
 msgstr "除以零与退化输入"
 
-#: manual/design/core.md:392
+#: manual/design/core.md:409
 msgid "The package does not check its inputs; degenerate cases follow the arithmetic of `T`:"
 msgstr "本包不检查输入；退化情形遵循 `T` 的算术："
 
-#: manual/design/core.md:394
+#: manual/design/core.md:411
 msgid "Input"
 msgstr "输入"
 
-#: manual/design/core.md:396
+#: manual/design/core.md:413
 msgid "`inv`, `/`, `left_div` with a zero divisor"
 msgstr "除数为零时的 `inv`、`/`、`left_div`"
 
-#: manual/design/core.md:396
+#: manual/design/core.md:413
 msgid "NaN components"
 msgstr "NaN 分量"
 
-#: manual/design/core.md:396
+#: manual/design/core.md:413
 msgid "runtime trap (integer division by zero)"
 msgstr "运行时陷阱（整数除以零）"
 
-#: manual/design/core.md:397
+#: manual/design/core.md:414
 msgid "`normalize` of zero"
 msgstr "零的 `normalize`"
 
-#: manual/design/core.md:397
-#: manual/design/core.md:398
+#: manual/design/core.md:414
+#: manual/design/core.md:415
 msgid "zero returned unchanged"
 msgstr "原样返回零"
 
-#: manual/design/core.md:398
+#: manual/design/core.md:415
 msgid "`pow_by_T` of zero"
 msgstr "零的 `pow_by_T`"
 
-#: manual/design/core.md:399
+#: manual/design/core.md:416
 msgid "`from_axis_angle` with a zero axis"
 msgstr "轴为零的 `from_axis_angle`"
 
-#: manual/design/core.md:399
+#: manual/design/core.md:416
 msgid "NaN vector part"
 msgstr "NaN 向量部"
 
-#: manual/design/core.md:399
+#: manual/design/core.md:416
 msgid "runtime trap"
 msgstr "运行时陷阱"
 
-#: manual/design/core.md:400
+#: manual/design/core.md:417
 msgid "`slerp` of a zero input"
 msgstr "输入为零的 `slerp`"
 
-#: manual/design/core.md:400
+#: manual/design/core.md:417
 msgid "the zero input is used unnormalized"
 msgstr "零输入未经归一化直接使用"
 
-#: manual/design/core.md:400
+#: manual/design/core.md:417
 msgid "not meaningful"
 msgstr "没有意义"
 
-#: manual/design/core.md:402
+#: manual/design/core.md:419
 msgid "Over `Int`, `inv` is zero unless $|q|^2 = 1$, and every function that goes through `DoubleConvert` truncates."
 msgstr "在 `Int` 上，除非 $|q|^2 = 1$，`inv` 均为零，且所有经由 `DoubleConvert` 的函数都会截断。"
 
-#: manual/design/core.md:404
+#: manual/design/core.md:421
 msgid "Thresholds"
 msgstr "阈值"
 
-#: manual/design/core.md:406
-msgid "`slerp` falls back to normalized linear interpolation when $\\cos\\Omega > 0.9995$, that is $\\Omega < 0.0316$ rad. There $\\sin\\Omega < 0.032$, and dividing by it would amplify rounding errors in the weights; the linear path, on the other hand, deviates from the arc by less than $5.1 \\times 10^{-7}$ rad on $S^3$ (about $10^{-6}$ rad of rotation angle) at the threshold, and less below it."
-msgstr "当 $\\cos\\Omega > 0.9995$，即 $\\Omega < 0.0316$ rad 时，`slerp` 退回归一化线性插值。此时 $\\sin\\Omega < 0.032$，除以它会放大权重中的舍入误差；而在阈值处，线性路径与圆弧在 $S^3$ 上的偏差小于 $5.1 \\times 10^{-7}$ rad（约合旋转角 $10^{-6}$ rad），低于阈值时更小。"
+#: manual/design/core.md:423
+msgid "`slerp` falls back to normalized linear interpolation when $\\cos\\Omega > 0.9995$, that is $\\Omega < 0.0316$ rad. There $\\sin\\Omega < 0.032$, and dividing by it would amplify rounding errors in the weights. The normalized linear path stays on the same great circle, so its only error is the angle it reaches. The point $(1 - t)\\,q_1 + t\\,q_2$ has, in the basis $q_1, q_\\perp$ of the arc, the coordinates $(1 - t + t\\cos\\Omega,\\ t\\sin\\Omega)$, so it sits at the angle"
+msgstr "当 $\\cos\\Omega > 0.9995$，即 $\\Omega < 0.0316$ rad 时，`slerp` 退回到归一化线性插值。此时 $\\sin\\Omega < 0.032$，除以它会放大权重中的舍入误差。归一化线性路径仍在同一个大圆上，因此唯一的误差是它到达的角度。点 $(1 - t)\\,q_1 + t\\,q_2$ 在弧的基 $q_1, q_\\perp$ 下的坐标为 $(1 - t + t\\cos\\Omega,\\ t\\sin\\Omega)$，因此它位于角度"
 
-#: manual/design/core.md:408
+#: manual/design/core.md:429
+msgid "instead of $t\\Omega$. Expanding $\\sin\\Omega = \\Omega - \\Omega^3/6$, $\\cos\\Omega = 1 - \\Omega^2/2$ and $\\arctan x = x - x^3/3$ to third order,"
+msgstr "而不是 $t\\Omega$。把 $\\sin\\Omega = \\Omega - \\Omega^3/6$、$\\cos\\Omega = 1 - \\Omega^2/2$ 与 $\\arctan x = x - x^3/3$ 展开到三阶，"
+
+#: manual/design/core.md:438
+msgid "The cubic $t(1-t)(1-2t)$ has its largest absolute value $\\sqrt 3/18$ on $[0, 1]$ at $t = (3 \\mp \\sqrt 3)/6$, so the error is at most $\\Omega^3\\sqrt 3/108 \\approx 5.07 \\times 10^{-7}$ rad on $S^3$ at the threshold (about $10^{-6}$ rad of rotation angle, because rotation angles are twice the angles on $S^3$), and smaller below it."
+msgstr "三次式 $t(1-t)(1-2t)$ 在 $[0, 1]$ 上的最大绝对值为 $\\sqrt 3/18$，取于 $t = (3 \\mp \\sqrt 3)/6$，因此在阈值处误差至多为 $S^3$ 上的 $\\Omega^3\\sqrt 3/108 \\approx 5.07 \\times 10^{-7}$ rad（约合 $10^{-6}$ rad 的旋转角，因为旋转角是 $S^3$ 上角度的两倍），阈值以下更小。"
+
+#: manual/design/core.md:440
 msgid "The Euler conversions treat $|\\sin b| \\ge 0.9998$ as gimbal lock. Rounding $b$ to $\\pm\\pi/2$ there costs up to $\\pi/2 - \\arcsin 0.9998 \\approx 0.020$ rad in the middle angle."
 msgstr "欧拉角转换把 $|\\sin b| \\ge 0.9998$ 视为万向节锁。在此把 $b$ 取整为 $\\pm\\pi/2$ 会使中间角产生最多 $\\pi/2 - \\arcsin 0.9998 \\approx 0.020$ rad 的误差。"
 
-#: manual/design/core.md:410
+#: manual/design/core.md:442
 msgid "Complexity"
 msgstr "复杂度"
 
-#: manual/design/core.md:412
-msgid "Every operation is $O(1)$ on four components: a Hamilton product costs 16 multiplications and 12 additions, `rotate` 18 multiplications and 12 additions. `pow_by_int(n)` uses $O(\\log |n|)$ products and recursion depth."
-msgstr "每个运算都是对四个分量的 $O(1)$ 操作：一次 Hamilton 积需要 16 次乘法与 12 次加法，`rotate` 需要 18 次乘法与 12 次加法。`pow_by_int(n)` 需要 $O(\\log |n|)$ 次乘积和同阶的递归深度。"
+#: manual/design/core.md:444
+msgid "Every operation is $O(1)$ on four components: a Hamilton product costs 16 multiplications and 12 additions or subtractions, `rotate` 18 multiplications and 12 additions or subtractions (plus one addition to form the constant 2). `pow_by_int(n)` uses $O(\\log |n|)$ products and recursion depth."
+msgstr "每个运算都是对四个分量的 $O(1)$ 操作：一次 Hamilton 积需要 16 次乘法与 12 次加减法，`rotate` 需要 18 次乘法与 12 次加减法（另加一次加法构造常数 2）。`pow_by_int(n)` 需要 $O(\\log |n|)$ 次乘积和同阶的递归深度。"
 
-#: manual/design/core.md:414
+#: manual/design/core.md:446
 msgid "Known deviations"
 msgstr "已知偏差"
 
-#: manual/design/core.md:416
+#: manual/design/core.md:448
 msgid "These are deviations of the current implementation from the mathematics above. They are documented here rather than hidden, and are reported for fixing:"
 msgstr "以下是当前实现与上文数学的偏差。它们在此明确记录而非隐藏，并已报告待修复："
 
-#: manual/design/core.md:418
+#: manual/design/core.md:450
 msgid "`from_euler` with `\"ZYX\"` or `\"YZX\"` does not evaluate a product of axis rotations; the results are not unit quaternions. `\"ZXY\"` takes its angles by position while `\"YXZ\"` takes them by axis."
 msgstr "`\"ZYX\"` 或 `\"YZX\"` 下的 `from_euler` 并不计算轴旋转的乘积；结果不是单位四元数。`\"ZXY\"` 按位置取角，而 `\"YXZ\"` 按轴取角。"
 
-#: manual/design/core.md:419
+#: manual/design/core.md:451
 msgid "`to_euler_external_XZY` (and therefore `to_euler_internal_YZX`) evaluates the intrinsic X-Y-Z extraction instead of the named sequence."
 msgstr "`to_euler_external_XZY`（以及由此而来的 `to_euler_internal_YZX`）计算的是内旋 X-Y-Z 的提取，而非所指定的序列。"
 
-#: manual/design/core.md:420
-msgid "The gimbal-lock branch of the Euler extraction does not isolate the free angle (see above), and it reports the warning with `println`."
-msgstr "欧拉角提取的万向节锁分支没有分离出自由角（见上文），并用 `println` 输出警告。"
+#: manual/design/core.md:452
+msgid "The gimbal-lock branch of the Euler extraction does not isolate the free angle (see above), and it reports the warning with `println`. For extrinsic XYZ it reads $\\operatorname{atan2}(R_{13}, R_{22})$; at exact lock both entries equal $\\cos(a \\mp c)$, so the first angle is always $\\pm\\pi/4$ or $\\pm3\\pi/4$. For $0.9998 \\le |\\sin b| < 1$ the third angle is still determined but is set to $0$."
+msgstr "欧拉角提取的万向节锁分支没有分离出自由角（见上文），并用 `println` 输出警告。对外旋 XYZ，它读取 $\\operatorname{atan2}(R_{13}, R_{22})$；在严格锁定时这两个元素都等于 $\\cos(a \\mp c)$，因此第一个角总是 $\\pm\\pi/4$ 或 $\\pm3\\pi/4$。当 $0.9998 \\le |\\sin b| < 1$ 时，第三个角仍可确定，却被置为 $0$。"
 
-#: manual/design/core.md:421
-msgid "`pow_by_T` computes $\\varphi$ with `asin`, which cannot exceed $\\pi/2$; $\\operatorname{atan2}(\\lvert\\mathbf u\\rvert, w)$ would cover $[0, \\pi]$."
-msgstr "`pow_by_T` 用 `asin` 计算 $\\varphi$，其值不超过 $\\pi/2$；改用 $\\operatorname{atan2}(\\lvert\\mathbf u\\rvert, w)$ 即可覆盖 $[0, \\pi]$。"
+#: manual/design/core.md:453
+msgid "`pow_by_T` computes $\\varphi$ with `asin`, which cannot exceed $\\pi/2$; $\\operatorname{atan2}(\\lvert\\mathbf u\\rvert, w)$ would cover $[0, \\pi]$. The argument of `asin` is $|\\mathbf u|/|q|$ computed after `normalize`; for a pure quaternion it can round to $1 + 2^{-52}$, where `asin` returns NaN. `atan2` would also remove this failure."
+msgstr "`pow_by_T` 用 `asin` 计算 $\\varphi$，其值不超过 $\\pi/2$；$\\operatorname{atan2}(\\lvert\\mathbf u\\rvert, w)$ 则可覆盖 $[0, \\pi]$。`asin` 的参数是 `normalize` 之后计算的 $|\\mathbf u|/|q|$；对纯四元数它可能舍入为 $1 + 2^{-52}$，此时 `asin` 返回 NaN。改用 `atan2` 也能消除这一故障。"
 
-#: manual/design/core.md:423
+#: manual/design/core.md:454
+msgid "`pow_by_int` negates a negative exponent; for the smallest `Int` the negation overflows to the same value and the call never returns."
+msgstr "`pow_by_int` 会对负指数取负；对最小的 `Int`，取负溢出为同一个值，调用永不返回。"
+
+#: manual/design/core.md:455
+msgid "The `Ring` instance is declared for every `T : Ring`, but the Hamilton product is associative only when `T` is commutative, so `Quaternion[Quaternion[T]]` is a `Ring` instance that breaks associativity (the [API](../api/core.md#trait-implementations) shows a counterexample)."
+msgstr "`Ring` 实例对所有 `T : Ring` 声明，但 Hamilton 积只在 `T` 可交换时满足结合律，因此 `Quaternion[Quaternion[T]]` 是一个破坏结合律的 `Ring` 实例（[API](../api/core.md#trait-implementations) 给出了反例）。"
+
+#: manual/design/core.md:457
 msgid "Alternatives rejected"
 msgstr "被否决的方案"
 
-#: manual/design/core.md:425
+#: manual/design/core.md:459
 msgid "**Implementing `Field`.** Rejected because generic `Field` code may rely on commutativity (see above)."
 msgstr "**实现 `Field`。** 被否决，因为泛型 `Field` 代码可能依赖交换律（见上文）。"
 
-#: manual/design/core.md:426
+#: manual/design/core.md:460
 msgid "**Keeping `/` as left division.** It contradicted `a / b == a * b.inv()` and the usual reading of `to / from` for rotations."
 msgstr "**保留 `/` 为左除。** 它与 `a / b == a * b.inv()` 以及旋转中 `to / from` 的通常读法相矛盾。"
 
-#: manual/design/core.md:427
+#: manual/design/core.md:461
 msgid "**A `Double`-only type.** It would lose exact arithmetic over `Int` and the luna-generic ring structure for other scalar types."
 msgstr "**仅支持 `Double` 的类型。** 它会失去 `Int` 上的精确算术，以及其他标量类型上的 luna-generic 环结构。"
 
-#: manual/design/core.md:428
+#: manual/design/core.md:462
 msgid "**Storing four named fields or a rotation matrix.** Four fields hide the scalar–vector structure the formulas use; a matrix has nine entries, needs re-orthogonalization instead of a cheap normalization, and cannot be interpolated as simply."
 msgstr "**存储四个具名字段或旋转矩阵。** 四个字段会掩盖公式所用的标量–向量结构；矩阵有九个元素，需要重新正交化而非廉价的归一化，插值也没那么简单。"
 
-#: manual/design/core.md:429
+#: manual/design/core.md:463
 msgid "**Comparing with a tolerance in `Eq`.** A tolerance-based `==` is not transitive and cannot agree with `Hash`."
 msgstr "**在 `Eq` 中按容差比较。** 基于容差的 `==` 不具有传递性，也无法与 `Hash` 保持一致。"
 
-#: manual/design/core.md:431
+#: manual/design/core.md:465
 msgid "Boundaries"
 msgstr "边界"
 
-#: manual/design/core.md:433
+#: manual/design/core.md:467
 msgid "The package deliberately does not:"
 msgstr "本包刻意不做以下事情："
 
-#: manual/design/core.md:435
+#: manual/design/core.md:469
 msgid "provide rotation matrices, exponential and logarithm maps, or quaternion calculus (dual quaternions, derivatives of orientations);"
 msgstr "提供旋转矩阵、指数与对数映射或四元数微积分（对偶四元数、姿态的导数）；"
 
-#: manual/design/core.md:436
+#: manual/design/core.md:470
 msgid "check its inputs or return `Result`: degenerate inputs follow the arithmetic of `T`, and `rotate` trusts that its receiver is a unit quaternion;"
 msgstr "检查输入或返回 `Result`：退化输入遵循 `T` 的算术，`rotate` 相信其接收者是单位四元数；"
 
-#: manual/design/core.md:437
+#: manual/design/core.md:471
 msgid "implement luna-generic `Field` or `Num`, or make quaternions an ordered type;"
 msgstr "实现 luna-generic 的 `Field` 或 `Num`，或让四元数成为有序类型；"
 
-#: manual/design/core.md:438
+#: manual/design/core.md:472
 msgid "depend on `arithmetic`, `linear-algebra` or `luna-complex`; its only Luna-Flow dependency is luna-generic;"
 msgstr "依赖 `arithmetic`、`linear-algebra` 或 `luna-complex`；它唯一的 Luna-Flow 依赖是 luna-generic；"
 
-#: manual/design/core.md:439
+#: manual/design/core.md:473
 msgid "choose a tolerance for comparing rotations; that is left to the caller."
 msgstr "选定比较旋转所用的容差；这留给调用者决定。"
 
@@ -1085,106 +1167,162 @@ msgid "quaternion"
 msgstr "quaternion"
 
 #: manual/index.md:3
+msgid "This manual documents the `v0.2.0` release of `Luna-Flow/quaternion`."
+msgstr "本手册记录 `Luna-Flow/quaternion` 的 `v0.2.0` 版本。"
+
+#: manual/index.md:5
+msgid "Overview"
+msgstr "概览"
+
+#: manual/index.md:7
 msgid "`quaternion` is the Luna-Flow library for Hamilton's quaternions $\\mathbb H$: the four-dimensional number system $w + xi + yj + zk$ in which $i^2 = j^2 = k^2 = ijk = -1$. Unit quaternions describe 3D rotations without the singularities of Euler angles, and they compose, invert and interpolate cheaply. The library provides one generic type, `Quaternion[T]`, with ring arithmetic, right and left division, norms, rotation of vectors, spherical interpolation and Euler-angle conversion."
 msgstr "`quaternion` 是 Luna-Flow 的 Hamilton 四元数 $\\mathbb H$ 库：四元数是形如 $w + xi + yj + zk$、满足 $i^2 = j^2 = k^2 = ijk = -1$ 的四维数系。单位四元数描述三维旋转，没有欧拉角的奇异性，并且复合、求逆与插值的代价都很低。本库提供一个泛型类型 `Quaternion[T]`，支持环运算、右除与左除、范数、向量旋转、球面插值以及欧拉角转换。"
 
-#: manual/index.md:5
-msgid "Packages"
-msgstr "包"
-
-#: manual/index.md:7
-msgid "The module `Luna-Flow/quaternion` has a single package at the source root `src`, documented as `core`:"
-msgstr "模块 `Luna-Flow/quaternion` 只有一个位于源码根目录 `src` 的包，文档中称为 `core`："
-
 #: manual/index.md:9
-msgid "Package"
-msgstr "包"
+msgid "The 0.2.0 release centers on three changes:"
+msgstr "0.2.0 版本围绕三项变更："
 
-#: manual/index.md:9
-msgid "Import path"
-msgstr "导入路径"
+#: manual/index.md:11
+msgid "`q / r` is right division $q\\,r^{-1}$; the old left quotient $r^{-1} q$ is now `Quaternion::left_div`."
+msgstr "`q / r` 是右除 $q\\,r^{-1}$；原来的左商 $r^{-1} q$ 现在是 `Quaternion::left_div`。"
 
-#: manual/index.md:9
-msgid "Contents"
-msgstr "内容"
+#: manual/index.md:12
+msgid "`Quaternion[T]` implements luna-generic's `Ring` (and the traits below it), but not `Field`, because multiplication is not commutative."
+msgstr "`Quaternion[T]` 实现了 luna-generic 的 `Ring`（及其下的各 trait），但不实现 `Field`，因为乘法不可交换。"
 
-#: manual/index.md:9
+#: manual/index.md:13
+msgid "The package builds with MoonBit 0.10 and promotes trait methods explicitly."
+msgstr "本包使用 MoonBit 0.10 构建，并显式提升 trait 方法。"
+
+#: manual/index.md:15
+msgid "Install"
+msgstr "安装"
+
+#: manual/index.md:21
+msgid "Then import `\"Luna-Flow/quaternion\"` in your `moon.pkg`. The package needs the MoonBit toolchain 0.10 or later (`moonc` ≥ 0.10) and depends on `Luna-Flow/luna-generic` 0.3.3. The code is target-independent and is tested on the `wasm`, `wasm-gc`, `js` and `native` backends."
+msgstr "然后在 `moon.pkg` 中导入 `\"Luna-Flow/quaternion\"`。本包需要 MoonBit 工具链 0.10 或更高版本（`moonc` ≥ 0.10），并依赖 `Luna-Flow/luna-generic` 0.3.3。代码与目标平台无关，并在 `wasm`、`wasm-gc`、`js` 与 `native` 后端上测试。"
+
+#: manual/index.md:23
 msgid "Pages"
 msgstr "页面"
 
-#: manual/index.md:11
-msgid "`Quaternion[T]`, its arithmetic and rotation functions, the `DoubleConvert` trait"
-msgstr "`Quaternion[T]`、其算术与旋转函数、`DoubleConvert` trait"
-
-#: manual/index.md:11
-msgid "[API](api/core.md) · [tutorial](tutorial/core.md) · [design](design/core.md)"
-msgstr "[API](api/core.md) · [教程](tutorial/core.md) · [设计](design/core.md)"
-
-#: manual/index.md:13
-msgid "The sources are [`src/quaternion.mbt`](../../src/quaternion.mbt) (the type and all operations), [`src/double_conv.mbt`](../../src/double_conv.mbt) (`DoubleConvert`) and [`src/extends.mbt`](../../src/extends.mbt) (which trait methods are callable as methods). The generated interface [`src/pkg.generated.mbti`](../../src/pkg.generated.mbti) lists every public signature."
-msgstr "源码为 [`src/quaternion.mbt`](../../src/quaternion.mbt)（类型及全部运算）、[`src/double_conv.mbt`](../../src/double_conv.mbt)（`DoubleConvert`）与 [`src/extends.mbt`](../../src/extends.mbt)（哪些 trait 方法可以作为方法调用）。生成的接口文件 [`src/pkg.generated.mbti`](../../src/pkg.generated.mbti) 列出了所有公开签名。"
-
-#: manual/index.md:15
-msgid "At a glance"
-msgstr "概览"
-
-#: manual/index.md:17
-msgid "`Quaternion[T]` is generic in its component type. Ring operations work over exact types such as `Int`; functions that need square roots or trigonometry compute in `Double` through `DoubleConvert`, which is implemented for `Int` and `Double`."
-msgstr "`Quaternion[T]` 对其分量类型是泛型的。环运算可在 `Int` 等精确类型上进行；需要平方根或三角函数的函数经由 `DoubleConvert` 在 `Double` 中计算，该 trait 为 `Int` 与 `Double` 实现。"
-
-#: manual/index.md:18
-msgid "`+`, `-`, unary `-` and `*` (the Hamilton product) are the usual operations. `*` is not commutative."
-msgstr "`+`、`-`、一元 `-` 与 `*`（Hamilton 积）是常规运算。`*` 不可交换。"
-
-#: manual/index.md:19
-msgid "`q / r` is right division $q\\,r^{-1}$; `q.left_div(r)` is left division $r^{-1} q$. Before 0.2.0, `/` computed $r^{-1} q$."
-msgstr "`q / r` 是右除 $q\\,r^{-1}$；`q.left_div(r)` 是左除 $r^{-1} q$。0.2.0 之前，`/` 计算的是 $r^{-1} q$。"
-
-#: manual/index.md:20
-msgid "The type implements luna-generic's `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring`, `Ring`, `Inverse` and `Conjugate`. It does not implement `Field`, because multiplication is not commutative."
-msgstr "该类型实现了 luna-generic 的 `Zero`、`One`、`AddMonoid`、`MulMonoid`、`Semiring`、`Ring`、`Inverse` 与 `Conjugate`。由于乘法不可交换，它不实现 `Field`。"
-
-#: manual/index.md:21
-msgid "Rotations: `from_axis_angle`, `from_euler`, `Quaternion::rotate`, `slerp`, `Quaternion::to_euler` and its eight fixed-order variants."
-msgstr "旋转：`from_axis_angle`、`from_euler`、`Quaternion::rotate`、`slerp`、`Quaternion::to_euler` 及其八个固定顺序的变体。"
-
-#: manual/index.md:23
-msgid "Where to start"
-msgstr "从哪里开始"
-
 #: manual/index.md:25
-msgid "**New to quaternions:** read the [tutorial](tutorial/core.md) from the quick start to \"Compare two rotations\". It needs no mathematics beyond vectors and angles."
-msgstr "**初识四元数：** 从快速入门读到“比较两个旋转”为止的[教程](tutorial/core.md)。除了向量与角度，不需要其他数学知识。"
-
-#: manual/index.md:26
-msgid "**Using the library:** the [API reference](api/core.md) lists every function with its exact signature, conventions, edge cases and known issues. Check the Euler-angle conventions there before converting angles."
-msgstr "**使用本库：** [API 参考](api/core.md)列出了每个函数的精确签名、约定、边界情况与已知问题。转换角度前请先查看其中的欧拉角约定。"
+msgid "The repository is one MoonBit package at `src`, documented as `core`. Its sources are [`src/quaternion.mbt`](../../src/quaternion.mbt) (the type and all operations), [`src/double_conv.mbt`](../../src/double_conv.mbt) (`DoubleConvert`) and [`src/extends.mbt`](../../src/extends.mbt) (which trait methods are callable as methods). The generated interface [`src/pkg.generated.mbti`](../../src/pkg.generated.mbti) lists every public signature."
+msgstr "本仓库是位于 `src` 的一个 MoonBit 包，文档中称为 `core`。源码为 [`src/quaternion.mbt`](../../src/quaternion.mbt)（类型及全部运算）、[`src/double_conv.mbt`](../../src/double_conv.mbt)（`DoubleConvert`）与 [`src/extends.mbt`](../../src/extends.mbt)（哪些 trait 方法可作为方法调用）。生成的接口文件 [`src/pkg.generated.mbti`](../../src/pkg.generated.mbti) 列出了每个公开签名。"
 
 #: manual/index.md:27
-msgid "**Contributing or reviewing:** the [design page](design/core.md) derives the Hamilton product, the rotation formula, division, slerp and the Euler-angle extraction from Hamilton's relations, explains each design decision, and lists the places where the implementation currently deviates from the mathematics."
-msgstr "**贡献或审阅：** [设计页面](design/core.md)从 Hamilton 关系出发推导 Hamilton 积、旋转公式、除法、slerp 与欧拉角提取，解释每个设计决策，并列出实现目前与数学存在偏差之处。"
+msgid "Part"
+msgstr "部分"
+
+#: manual/index.md:27
+msgid "Tutorial"
+msgstr "教程"
+
+#: manual/index.md:27
+msgid "API"
+msgstr "API"
+
+#: manual/index.md:27
+msgid "Design"
+msgstr "设计"
 
 #: manual/index.md:29
-msgid "Installation and toolchain"
-msgstr "安装与工具链"
+msgid "`core`: `Quaternion[T]`, arithmetic, rotations, `DoubleConvert`"
+msgstr "`core`：`Quaternion[T]`、算术、旋转、`DoubleConvert`"
+
+#: manual/index.md:29
+msgid "[tutorial](tutorial/core.md)"
+msgstr "[教程](tutorial/core.md)"
+
+#: manual/index.md:29
+msgid "[API](api/core.md)"
+msgstr "[API](api/core.md)"
+
+#: manual/index.md:29
+msgid "[design](design/core.md)"
+msgstr "[设计](design/core.md)"
 
 #: manual/index.md:31
-msgid "The library needs MoonBit with `moonc` 0.10 or later and depends on `Luna-Flow/luna-generic` 0.3.3. Add it to a module with:"
-msgstr "本库需要 `moonc` 0.10 或更高版本的 MoonBit，并依赖 `Luna-Flow/luna-generic` 0.3.3。用下面的命令把它加入模块："
+msgid "Exported type and trait"
+msgstr "导出的类型与 trait"
 
-#: manual/index.md:37
-msgid "and import `\"Luna-Flow/quaternion\"` in the `moon.pkg` of the package that uses it. The code is target-independent and is tested on the `wasm`, `wasm-gc`, `js` and `native` backends."
-msgstr "然后在使用它的包的 `moon.pkg` 中导入 `\"Luna-Flow/quaternion\"`。代码与目标平台无关，并在 `wasm`、`wasm-gc`、`js` 与 `native` 后端上测试。"
+#: manual/index.md:33
+msgid "`Quaternion[T]`: the quaternion $w + xi + yj + zk$ with components of type `T`, abstract, with derived `Eq`, `Hash` and `Debug`"
+msgstr "`Quaternion[T]`：分量类型为 `T` 的四元数 $w + xi + yj + zk$，抽象类型，派生 `Eq`、`Hash` 与 `Debug`"
+
+#: manual/index.md:34
+msgid "`DoubleConvert`: the bridge to `Double` used by every function that needs square roots or trigonometry; implemented for `Int` and `Double`"
+msgstr "`DoubleConvert`：所有需要平方根或三角函数的函数所用的通往 `Double` 的桥梁；为 `Int` 与 `Double` 实现"
+
+#: manual/index.md:38
+msgid "Construction: `Quaternion::from_vec`, `id`, `Quaternion::zero`, `Quaternion::one`"
+msgstr "构造：`Quaternion::from_vec`、`id`、`Quaternion::zero`、`Quaternion::one`"
 
 #: manual/index.md:39
+msgid "Operators: `+`, `-`, unary `-`, `*` (the Hamilton product, not commutative), `/` (right division)"
+msgstr "运算符：`+`、`-`、一元 `-`、`*`（Hamilton 积，不可交换）、`/`（右除）"
+
+#: manual/index.md:41
+msgid "Powers: `Quaternion::pow_by_int`, `Quaternion::pow_by_T`"
+msgstr "幂：`Quaternion::pow_by_int`、`Quaternion::pow_by_T`"
+
+#: manual/index.md:42
+msgid "Norms: `Quaternion::dot`, `Quaternion::square_len`, `Quaternion::magnitude`, `Quaternion::normalize`"
+msgstr "范数：`Quaternion::dot`、`Quaternion::square_len`、`Quaternion::magnitude`、`Quaternion::normalize`"
+
+#: manual/index.md:43
+msgid "luna-generic instances: `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring`, `Ring`, `Inverse`, `Conjugate`"
+msgstr "luna-generic 实例：`Zero`、`One`、`AddMonoid`、`MulMonoid`、`Semiring`、`Ring`、`Inverse`、`Conjugate`"
+
+#: manual/index.md:47
+msgid "`from_axis_angle`, `from_euler`: build a unit quaternion"
+msgstr "`from_axis_angle`、`from_euler`：构造单位四元数"
+
+#: manual/index.md:48
+msgid "`Quaternion::rotate`: apply it to a vector"
+msgstr "`Quaternion::rotate`：把它作用于向量"
+
+#: manual/index.md:49
+msgid "`slerp`: interpolate between two orientations"
+msgstr "`slerp`：在两个姿态之间插值"
+
+#: manual/index.md:50
+msgid "`Quaternion::to_euler` and its eight fixed-order variants: decompose into Euler angles"
+msgstr "`Quaternion::to_euler` 及其八个固定顺序的变体：分解为欧拉角"
+
+#: manual/index.md:52
+msgid "Several Euler-angle orders, the gimbal-lock branch and `pow_by_T` have known issues; the [API](api/core.md) marks each with a warning."
+msgstr "若干欧拉角顺序、万向节锁分支与 `pow_by_T` 存在已知问题；[API](api/core.md) 用警告逐一标出。"
+
+#: manual/index.md:54
+msgid "Where to read next"
+msgstr "接下来读什么"
+
+#: manual/index.md:56
+msgid "The [core tutorial](tutorial/core.md) rotates, composes, compares and interpolates orientations. The [core API](api/core.md) lists every function with its exact signature, conventions and edge cases, and the [core design](design/core.md) derives the Hamilton product, the rotation formula, division, slerp and the Euler-angle extraction from Hamilton's relations."
+msgstr "[core 教程](tutorial/core.md)演示旋转、复合、比较与插值姿态。[core API](api/core.md) 列出每个函数的精确签名、约定与边界情况，[core 设计](design/core.md)则从 Hamilton 关系式推导 Hamilton 积、旋转公式、除法、slerp 与欧拉角提取。"
+
+#: manual/index.md:58
+msgid "New to quaternions: read the [tutorial](tutorial/core.md) from the quick start to \"Compare two rotations\". It needs no mathematics beyond vectors and angles."
+msgstr "初识四元数：从快速开始读到“比较两个旋转”为止的[教程](tutorial/core.md)。除了向量与角度，不需要其他数学知识。"
+
+#: manual/index.md:59
+msgid "Using it in a library: keep the [API](api/core.md) at hand, and check the Euler-angle conventions and the warnings there before converting angles."
+msgstr "在库中使用：手边常备 [API](api/core.md)，转换角度前先查看其中的欧拉角约定与警告。"
+
+#: manual/index.md:60
+msgid "Contributing: read the [design](design/core.md), in particular its list of known deviations, before changing an operation."
+msgstr "参与贡献：修改任何运算之前，请阅读[设计页](design/core.md)，特别是其中的已知偏差列表。"
+
+#: manual/index.md:62
 msgid "Validation"
 msgstr "验证"
 
-#: manual/index.md:41
-msgid "From the repository root:"
-msgstr "在仓库根目录下："
+#: manual/index.md:64
+msgid "Recommended release checks, from the repository root:"
+msgstr "推荐的发布检查，在仓库根目录下执行："
 
-#: manual/index.md:49
+#: manual/index.md:72
 msgid "`moon info` regenerates `src/pkg.generated.mbti`; a change in that file is a change of the public API."
 msgstr "`moon info` 会重新生成 `src/pkg.generated.mbti`；该文件的变化即公开 API 的变化。"
 
@@ -1197,208 +1335,346 @@ msgid "This tutorial gets you from an empty project to rotating vectors, composi
 msgstr "本教程借助 `Luna-Flow/quaternion`，带你从空项目出发，完成向量旋转、姿态的复合与插值，以及与欧拉角之间的转换。最后介绍基于 luna-generic trait 的泛型代码以及容易犯的错误。这里尽量少讲数学；推导见 [core 设计](../design/core.md)。"
 
 #: manual/tutorial/core.md:5
+msgid "I want to"
+msgstr "我想要"
+
+#: manual/tutorial/core.md:5
+msgid "Use"
+msgstr "使用"
+
+#: manual/tutorial/core.md:7
+msgid "build a quaternion from its four components"
+msgstr "由四个分量构造四元数"
+
+#: manual/tutorial/core.md:8
+msgid "build the rotation by an angle around an axis"
+msgstr "构造绕某轴旋转某角度的旋转"
+
+#: manual/tutorial/core.md:9
+msgid "rotate a 3D vector"
+msgstr "旋转三维向量"
+
+#: manual/tutorial/core.md:9
+msgid "`q.rotate(v)` with a unit `q`"
+msgstr "对单位四元数 `q` 调用 `q.rotate(v)`"
+
+#: manual/tutorial/core.md:10
+msgid "apply `first`, then `second`"
+msgstr "先应用 `first`，再应用 `second`"
+
+#: manual/tutorial/core.md:11
+msgid "undo a rotation"
+msgstr "撤销一个旋转"
+
+#: manual/tutorial/core.md:11
+msgid "`q.conjugate()` (unit `q`) or `q.inv()`"
+msgstr "`q.conjugate()`（单位 `q`）或 `q.inv()`"
+
+#: manual/tutorial/core.md:12
+msgid "find the rotation from `from` to `to`"
+msgstr "求从 `from` 到 `to` 的旋转"
+
+#: manual/tutorial/core.md:13
+msgid "compare two orientations"
+msgstr "比较两个姿态"
+
+#: manual/tutorial/core.md:13
+msgid "`q.dot(r).abs()`, not `==`"
+msgstr "`q.dot(r).abs()`，而不是 `==`"
+
+#: manual/tutorial/core.md:14
+msgid "interpolate between orientations"
+msgstr "在姿态之间插值"
+
+#: manual/tutorial/core.md:15
+msgid "convert to or from Euler angles"
+msgstr "与欧拉角互相转换"
+
+#: manual/tutorial/core.md:15
+msgid "`from_euler` and `to_euler`, with the order named explicitly"
+msgstr "`from_euler` 与 `to_euler`，并显式写出顺序"
+
+#: manual/tutorial/core.md:16
+msgid "keep a long product of rotations unit"
+msgstr "让一长串旋转之积保持单位长度"
+
+#: manual/tutorial/core.md:17
+msgid "write ring-generic code that accepts quaternions"
+msgstr "编写接受四元数的环泛型代码"
+
+#: manual/tutorial/core.md:17
+msgid "a function with `R : @lf_alg.Ring`"
+msgstr "带有 `R : @lf_alg.Ring` 的函数"
+
+#: manual/tutorial/core.md:19
 msgid "Quick start"
 msgstr "快速入门"
 
-#: manual/tutorial/core.md:7
+#: manual/tutorial/core.md:21
 msgid "Add the module to your project:"
 msgstr "把模块加入项目："
 
-#: manual/tutorial/core.md:13
+#: manual/tutorial/core.md:27
 msgid "Import the package in your `moon.pkg`. The examples also use luna-generic (for generic code) and `moonbitlang/core/math` (for $\\pi$):"
 msgstr "在 `moon.pkg` 中导入本包。示例还用到 luna-generic（用于泛型代码）与 `moonbitlang/core/math`（用于 $\\pi$）："
 
-#: manual/tutorial/core.md:23
+#: manual/tutorial/core.md:37
 msgid "The smallest useful program rotates the x axis by a quarter turn around the z axis:"
 msgstr "最小的实用程序：把 x 轴绕 z 轴旋转四分之一圈："
 
-#: manual/tutorial/core.md:34
-msgid "It prints:"
-msgstr "它输出："
-
-#: manual/tutorial/core.md:41
+#: manual/tutorial/core.md:48
 msgid "The x axis lands on the y axis, up to a rounding error of about $2 \\times 10^{-16}$ in the first coordinate."
 msgstr "x 轴落在 y 轴上，第一个坐标有约 $2 \\times 10^{-16}$ 的舍入误差。"
 
-#: manual/tutorial/core.md:43
+#: manual/tutorial/core.md:50
 msgid "Everyday tasks"
 msgstr "日常任务"
 
-#: manual/tutorial/core.md:45
+#: manual/tutorial/core.md:52
 msgid "Build quaternions and multiply them"
 msgstr "构造四元数并相乘"
 
-#: manual/tutorial/core.md:47
+#: manual/tutorial/core.md:54
 msgid "`Quaternion::from_vec((w, x, y, z))` builds $w + xi + yj + zk$. The usual operators work, and `*` is the Hamilton product. The basis units multiply like $ij = k$ but $ji = -k$, so the order of factors matters:"
 msgstr "`Quaternion::from_vec((w, x, y, z))` 构造 $w + xi + yj + zk$。常用运算符都可使用，`*` 是 Hamilton 积。基元的乘法满足 $ij = k$ 而 $ji = -k$，因此因子顺序很重要："
 
-#: manual/tutorial/core.md:61
+#: manual/tutorial/core.md:68
 msgid "Integer components are exact, which makes `Quaternion[Int]` handy for checking identities. Use `Double` components for rotations."
 msgstr "整数分量是精确的，这使 `Quaternion[Int]` 很适合验证恒等式。旋转请使用 `Double` 分量。"
 
-#: manual/tutorial/core.md:63
+#: manual/tutorial/core.md:70
 msgid "Rotate vectors and compose rotations"
 msgstr "旋转向量并复合旋转"
 
-#: manual/tutorial/core.md:65
+#: manual/tutorial/core.md:72
 msgid "`from_axis_angle(axis, angle)` gives the unit quaternion of a rotation, and `rotate` applies it to a 3D vector. To apply `first` and then `second`, multiply them as `second * first`, like matrices acting on column vectors:"
 msgstr "`from_axis_angle(axis, angle)` 给出旋转的单位四元数，`rotate` 把它作用于三维向量。若要先施加 `first` 再施加 `second`，就像矩阵作用于列向量那样，将它们相乘为 `second * first`："
 
-#: manual/tutorial/core.md:80
+#: manual/tutorial/core.md:87
 msgid "`rotate` assumes a unit quaternion. Quaternions built by `from_axis_angle` are unit; call `normalize()` on anything you assembled yourself."
 msgstr "`rotate` 假定输入为单位四元数。`from_axis_angle` 构造的四元数是单位的；自行拼装的四元数请先调用 `normalize()`。"
 
-#: manual/tutorial/core.md:82
+#: manual/tutorial/core.md:89
 msgid "Undo a rotation and find the rotation between two orientations"
 msgstr "撤销旋转，以及求两个姿态之间的旋转"
 
-#: manual/tutorial/core.md:84
+#: manual/tutorial/core.md:91
 msgid "The inverse of a unit quaternion is its conjugate. To find the rotation `delta` that takes orientation `from` to orientation `to` (so that `delta * from == to`), divide on the right: `to / from` is $to \\cdot from^{-1}$. `left_div` solves the other equation, `from * x == to`, which gives the rotation expressed in the frame of `from`:"
 msgstr "单位四元数的逆就是它的共轭。要求把姿态 `from` 转到姿态 `to` 的旋转 `delta`（即 `delta * from == to`），在右侧做除法：`to / from` 即 $to \\cdot from^{-1}$。`left_div` 求解另一个方程 `from * x == to`，得到在 `from` 坐标系中表示的旋转："
 
-#: manual/tutorial/core.md:99
+#: manual/tutorial/core.md:106
 msgid "Compare two rotations"
 msgstr "比较两个旋转"
 
-#: manual/tutorial/core.md:101
+#: manual/tutorial/core.md:108
 msgid "`q` and `-q` describe the same rotation, so `==` is the wrong test for \"same orientation\". For unit quaternions, $|q \\cdot r| = \\cos(\\theta/2)$ where $\\theta$ is the angle between the two orientations:"
 msgstr "`q` 与 `-q` 表示同一个旋转，因此 `==` 不适合用来判断“姿态相同”。对单位四元数，$|q \\cdot r| = \\cos(\\theta/2)$，其中 $\\theta$ 为两个姿态之间的夹角："
 
-#: manual/tutorial/core.md:122
+#: manual/tutorial/core.md:129
 msgid "Interpolate between orientations"
 msgstr "在姿态之间插值"
 
-#: manual/tutorial/core.md:124
+#: manual/tutorial/core.md:131
 msgid "`slerp(q1, q2, t)` moves along the shortest great-circle arc at constant angular speed:"
 msgstr "`slerp(q1, q2, t)` 以恒定角速度沿最短的大圆弧运动："
 
-#: manual/tutorial/core.md:139
+#: manual/tutorial/core.md:146
 msgid "The x axis turns by $22.5^\\circ$ per step, as constant angular speed promises."
 msgstr "x 轴每步转过 $22.5^\\circ$，正如恒定角速度所保证的那样。"
 
-#: manual/tutorial/core.md:141
+#: manual/tutorial/core.md:148
 msgid "Convert to and from Euler angles"
 msgstr "与欧拉角相互转换"
 
-#: manual/tutorial/core.md:143
+#: manual/tutorial/core.md:150
 msgid "`from_euler(roll, pitch, yaw)` uses the order `\"XYZ\"` by default, which is $q_X(\\text{roll})\\,q_Y(\\text{pitch})\\,q_Z(\\text{yaw})$: intrinsic rotations about X, then the new Y, then the new Z. The matching inverse is `to_euler(order=\"XYZ\", external=false)`. The default of `to_euler` is a different convention, extrinsic Z-Y-X, which returns the same three angles in reverse order:"
 msgstr "`from_euler(roll, pitch, yaw)` 默认使用顺序 `\"XYZ\"`，即 $q_X(\\text{roll})\\,q_Y(\\text{pitch})\\,q_Z(\\text{yaw})$：先绕 X、再绕新的 Y、最后绕新的 Z 的内旋。对应的逆为 `to_euler(order=\"XYZ\", external=false)`。`to_euler` 的默认值是另一种约定——外旋 Z-Y-X，它以相反顺序返回同样的三个角："
 
-#: manual/tutorial/core.md:157
+#: manual/tutorial/core.md:164
 msgid "The k-th angle returned by `to_euler` always belongs to the k-th axis of `order`. Read the [API notes](../api/core.md#quaterniontoeuler) before using other orders: some combinations have known issues."
 msgstr "`to_euler` 返回的第 k 个角总是属于 `order` 的第 k 个轴。使用其他顺序前请先阅读 [API 说明](../api/core.md#quaterniontoeuler)：部分组合存在已知问题。"
 
-#: manual/tutorial/core.md:159
+#: manual/tutorial/core.md:166
 msgid "Read the components back"
 msgstr "读取分量"
 
-#: manual/tutorial/core.md:161
+#: manual/tutorial/core.md:168
 msgid "`Quaternion` is abstract and has no field accessors. The dot product with a basis quaternion reads one component, and `Debug` shows all four:"
 msgstr "`Quaternion` 是抽象类型，没有字段访问器。与基四元数做点积可以读出一个分量，`Debug` 则显示全部四个分量："
 
-#: manual/tutorial/core.md:177
+#: manual/tutorial/core.md:184
 msgid "For finite components the dot product with a basis quaternion returns the component exactly."
 msgstr "对有限的分量，与基四元数的点积会精确返回该分量。"
 
-#: manual/tutorial/core.md:179
+#: manual/tutorial/core.md:186
 msgid "Going further"
 msgstr "进阶"
 
-#: manual/tutorial/core.md:181
+#: manual/tutorial/core.md:188
 msgid "Generic code over luna-generic traits"
 msgstr "基于 luna-generic trait 的泛型代码"
 
-#: manual/tutorial/core.md:183
+#: manual/tutorial/core.md:190
 msgid "`Quaternion[T]` implements luna-generic's `Ring` whenever `T` does, so ring-generic algorithms accept quaternions. This function computes $x^n$ by repeated squaring for any `Ring`:"
 msgstr "只要 `T` 实现了 luna-generic 的 `Ring`，`Quaternion[T]` 也实现它，因此环上的泛型算法接受四元数。下面的函数对任意 `Ring` 用反复平方计算 $x^n$："
 
-#: manual/tutorial/core.md:204
+#: manual/tutorial/core.md:211
 msgid "Quaternions are not a `Field`, so algorithms that require `Field` (and may assume $ab = ba$) do not accept them. That is deliberate; the [design page](../design/core.md#why-ring-and-not-field) explains why."
 msgstr "四元数不是 `Field`，因此要求 `Field`（并可能假定 $ab = ba$）的算法不接受它们。这是有意为之；原因见[设计页面](../design/core.md#why-ring-and-not-field)。"
 
-#: manual/tutorial/core.md:206
+#: manual/tutorial/core.md:213
 msgid "Exact identities over `Int`"
 msgstr "`Int` 上的精确恒等式"
 
-#: manual/tutorial/core.md:208
+#: manual/tutorial/core.md:215
 msgid "Exact components make the norm identity $|pq|^2 = |p|^2|q|^2$ checkable without rounding. Over `Int` it is Euler's four-square identity: a product of two sums of four squares is again a sum of four squares, and the Hamilton product tells you which one:"
 msgstr "精确的分量使范数恒等式 $|pq|^2 = |p|^2|q|^2$ 可以在没有舍入的情况下验证。在 `Int` 上它就是欧拉四平方恒等式：两个四平方和之积仍是四平方和，而 Hamilton 积告诉你是哪一个："
 
-#: manual/tutorial/core.md:220
+#: manual/tutorial/core.md:227
 msgid "Functions that need square roots or trigonometry (`magnitude`, `normalize`, `inv`'s division, `slerp`, Euler conversions) truncate over `Int`; keep `Int` for ring arithmetic."
 msgstr "需要平方根或三角函数的函数（`magnitude`、`normalize`、`inv` 中的除法、`slerp`、欧拉角转换）在 `Int` 上会截断；请把 `Int` 留给环运算。"
 
-#: manual/tutorial/core.md:222
+#: manual/tutorial/core.md:229
 msgid "Long chains of rotations"
 msgstr "长的旋转链"
 
-#: manual/tutorial/core.md:224
-msgid "Every Hamilton product in `Double` rounds, so the norm of a product of many unit quaternions drifts away from 1, by roughly $n \\cdot 10^{-16}$ after $n$ products. `rotate` then scales vectors slightly. Renormalize now and then:"
-msgstr "`Double` 中的每次 Hamilton 积都有舍入，因此许多单位四元数之积的范数会偏离 1，$n$ 次乘积后大约偏离 $n \\cdot 10^{-16}$。此时 `rotate` 会轻微缩放向量。请不时重新归一化："
+#: manual/tutorial/core.md:231
+msgid "Every Hamilton product in `Double` rounds, so the norm of a product of many unit quaternions drifts away from 1, by at most about $n \\cdot 10^{-15}$ after $n$ products and usually much less. `rotate` assumes a unit quaternion, so a drifted one rotates vectors slightly too far or not far enough. Renormalize now and then:"
+msgstr "`Double` 中的每次 Hamilton 积都有舍入，因此许多单位四元数之积的范数会偏离 1，$n$ 次乘积后至多约偏离 $n \\cdot 10^{-15}$，通常远小于此。`rotate` 假定四元数为单位长度，因此漂移后的四元数会把向量转得略多或略少。请不时重新归一化："
 
-#: manual/tutorial/core.md:240
+#: manual/tutorial/core.md:247
 msgid "Performance"
 msgstr "性能"
 
-#: manual/tutorial/core.md:242
+#: manual/tutorial/core.md:249
 msgid "All operations work on four scalars and run in constant time, except `pow_by_int`, which uses $O(\\log n)$ multiplications. `q.rotate(v)` costs two cross products and is cheaper than computing `q * v * q.inv()` with full Hamilton products. Every function returns a new value; nothing is mutated."
 msgstr "所有运算都作用于四个标量并在常数时间内完成，只有 `pow_by_int` 需要 $O(\\log n)$ 次乘法。`q.rotate(v)` 的代价是两次叉积，比用完整的 Hamilton 积计算 `q * v * q.inv()` 更便宜。每个函数都返回新值，不修改任何东西。"
 
-#: manual/tutorial/core.md:244
+#: manual/tutorial/core.md:251
 msgid "Common pitfalls"
 msgstr "常见陷阱"
 
-#: manual/tutorial/core.md:246
+#: manual/tutorial/core.md:253
 msgid "**`/` changed in 0.2.0.** `q / r` is now $q\\,r^{-1}$ (right division). Code written for 0.1.x that relied on `/` computing $r^{-1} q$ must call `q.left_div(r)`."
 msgstr "**`/` 在 0.2.0 中改变了含义。** `q / r` 现在是 $q\\,r^{-1}$（右除）。为 0.1.x 编写、依赖 `/` 计算 $r^{-1} q$ 的代码必须改用 `q.left_div(r)`。"
 
-#: manual/tutorial/core.md:247
+#: manual/tutorial/core.md:254
 msgid "**Order of factors.** `a * b` rotates by `b` first. Swapping the factors gives a different rotation unless both turn about the same axis."
 msgstr "**因子顺序。** `a * b` 先按 `b` 旋转。交换因子会得到不同的旋转，除非两者绕同一轴转动。"
 
-#: manual/tutorial/core.md:248
+#: manual/tutorial/core.md:255
 msgid "**Non-unit quaternions in `rotate`.** `rotate` does not normalize. For a non-unit $q$ its formula is not $q v q^{-1}$, and the result generally does not even have the length of the input. Normalize first."
 msgstr "**`rotate` 中的非单位四元数。** `rotate` 不做归一化。对非单位的 $q$，其公式并不是 $q v q^{-1}$，结果通常连长度都与输入不同。请先归一化。"
 
-#: manual/tutorial/core.md:249
+#: manual/tutorial/core.md:256
 msgid "**`==` on rotations.** `q` and `-q` are the same rotation but unequal values. Floating-point results rarely compare equal anyway; compare with a tolerance."
 msgstr "**对旋转使用 `==`。** `q` 与 `-q` 是同一个旋转，但值不相等。浮点结果本来也很少完全相等；请按容差比较。"
 
-#: manual/tutorial/core.md:250
+#: manual/tutorial/core.md:257
 msgid "**Division by zero.** `inv`, `/` and `left_div` divide by $|r|^2$. A zero quaternion gives NaN components over `Double` and a runtime trap over `Int`. `normalize` and `pow_by_T` return the zero quaternion unchanged."
 msgstr "**除以零。** `inv`、`/` 与 `left_div` 都会除以 $|r|^2$。零四元数在 `Double` 上得到 NaN 分量，在 `Int` 上触发运行时陷阱。`normalize` 与 `pow_by_T` 会原样返回零四元数。"
 
-#: manual/tutorial/core.md:251
+#: manual/tutorial/core.md:258
 msgid "**`Int` components and transcendental functions.** `magnitude`, `normalize`, `inv` and friends truncate over `Int`; `inv` of anything but a unit is zero."
 msgstr "**`Int` 分量与超越函数。** `magnitude`、`normalize`、`inv` 等在 `Int` 上会截断；除单位元外，任何四元数的 `inv` 都为零。"
 
-#: manual/tutorial/core.md:252
+#: manual/tutorial/core.md:259
 msgid "**Euler conventions.** `from_euler` defaults to `\"XYZ\"` and `to_euler` to extrinsic `\"ZYX\"`. Name both explicitly. Avoid `from_euler` with `\"ZYX\"` or `\"YZX\"`, `to_euler` with `\"XZY\"` extrinsic or `\"YZX\"` intrinsic, and results near gimbal lock ($|\\text{pitch}| \\approx 90^\\circ$), which have known issues listed in the [API](../api/core.md#quaterniontoeuler). Near gimbal lock `to_euler` also prints a warning line to standard output."
 msgstr "**欧拉角约定。** `from_euler` 默认为 `\"XYZ\"`，`to_euler` 默认为外旋 `\"ZYX\"`。请显式写出两者。避免使用 `\"ZYX\"` 或 `\"YZX\"` 的 `from_euler`、外旋 `\"XZY\"` 或内旋 `\"YZX\"` 的 `to_euler`，以及接近万向节锁（$|\\text{pitch}| \\approx 90^\\circ$）的结果，这些都有 [API](../api/core.md#quaterniontoeuler) 中列出的已知问题。接近万向节锁时，`to_euler` 还会向标准输出打印一行警告。"
 
-#: manual/tutorial/core.md:253
-msgid "**Fractional powers.** `pow_by_T` is wrong for quaternions with a negative scalar part; negate the quaternion first when it represents a rotation."
-msgstr "**分数次幂。** 对标量部为负的四元数，`pow_by_T` 的结果是错误的；当它表示旋转时，请先对其取负。"
+#: manual/tutorial/core.md:260
+msgid "**Fractional powers.** `pow_by_T` is wrong for quaternions with a negative scalar part (negate the quaternion first when it represents a rotation), and it can return NaN for pure quaternions ($w = 0$)."
+msgstr "**分数次幂。** 对标量部为负的四元数，`pow_by_T` 的结果是错误的（当它表示旋转时，请先对其取负）；对纯四元数（$w = 0$）它还可能返回 NaN。"
 
-#: manual/tutorial/core.md:254
+#: manual/tutorial/core.md:261
+msgid "**Extreme exponents.** `pow_by_int(-2147483648)` never returns; the smallest `Int` has no positive counterpart."
+msgstr "**极端指数。** `pow_by_int(-2147483648)` 永不返回；最小的 `Int` 没有对应的正数。"
+
+#: manual/tutorial/core.md:262
 msgid "**Own component types.** `DoubleConvert` is not open for implementation outside this package, so only `Int` and `Double` work with the functions that need it."
 msgstr "**自定义分量类型。** `DoubleConvert` 不允许在本包之外实现，因此只有 `Int` 与 `Double` 能用于需要它的函数。"
 
-#: manual/tutorial/core.md:256
+#: manual/tutorial/core.md:264
 msgid "Next steps"
 msgstr "后续阅读"
 
-#: manual/tutorial/core.md:258
+#: manual/tutorial/core.md:266
 msgid "The [core API](../api/core.md) lists every function with its exact signature and edge cases."
 msgstr "[core API](../api/core.md) 列出了每个函数的精确签名与边界情况。"
 
-#: manual/tutorial/core.md:259
+#: manual/tutorial/core.md:267
 msgid "The [core design](../design/core.md) derives the Hamilton product, the rotation formula, slerp and the Euler-angle extraction."
 msgstr "[core 设计](../design/core.md) 推导了 Hamilton 积、旋转公式、slerp 与欧拉角提取。"
 
-#: manual/tutorial/core.md:260
+#: manual/tutorial/core.md:268
 msgid "[luna-generic](https://lunaflow.cn/en/luna-generic/) defines the `Ring`, `Inverse` and `Conjugate` traits used here."
 msgstr "[luna-generic](https://lunaflow.cn/en/luna-generic/) 定义了这里用到的 `Ring`、`Inverse` 与 `Conjugate` trait。"
+
+#~ msgid "This page lists every public item of the package `Luna-Flow/quaternion` (source root `src`), grouped by purpose. The [generated interface](../../../src/pkg.generated.mbti) is the authority for signatures. The examples import the package under its default alias `@quaternion` and luna-generic as `@lf_alg`:"
+#~ msgstr "本页按用途分组列出包 `Luna-Flow/quaternion`（源码根目录 `src`）的全部公开项。签名以[生成的接口文件](../../../src/pkg.generated.mbti)为准。示例以默认别名 `@quaternion` 导入本包，并以 `@lf_alg` 导入 luna-generic："
+
+#~ msgid "The mathematics behind the operations is derived in the [core design](../design/core.md); the [core tutorial](../tutorial/core.md) walks through typical tasks."
+#~ msgstr "各运算背后的数学推导见 [core 设计](../design/core.md)；[core 教程](../tutorial/core.md)则演示常见任务。"
+
+#~ msgid "[!WARNING] Known issue: `pow_by_T` recovers the angle as $\\varphi = \\arcsin|\\hat{\\mathbf v}|$, which lies in $[0, \\pi/2]$. It is wrong when the scalar part is negative ($\\varphi > \\pi/2$): the function then uses $\\pi - \\varphi$, so for example `q.pow_by_T(1.0)` returns `q` with the sign of its scalar part flipped. Use `pow_by_int` for integer exponents, and negate `q` first (which does not change the rotation) when you need fractional powers of a rotation with a negative scalar part."
+#~ msgstr "[!WARNING] 已知问题：`pow_by_T` 以 $\\varphi = \\arcsin|\\hat{\\mathbf v}|$ 求角，其值落在 $[0, \\pi/2]$。当标量部为负（$\\varphi > \\pi/2$）时结果错误：此时函数使用的是 $\\pi - \\varphi$，例如 `q.pow_by_T(1.0)` 会返回标量部符号被翻转的 `q`。整数指数请使用 `pow_by_int`；若需要标量部为负的旋转的分数次幂，请先对 `q` 取负（这不改变旋转）。"
+
+#~ msgid "In the gimbal-lock branch the returned angles do not reproduce the input rotation: the first angle is computed from a formula that does not isolate the remaining degree of freedom. Treat results with $|b| \\approx \\pi/2$ as unreliable."
+#~ msgstr "在万向节锁分支中，返回的角不能复现输入的旋转：第一个角所用的公式没有分离出剩余的自由度。请把 $|b| \\approx \\pi/2$ 时的结果视为不可靠。"
+
+#~ msgid "`slerp` falls back to normalized linear interpolation when $\\cos\\Omega > 0.9995$, that is $\\Omega < 0.0316$ rad. There $\\sin\\Omega < 0.032$, and dividing by it would amplify rounding errors in the weights; the linear path, on the other hand, deviates from the arc by less than $5.1 \\times 10^{-7}$ rad on $S^3$ (about $10^{-6}$ rad of rotation angle) at the threshold, and less below it."
+#~ msgstr "当 $\\cos\\Omega > 0.9995$，即 $\\Omega < 0.0316$ rad 时，`slerp` 退回归一化线性插值。此时 $\\sin\\Omega < 0.032$，除以它会放大权重中的舍入误差；而在阈值处，线性路径与圆弧在 $S^3$ 上的偏差小于 $5.1 \\times 10^{-7}$ rad（约合旋转角 $10^{-6}$ rad），低于阈值时更小。"
+
+#~ msgid "The gimbal-lock branch of the Euler extraction does not isolate the free angle (see above), and it reports the warning with `println`."
+#~ msgstr "欧拉角提取的万向节锁分支没有分离出自由角（见上文），并用 `println` 输出警告。"
+
+#~ msgid "`pow_by_T` computes $\\varphi$ with `asin`, which cannot exceed $\\pi/2$; $\\operatorname{atan2}(\\lvert\\mathbf u\\rvert, w)$ would cover $[0, \\pi]$."
+#~ msgstr "`pow_by_T` 用 `asin` 计算 $\\varphi$，其值不超过 $\\pi/2$；改用 $\\operatorname{atan2}(\\lvert\\mathbf u\\rvert, w)$ 即可覆盖 $[0, \\pi]$。"
+
+#~ msgid "Packages"
+#~ msgstr "包"
+
+#~ msgid "The module `Luna-Flow/quaternion` has a single package at the source root `src`, documented as `core`:"
+#~ msgstr "模块 `Luna-Flow/quaternion` 只有一个位于源码根目录 `src` 的包，文档中称为 `core`："
+
+#~ msgid "Package"
+#~ msgstr "包"
+
+#~ msgid "Import path"
+#~ msgstr "导入路径"
+
+#~ msgid "Contents"
+#~ msgstr "内容"
+
+#~ msgid "`Quaternion[T]`, its arithmetic and rotation functions, the `DoubleConvert` trait"
+#~ msgstr "`Quaternion[T]`、其算术与旋转函数、`DoubleConvert` trait"
+
+#~ msgid "[API](api/core.md) · [tutorial](tutorial/core.md) · [design](design/core.md)"
+#~ msgstr "[API](api/core.md) · [教程](tutorial/core.md) · [设计](design/core.md)"
+
+#~ msgid "At a glance"
+#~ msgstr "概览"
+
+#~ msgid "`Quaternion[T]` is generic in its component type. Ring operations work over exact types such as `Int`; functions that need square roots or trigonometry compute in `Double` through `DoubleConvert`, which is implemented for `Int` and `Double`."
+#~ msgstr "`Quaternion[T]` 对其分量类型是泛型的。环运算可在 `Int` 等精确类型上进行；需要平方根或三角函数的函数经由 `DoubleConvert` 在 `Double` 中计算，该 trait 为 `Int` 与 `Double` 实现。"
+
+#~ msgid "`+`, `-`, unary `-` and `*` (the Hamilton product) are the usual operations. `*` is not commutative."
+#~ msgstr "`+`、`-`、一元 `-` 与 `*`（Hamilton 积）是常规运算。`*` 不可交换。"
+
+#~ msgid "Where to start"
+#~ msgstr "从哪里开始"
+
+#~ msgid "**Contributing or reviewing:** the [design page](design/core.md) derives the Hamilton product, the rotation formula, division, slerp and the Euler-angle extraction from Hamilton's relations, explains each design decision, and lists the places where the implementation currently deviates from the mathematics."
+#~ msgstr "**贡献或审阅：** [设计页面](design/core.md)从 Hamilton 关系出发推导 Hamilton 积、旋转公式、除法、slerp 与欧拉角提取，解释每个设计决策，并列出实现目前与数学存在偏差之处。"
+
+#~ msgid "Installation and toolchain"
+#~ msgstr "安装与工具链"
+
+#~ msgid "The library needs MoonBit with `moonc` 0.10 or later and depends on `Luna-Flow/luna-generic` 0.3.3. Add it to a module with:"
+#~ msgstr "本库需要 `moonc` 0.10 或更高版本的 MoonBit，并依赖 `Luna-Flow/luna-generic` 0.3.3。用下面的命令把它加入模块："
+
+#~ msgid "It prints:"
+#~ msgstr "它输出："
 
 #~ msgid "`quaternion` is the Luna-Flow library for quaternions, the extension of complex numbers that is useful for 3D rotations and orientations. It provides arithmetic, normalization, rotation, interpolation and Euler-angle conversion. Everything lives in one package, `Luna-Flow/quaternion`, under `src`."
 #~ msgstr "`quaternion` 是 Luna-Flow 的四元数库。四元数是复数的扩展，适用于三维旋转与姿态表示。本库提供算术运算、归一化、旋转、插值和欧拉角转换。所有内容都位于 `src` 下的单个包 `Luna-Flow/quaternion` 中。"
