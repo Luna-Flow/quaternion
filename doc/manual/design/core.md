@@ -11,6 +11,14 @@ The package gives MoonBit one quaternion type, `Quaternion[T]`, that serves two 
 
 Both are served by the same generic type. Each operation asks only for the traits of `T` it needs, so ring arithmetic works over `Int` exactly, while the operations that need square roots or trigonometry go through `Double`.
 
+## Constraints
+
+- The only Luna-Flow dependency is luna-generic 0.3.3, which provides algebraic traits (`Ring`, `Inverse`, `Conjugate`, `Field`, ...) but no analytic ones: there is no trait for square roots or trigonometric functions.
+- luna-generic's `Field` is commutative, while $\mathbb H$ is not.
+- MoonBit traits have only the `Self` parameter, so "a scalar type with `sqrt` and `sin`" cannot be expressed as a relation between `T` and another type; it has to be a trait on `T` itself.
+- Since MoonBit 0.10, trait implementations do not become methods unless they are promoted explicitly.
+- The type is used in rotation-heavy code, so the common operations must be branch-free and allocation-light: no `Result`, no checks on unit length.
+
 ## Mathematical background
 
 ### Quaternions as a real algebra
@@ -231,6 +239,15 @@ Three consequences shape the API:
   $$
   which equals the formula above exactly when $1 - 2|\mathbf u|^2 = w^2 - |\mathbf u|^2$, that is when $w^2 + |\mathbf u|^2 = 1$. This is why `rotate` requires a unit quaternion: it needs no division, but it relies on the norm being 1.
 
+  For a non-zero $q$ that is not unit, write $q = \lambda\hat q$ with $\lambda = |q|$ and $\hat q = (\hat w, \hat{\mathbf u})$ unit. Every term of the expansion except $\mathbf v$ is quadratic in the components of $q$, so
+  $$
+  \begin{aligned}
+  \mathtt{rotate}(q, \mathbf v) &= \mathbf v + \lambda^2\big(-2|\hat{\mathbf u}|^2\mathbf v + 2(\hat{\mathbf u}\cdot\mathbf v)\,\hat{\mathbf u} + 2\hat w\,\hat{\mathbf u}\times\mathbf v\big) \\
+  &= \mathbf v + \lambda^2\big(R(\hat q)\,\mathbf v - \mathbf v\big),
+  \end{aligned}
+  $$
+  where $R(\hat q)\,\mathbf v$ is the correct rotation. The result is not the rotated vector scaled: components along the axis are unchanged, and the rest is moved $\lambda^2$ times as far as it should be. With $\lambda = 1 + \delta$ the error is $(2\delta + \delta^2)\,|R(\hat q)\mathbf v - \mathbf v| \le 2(2\delta + \delta^2)\,|\mathbf v|$.
+
 The same formula, applied to the basis vectors, gives the rotation matrix of a unit quaternion:
 
 $$
@@ -385,7 +402,7 @@ $$
 
 [^higham]: N. J. Higham, *Accuracy and Stability of Numerical Algorithms*, 2nd ed., SIAM 2002, §3.1: $\lvert\mathrm{fl}(x^{\mathsf T}y) - x^{\mathsf T}y\rvert \le \gamma_n \lvert x\rvert^{\mathsf T}\lvert y\rvert$ for any order of summation.
 
-A product of $n$ unit quaternions therefore has norm $1 + \delta$ with $|\delta| \lesssim 8nu$ to first order, where $u = 2^{-53} \approx 1.1 \times 10^{-16}$; in practice the errors partly cancel and the drift is smaller. Because `rotate` assumes $|q| = 1$, a drifted quaternion scales vectors by about $1 + 2\delta$. Long chains should call `normalize` periodically; its result has norm $1$ within a few units of $u$ (for example $1 + 2i + 3j + 4k$ normalizes to a quaternion of computed norm $0.9999999999999999$).
+A product of $n$ unit quaternions therefore has norm $1 + \delta$ with $|\delta| \lesssim 8nu$ to first order, where $u = 2^{-53} \approx 1.1 \times 10^{-16}$; in practice the errors partly cancel and the drift is smaller. Because `rotate` assumes $|q| = 1$, a drifted quaternion moves each vector by up to about $4\delta\,|\mathbf v|$ away from its correct image (see [unit quaternions and rotations](#unit-quaternions-and-rotations)). Long chains should call `normalize` periodically; its result has norm $1$ within a few units of $u$ (for example $1 + 2i + 3j + 4k$ normalizes to a quaternion of computed norm $0.9999999999999999$).
 
 ### Division by zero and degenerate inputs
 
@@ -403,13 +420,28 @@ Over `Int`, `inv` is zero unless $|q|^2 = 1$, and every function that goes throu
 
 ### Thresholds
 
-`slerp` falls back to normalized linear interpolation when $\cos\Omega > 0.9995$, that is $\Omega < 0.0316$ rad. There $\sin\Omega < 0.032$, and dividing by it would amplify rounding errors in the weights; the linear path, on the other hand, deviates from the arc by less than $5.1 \times 10^{-7}$ rad on $S^3$ (about $10^{-6}$ rad of rotation angle) at the threshold, and less below it.
+`slerp` falls back to normalized linear interpolation when $\cos\Omega > 0.9995$, that is $\Omega < 0.0316$ rad. There $\sin\Omega < 0.032$, and dividing by it would amplify rounding errors in the weights. The normalized linear path stays on the same great circle, so its only error is the angle it reaches. The point $(1 - t)\,q_1 + t\,q_2$ has, in the basis $q_1, q_\perp$ of the arc, the coordinates $(1 - t + t\cos\Omega,\ t\sin\Omega)$, so it sits at the angle
+
+$$
+\varphi(t) = \operatorname{atan2}\big(t\sin\Omega,\ 1 - t + t\cos\Omega\big)
+$$
+
+instead of $t\Omega$. Expanding $\sin\Omega = \Omega - \Omega^3/6$, $\cos\Omega = 1 - \Omega^2/2$ and $\arctan x = x - x^3/3$ to third order,
+
+$$
+\begin{aligned}
+\frac{t\sin\Omega}{1 - t + t\cos\Omega} &= t\Omega - \frac{t\Omega^3}{6} + \frac{t^2\Omega^3}{2} + O(\Omega^5), \\
+\varphi(t) - t\Omega &= \Omega^3\Big(-\frac{t}{6} + \frac{t^2}{2} - \frac{t^3}{3}\Big) + O(\Omega^5) = -\frac{\Omega^3}{6}\,t(1 - t)(1 - 2t) + O(\Omega^5).
+\end{aligned}
+$$
+
+The cubic $t(1-t)(1-2t)$ has its largest absolute value $\sqrt 3/18$ on $[0, 1]$ at $t = (3 \mp \sqrt 3)/6$, so the error is at most $\Omega^3\sqrt 3/108 \approx 5.07 \times 10^{-7}$ rad on $S^3$ at the threshold (about $10^{-6}$ rad of rotation angle, because rotation angles are twice the angles on $S^3$), and smaller below it.
 
 The Euler conversions treat $|\sin b| \ge 0.9998$ as gimbal lock. Rounding $b$ to $\pm\pi/2$ there costs up to $\pi/2 - \arcsin 0.9998 \approx 0.020$ rad in the middle angle.
 
 ### Complexity
 
-Every operation is $O(1)$ on four components: a Hamilton product costs 16 multiplications and 12 additions, `rotate` 18 multiplications and 12 additions. `pow_by_int(n)` uses $O(\log |n|)$ products and recursion depth.
+Every operation is $O(1)$ on four components: a Hamilton product costs 16 multiplications and 12 additions or subtractions, `rotate` 18 multiplications and 12 additions or subtractions (plus one addition to form the constant 2). `pow_by_int(n)` uses $O(\log |n|)$ products and recursion depth.
 
 ### Known deviations
 
@@ -417,8 +449,10 @@ These are deviations of the current implementation from the mathematics above. T
 
 - `from_euler` with `"ZYX"` or `"YZX"` does not evaluate a product of axis rotations; the results are not unit quaternions. `"ZXY"` takes its angles by position while `"YXZ"` takes them by axis.
 - `to_euler_external_XZY` (and therefore `to_euler_internal_YZX`) evaluates the intrinsic X-Y-Z extraction instead of the named sequence.
-- The gimbal-lock branch of the Euler extraction does not isolate the free angle (see above), and it reports the warning with `println`.
-- `pow_by_T` computes $\varphi$ with `asin`, which cannot exceed $\pi/2$; $\operatorname{atan2}(\lvert\mathbf u\rvert, w)$ would cover $[0, \pi]$.
+- The gimbal-lock branch of the Euler extraction does not isolate the free angle (see above), and it reports the warning with `println`. For extrinsic XYZ it reads $\operatorname{atan2}(R_{13}, R_{22})$; at exact lock both entries equal $\cos(a \mp c)$, so the first angle is always $\pm\pi/4$ or $\pm3\pi/4$. For $0.9998 \le |\sin b| < 1$ the third angle is still determined but is set to $0$.
+- `pow_by_T` computes $\varphi$ with `asin`, which cannot exceed $\pi/2$; $\operatorname{atan2}(\lvert\mathbf u\rvert, w)$ would cover $[0, \pi]$. The argument of `asin` is $|\mathbf u|/|q|$ computed after `normalize`; for a pure quaternion it can round to $1 + 2^{-52}$, where `asin` returns NaN. `atan2` would also remove this failure.
+- `pow_by_int` negates a negative exponent; for the smallest `Int` the negation overflows to the same value and the call never returns.
+- The `Ring` instance is declared for every `T : Ring`, but the Hamilton product is associative only when `T` is commutative, so `Quaternion[Quaternion[T]]` is a `Ring` instance that breaks associativity (the [API](../api/core.md#trait-implementations) shows a counterexample).
 
 ## Alternatives rejected
 

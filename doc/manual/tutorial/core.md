@@ -2,11 +2,25 @@
 
 This tutorial gets you from an empty project to rotating vectors, composing and interpolating orientations, and converting them to Euler angles with `Luna-Flow/quaternion`. It ends with generic code over luna-generic traits and the mistakes that are easy to make. The mathematics is kept light here; the [core design](../design/core.md) derives it.
 
+| I want to | Use |
+| --- | --- |
+| build a quaternion from its four components | `Quaternion::from_vec((w, x, y, z))` |
+| build the rotation by an angle around an axis | `from_axis_angle(axis, angle)` |
+| rotate a 3D vector | `q.rotate(v)` with a unit `q` |
+| apply `first`, then `second` | `second * first` |
+| undo a rotation | `q.conjugate()` (unit `q`) or `q.inv()` |
+| find the rotation from `from` to `to` | `to / from` |
+| compare two orientations | `q.dot(r).abs()`, not `==` |
+| interpolate between orientations | `slerp(q1, q2, t)` |
+| convert to or from Euler angles | `from_euler` and `to_euler`, with the order named explicitly |
+| keep a long product of rotations unit | `q.normalize()` |
+| write ring-generic code that accepts quaternions | a function with `R : @lf_alg.Ring` |
+
 ## Quick start
 
 Add the module to your project:
 
-```sh
+```bash
 moon add Luna-Flow/quaternion@0.2.0
 ```
 
@@ -23,19 +37,12 @@ import {
 The smallest useful program rotates the x axis by a quarter turn around the z axis:
 
 ```moonbit
-fn main {
+test "quick start" {
   let quarter_turn = @quaternion.from_axis_angle((0.0, 0.0, 1.0), @math.PI / 2.0)
-  println(quarter_turn)
+  inspect(quarter_turn, content="0.7071067811865476 + 0i + 0j + 0.7071067811865475k")
   let (x, y, z) = quarter_turn.rotate((1.0, 0.0, 0.0))
-  println("(\{x}, \{y}, \{z})")
+  inspect("(\{x}, \{y}, \{z})", content="(2.220446049250313e-16, 1, 0)")
 }
-```
-
-It prints:
-
-```text
-0.7071067811865476 + 0i + 0j + 0.7071067811865475k
-(2.220446049250313e-16, 1, 0)
 ```
 
 The x axis lands on the y axis, up to a rounding error of about $2 \times 10^{-16}$ in the first coordinate.
@@ -221,7 +228,7 @@ Functions that need square roots or trigonometry (`magnitude`, `normalize`, `inv
 
 ### Long chains of rotations
 
-Every Hamilton product in `Double` rounds, so the norm of a product of many unit quaternions drifts away from 1, by roughly $n \cdot 10^{-16}$ after $n$ products. `rotate` then scales vectors slightly. Renormalize now and then:
+Every Hamilton product in `Double` rounds, so the norm of a product of many unit quaternions drifts away from 1, by at most about $n \cdot 10^{-15}$ after $n$ products and usually much less. `rotate` assumes a unit quaternion, so a drifted one rotates vectors slightly too far or not far enough. Renormalize now and then:
 
 ```moonbit
 test "renormalize" {
@@ -250,7 +257,8 @@ All operations work on four scalars and run in constant time, except `pow_by_int
 - **Division by zero.** `inv`, `/` and `left_div` divide by $|r|^2$. A zero quaternion gives NaN components over `Double` and a runtime trap over `Int`. `normalize` and `pow_by_T` return the zero quaternion unchanged.
 - **`Int` components and transcendental functions.** `magnitude`, `normalize`, `inv` and friends truncate over `Int`; `inv` of anything but a unit is zero.
 - **Euler conventions.** `from_euler` defaults to `"XYZ"` and `to_euler` to extrinsic `"ZYX"`. Name both explicitly. Avoid `from_euler` with `"ZYX"` or `"YZX"`, `to_euler` with `"XZY"` extrinsic or `"YZX"` intrinsic, and results near gimbal lock ($|\text{pitch}| \approx 90^\circ$), which have known issues listed in the [API](../api/core.md#quaterniontoeuler). Near gimbal lock `to_euler` also prints a warning line to standard output.
-- **Fractional powers.** `pow_by_T` is wrong for quaternions with a negative scalar part; negate the quaternion first when it represents a rotation.
+- **Fractional powers.** `pow_by_T` is wrong for quaternions with a negative scalar part (negate the quaternion first when it represents a rotation), and it can return NaN for pure quaternions ($w = 0$).
+- **Extreme exponents.** `pow_by_int(-2147483648)` never returns; the smallest `Int` has no positive counterpart.
 - **Own component types.** `DoubleConvert` is not open for implementation outside this package, so only `Int` and `Double` work with the functions that need it.
 
 ## Next steps

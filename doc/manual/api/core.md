@@ -1,6 +1,12 @@
 # core API
 
-This page lists every public item of the package `Luna-Flow/quaternion` (source root `src`), grouped by purpose. The [generated interface](../../../src/pkg.generated.mbti) is the authority for signatures. The examples import the package under its default alias `@quaternion` and luna-generic as `@lf_alg`:
+## Purpose
+
+The package `Luna-Flow/quaternion` (source root `src`) provides `Quaternion[T]`, Hamilton's quaternions over a component type `T`, with ring arithmetic, right and left division, norms, rotation of 3D vectors, spherical interpolation and Euler-angle conversion. This page lists every public item, grouped by purpose. The [generated interface](../../../src/pkg.generated.mbti) is the authority for signatures. The mathematics behind the operations is derived in the [core design](../design/core.md); the [core tutorial](../tutorial/core.md) walks through typical tasks.
+
+## Importing
+
+Import the package under its default alias `@quaternion`. The examples on this page also use luna-generic as `@lf_alg` and `moonbitlang/core/math` for `@math.PI`:
 
 ```moonbit nocheck
 import {
@@ -9,8 +15,6 @@ import {
   "moonbitlang/core/math",
 }
 ```
-
-The mathematics behind the operations is derived in the [core design](../design/core.md); the [core tutorial](../tutorial/core.md) walks through typical tasks.
 
 ## The quaternion type
 
@@ -221,7 +225,7 @@ It computes $q\,\bar r / |r|^2$ with one division per component and no intermedi
 pub fn[T : Add + Mul + Div + Sub] Quaternion::left_div(Self[T], Self[T]) -> Self[T]
 ```
 
-It computes $\bar r\,q / |r|^2$. The two quotients differ by $2\,(\mathbf v_q \times \mathbf v_r)/|r|^2$, so they agree exactly when the vector parts are parallel.
+It computes $\bar r\,q / |r|^2$. The two quotients have the same scalar part, and $q / r - r^{-1} q = -2\,(\mathbf v_q \times \mathbf v_r)/|r|^2$, so they agree exactly when the vector parts are parallel.
 
 ```moonbit
 test "right and left division" {
@@ -281,7 +285,10 @@ test "conjugate and inv" {
 pub fn[T : @luna-generic.Num + Mul + Add + Sub + Div] Quaternion::pow_by_int(Self[T], Int) -> Self[T]
 ```
 
-`n = 0` gives the identity and a negative `n` gives $(q^{-1})^{|n|}$. The power is computed by repeated squaring with $O(\log |n|)$ multiplications. Powers of one quaternion commute with each other, so the order of the factors does not matter.
+`n = 0` gives the identity and a negative `n` gives $(q^{-1})^{|n|}$. The power is computed by repeated squaring with $O(\log |n|)$ multiplications. Powers of one quaternion commute with each other, so the order of the factors does not matter. Over `Int`, a negative exponent goes through `inv`, which truncates (see `Quaternion::inv`).
+
+> [!WARNING]
+> `pow_by_int(-2147483648)` does not terminate: negating the smallest `Int` overflows back to itself, so the negative-exponent branch calls itself forever. Every other exponent is handled.
 
 ### `Quaternion::pow_by_T`
 
@@ -303,7 +310,12 @@ test "powers" {
 ```
 
 > [!WARNING]
-> Known issue: `pow_by_T` recovers the angle as $\varphi = \arcsin|\hat{\mathbf v}|$, which lies in $[0, \pi/2]$. It is wrong when the scalar part is negative ($\varphi > \pi/2$): the function then uses $\pi - \varphi$, so for example `q.pow_by_T(1.0)` returns `q` with the sign of its scalar part flipped. Use `pow_by_int` for integer exponents, and negate `q` first (which does not change the rotation) when you need fractional powers of a rotation with a negative scalar part.
+> Known issues: `pow_by_T` recovers the angle as $\varphi = \arcsin(|\mathbf u| / |q|)$ for $q = (w, \mathbf u)$, which lies in $[0, \pi/2]$.
+>
+> - It is wrong when the scalar part is negative ($\varphi > \pi/2$): the function then uses $\pi - \varphi$, so for example `q.pow_by_T(1.0)` returns `q` with the sign of its scalar part flipped.
+> - For a pure quaternion ($w = 0$), the computed $|\mathbf u| / |q|$ can round to $1 + 2^{-52}$, and `asin` of it is NaN, so every component of the result is NaN. About 3% of random pure quaternions hit this, for example `Quaternion::from_vec((0.0, -2.523514049577659, -2.0461018341440185, 2.794490941831807))`.
+>
+> Use `pow_by_int` for integer exponents, and negate `q` first (which does not change the rotation) when you need fractional powers of a rotation with a negative scalar part.
 
 ## Norms and inner product
 
@@ -368,7 +380,13 @@ test "norms" {
 pub fn[T : @luna-generic.Num + Sub] Quaternion::rotate(Self[T], (T, T, T)) -> (T, T, T)
 ```
 
-The implementation uses $\mathbf t = 2\,\mathbf u \times \mathbf v$ and $\mathbf v' = \mathbf v + w\,\mathbf t + \mathbf u \times \mathbf t$ for $q = (w, \mathbf u)$, which needs no division. That formula equals $q v q^{-1}$ only when $|q| = 1$; `rotate` does not normalize for you. The rotation follows the right-hand rule around the axis of `q`.
+The implementation uses $\mathbf t = 2\,\mathbf u \times \mathbf v$ and $\mathbf v' = \mathbf v + w\,\mathbf t + \mathbf u \times \mathbf t$ for $q = (w, \mathbf u)$, which needs no division. That formula equals $q v q^{-1}$ only when $|q| = 1$; `rotate` does not normalize for you. For any non-zero `q` it returns
+
+$$
+\mathbf v + |q|^2\,\big(R(\hat q)\,\mathbf v - \mathbf v\big), \qquad \hat q = q / |q| ,
+$$
+
+where $R(\hat q)\,\mathbf v$ is the correct rotation, so a norm off by $\delta$ moves the result by about $2\delta\,|R(\hat q)\mathbf v - \mathbf v| \le 4\delta\,|\mathbf v|$ (the [design](../design/core.md#unit-quaternions-and-rotations) derives this). The rotation follows the right-hand rule around the axis of `q`.
 
 ```moonbit
 test "rotate" {
@@ -419,7 +437,7 @@ pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quate
 - extrinsic (`external=true`), order $ABC$ with angles $(a, b, c)$: rotate about the fixed axis $A$ by $a$, then the fixed $B$ by $b$, then the fixed $C$ by $c$, so $q = \pm\,q_C(c)\,q_B(b)\,q_A(a)$;
 - intrinsic (`external=false`): rotate about $A$, then about the moved $B$, then the moved $C$, so $q = \pm\,q_A(a)\,q_B(b)\,q_C(c)$.
 
-The supported orders are `"XYZ"`, `"XZY"`, `"YZX"` and `"ZYX"`; any other string aborts with `order error. Please check input format and retry`. The middle angle lies in $[-\pi/2, \pi/2]$ and the outer angles in $(-\pi, \pi]$.
+The supported orders are `"XYZ"`, `"XZY"`, `"YZX"` and `"ZYX"`; any other string aborts with `order error. Please check input format and retry`. The middle angle lies in $[-\pi/2, \pi/2]$ and the outer angles, computed with `atan2`, in $[-\pi, \pi]$. The zero quaternion gives `(0, 0, 0)`.
 
 When the sine of the middle angle reaches $|\sin b| \ge 0.9998$ (about $88.85^\circ$), the decomposition is near gimbal lock: the function prints a `UserWarning: Gimbal lock detected...` line to standard output, sets the middle angle to exactly $\pm\pi/2$ and the third angle to $0$.
 
@@ -437,8 +455,8 @@ test "to_euler" {
 > Known issues in the current implementation:
 >
 > - `order="XZY"` with `external=true`, and `order="YZX"` with `external=false`, do not compute the named sequence; they return the angles of intrinsic X-Y-Z (in the order X, Y, Z for the first and Z, Y, X for the second). The other six combinations are correct away from gimbal lock.
-> - In the gimbal-lock branch the returned angles do not reproduce the input rotation: the first angle is computed from a formula that does not isolate the remaining degree of freedom. Treat results with $|b| \approx \pi/2$ as unreliable.
-> - Between $|\sin b| = 0.9998$ and $1$ the middle angle is snapped to $\pm\pi/2$, an error of up to about $0.02$ rad.
+> - In the gimbal-lock branch the returned angles do not reproduce the input rotation. For extrinsic `"XYZ"` (and so intrinsic `"ZYX"`) the first angle is $\operatorname{atan2}(R_{13}, R_{22})$, and at exact lock both entries equal $\cos(a \mp c)$, so it is always $\pm\pi/4$ or $\pm 3\pi/4$. For the other orders it is the regular-branch formula, whose two arguments are rounding noise at exact lock. Treat results with $|b| \approx \pi/2$ as unreliable.
+> - Between $|\sin b| = 0.9998$ and $1$ the middle angle is snapped to $\pm\pi/2$, an error of up to about $0.02$ rad, and the third angle is set to $0$ although it is still determined there, so the result is off by the whole third rotation.
 
 ### `Quaternion::to_euler_external_XYZ`
 
@@ -600,7 +618,23 @@ pub fn[T : Hash] Quaternion::hash(Self[T]) -> Int
 | `@lf_alg.Conjugate` | `Neg` | $\bar q$ |
 | `@lf_alg.Inverse` | `Div + Num` | $\bar q / \lvert q\rvert^2$ |
 
-The `Ring` instance assumes that multiplication of `T` is commutative, as it is for `Int`, `Int64`, `BigInt`, `Float` and `Double`; the Hamilton product is associative only over a commutative ring of scalars. `@lf_alg.Field` is deliberately **not** implemented, because quaternion multiplication is not commutative and luna-generic's `Field` is meant for commutative fields. `@lf_alg.Num` is not implemented either: quaternions have no `signum`/`abs` with the meaning `Num` expects.
+The `Ring` instance assumes that multiplication of `T` is commutative, as it is for `Int`, `Int16`, `Int64`, `BigInt`, `Float` and `Double`; the Hamilton product is associative only over a commutative ring of scalars. `@lf_alg.Field` is deliberately **not** implemented, because quaternion multiplication is not commutative and luna-generic's `Field` is meant for commutative fields. `@lf_alg.Num` is not implemented either: quaternions have no `signum`/`abs` with the meaning `Num` expects. `@lf_alg.MulGroup` is not implemented, although the non-zero quaternions form a group; generic code that needs inverses asks for `Inverse` and `Div` directly.
+
+> [!WARNING]
+> The bound `T : @lf_alg.Ring` does not require commutativity, so `Quaternion[Quaternion[Int]]` type-checks as a `Ring` but is not one: its multiplication is not associative. Use the `Ring` instance only over commutative component types.
+
+```moonbit
+test "nested quaternions are not associative" {
+  let z = @quaternion.Quaternion::from_vec((0, 0, 0, 0))
+  let one = @quaternion.Quaternion::from_vec((1, 0, 0, 0))
+  let i = @quaternion.Quaternion::from_vec((0, 1, 0, 0))
+  let j = @quaternion.Quaternion::from_vec((0, 0, 1, 0))
+  let a = @quaternion.Quaternion::from_vec((i, z, z, z)) // scalar part i
+  let b = @quaternion.Quaternion::from_vec((j, z, z, z)) // scalar part j
+  let c = @quaternion.Quaternion::from_vec((z, one, z, z)) // outer unit
+  assert_true(a * b * c != a * (b * c))
+}
+```
 
 ```moonbit
 ///|
