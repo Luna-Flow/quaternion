@@ -130,6 +130,27 @@ pub impl[T : Add + Mul + Div + Sub] Div for Quaternion[T] with fn div(q, r) {
 }
 
 ///|
+/// Left division: `q.left_div(r) == r.inv() * q`, the solution `x` of
+/// `r * x == q`. Quaternion multiplication is not commutative, so this differs
+/// from `q / r` (right division) in general.
+pub fn[T : Add + Mul + Div + Sub] Quaternion::left_div(
+  self : Quaternion[T],
+  r : Quaternion[T],
+) -> Quaternion[T] {
+  // conj(r) * q / |r|^2
+  let d = r.square_len()
+  let c = cross(r.vec, self.vec)
+  {
+    r: (self.r * r.r + dot(self.vec, r.vec)) / d,
+    vec: (
+      (self.vec.0 * r.r - r.vec.0 * self.r - c.0) / d,
+      (self.vec.1 * r.r - r.vec.1 * self.r - c.1) / d,
+      (self.vec.2 * r.r - r.vec.2 * self.r - c.2) / d,
+    ),
+  }
+}
+
+///|
 /// Negates the quaternion.
 pub impl[T : Neg] Neg for Quaternion[T] with fn neg(self) {
   { r: -self.r, vec: map(self.vec, Neg::neg), }
@@ -198,6 +219,21 @@ test "quaternions form a ring" {
   assert_true(q1 * q2 != q2 * q1)
   inspect((Quaternion::zero() : Quaternion[Int]), content="0 + 0i + 0j + 0k")
   inspect((Quaternion::one() : Quaternion[Int]), content="1 + 0i + 0j + 0k")
+}
+
+///|
+test "division semantics" {
+  let q = Quaternion::from_vec((1.0, 2.0, 3.0, 4.0))
+  let r = Quaternion::from_vec((0.5, -1.0, 2.0, 0.25))
+  let r_inv = @lg.Inverse::inv(r)
+  // `/` is right division: solves `x * r == q`
+  assert_true((q / r * r - q).square_len() < 1.0e-20)
+  assert_true((q / r - q * r_inv).square_len() < 1.0e-20)
+  // `left_div` solves `r * x == q`
+  assert_true((r * q.left_div(r) - q).square_len() < 1.0e-20)
+  assert_true((q.left_div(r) - r_inv * q).square_len() < 1.0e-20)
+  // they differ for non-commuting operands
+  assert_true((q / r - q.left_div(r)).square_len() > 1.0e-6)
 }
 
 ///|

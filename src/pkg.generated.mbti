@@ -27,6 +27,7 @@ pub fn[T : Eq] Quaternion::equal(Self[T], Self[T]) -> Bool
 pub fn[T] Quaternion::from_vec((T, T, T, T)) -> Self[T]
 pub fn[T : Hash] Quaternion::hash(Self[T]) -> Int
 pub fn[T : Div + @luna-generic.Num] Quaternion::inv(Self[T]) -> Self[T]
+pub fn[T : Add + Mul + Div + Sub] Quaternion::left_div(Self[T], Self[T]) -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert] Quaternion::magnitude(Self[T]) -> T
 pub fn[T, U] Quaternion::map(Self[T], (T) -> U) -> Self[U]
 pub fn[T : Mul + Sub + Add] Quaternion::mul(Self[T], Self[T]) -> Self[T]
