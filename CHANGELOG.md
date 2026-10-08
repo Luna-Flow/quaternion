@@ -6,6 +6,12 @@
 
 - `Luna-Flow/luna-generic` is bumped from 0.3.3 to 0.4.0. The package uses only `Zero`, `One`, `Num`, `AddMonoid`, `MulMonoid`, `Semiring`, `Ring`, `Conjugate` and `Inverse`, none of which changed, so no code change is needed and nothing deprecated in 0.4.0 is used. `Quaternion::inv` divides by the squared norm and does not call `Float::inv` or `Double::inv`, so the new abort on zero in those instances does not reach it.
 
+### Documentation
+
+- The manual follows the luna-generic layout: the overview has Install, Pages, exported items and reading paths; the API page has Purpose and Importing sections; the tutorial starts with a task table and a checked quick start; the design page states its constraints.
+- Logic review of the manual. New derivations: what `rotate` returns for a non-unit quaternion ($\mathbf v + |q|^2(R(\hat q)\mathbf v - \mathbf v)$, which replaces the claim that a drifted quaternion scales vectors) and the nlerp error bound $\Omega^3\sqrt 3/108$ behind the `slerp` threshold.
+- Newly documented known issues: `pow_by_T` returns NaN for some pure quaternions, `pow_by_int(-2147483648)` never returns, the gimbal-lock branch of extrinsic XYZ always returns a first angle of $\pm\pi/4$ or $\pm3\pi/4$ and drops a still-determined third angle, and `Quaternion[Quaternion[T]]` is a `Ring` instance whose multiplication is not associative.
+
 ## 0.2.0
 
 ### Breaking

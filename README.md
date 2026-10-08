@@ -39,7 +39,7 @@ The example imports `moonbitlang/core/math` for `@math.PI`.
 
 ## Documentation
 
-The manual, with API reference, tutorial and design notes (including derivations of the Hamilton product, the rotation formula and the Euler-angle conventions), is published at <https://lunaflow.cn/en/quaternion/> with Chinese and Japanese translations. Its English source is in [`doc/manual/`](doc/manual/index.md). The public interface is [`src/pkg.generated.mbti`](src/pkg.generated.mbti), and changes between versions are in [`CHANGELOG.md`](CHANGELOG.md).
+The manual is published at <https://lunaflow.cn/en/quaternion/> with Chinese and Japanese translations. Its English source is in [`doc/manual/`](doc/manual/index.md): the [tutorial](doc/manual/tutorial/core.md), the [API reference](doc/manual/api/core.md) (with warnings for the known issues of the Euler-angle conversions and `pow_by_T`) and the [design notes](doc/manual/design/core.md), which derive the Hamilton product, the rotation formula, slerp and the Euler-angle conventions. The public interface is [`src/pkg.generated.mbti`](src/pkg.generated.mbti), and changes between versions are in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Contributing
 
