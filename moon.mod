@@ -3,7 +3,7 @@ name = "Luna-Flow/quaternion"
 version = "0.2.0"
 
 import {
-  "Luna-Flow/luna-generic@0.3.3",
+  "Luna-Flow/luna-generic@0.4.0",
 }
 
 readme = "README.md"
