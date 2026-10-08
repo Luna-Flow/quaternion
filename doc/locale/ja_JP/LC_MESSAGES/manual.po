@@ -562,8 +562,8 @@ msgid "Constraints"
 msgstr "制約"
 
 #: manual/design/core.md:16
-msgid "The only Luna-Flow dependency is luna-generic 0.3.3, which provides algebraic traits (`Ring`, `Inverse`, `Conjugate`, `Field`, ...) but no analytic ones: there is no trait for square roots or trigonometric functions."
-msgstr "Luna-Flow の依存は luna-generic 0.3.3 だけです。これは代数的なトレイト（`Ring`、`Inverse`、`Conjugate`、`Field` など）を提供しますが、解析的なものはありません。平方根や三角関数のトレイトはありません。"
+msgid "The only Luna-Flow dependency is luna-generic 0.4.0, which provides algebraic traits (`Ring`, `Inverse`, `Conjugate`, `Field`, ...) but no analytic ones: there is no trait for square roots or trigonometric functions."
+msgstr "Luna-Flow の依存は luna-generic 0.4.0 だけです。これは代数的なトレイト（`Ring`、`Inverse`、`Conjugate`、`Field` など）を提供しますが、解析的なものはありません。平方根や三角関数のトレイトはありません。"
 
 #: manual/design/core.md:17
 msgid "luna-generic's `Field` is commutative, while $\\mathbb H$ is not."

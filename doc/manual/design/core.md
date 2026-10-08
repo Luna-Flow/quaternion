@@ -13,7 +13,7 @@ Both are served by the same generic type. Each operation asks only for the trait
 
 ## Constraints
 
-- The only Luna-Flow dependency is luna-generic 0.3.3, which provides algebraic traits (`Ring`, `Inverse`, `Conjugate`, `Field`, ...) but no analytic ones: there is no trait for square roots or trigonometric functions.
+- The only Luna-Flow dependency is luna-generic 0.4.0, which provides algebraic traits (`Ring`, `Inverse`, `Conjugate`, `Field`, ...) but no analytic ones: there is no trait for square roots or trigonometric functions.
 - luna-generic's `Field` is commutative, while $\mathbb H$ is not.
 - MoonBit traits have only the `Self` parameter, so "a scalar type with `sqrt` and `sin`" cannot be expressed as a relation between `T` and another type; it has to be a trait on `T` itself.
 - Since MoonBit 0.10, trait implementations do not become methods unless they are promoted explicitly.

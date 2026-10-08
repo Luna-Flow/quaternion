@@ -562,7 +562,7 @@ msgid "Constraints"
 msgstr ""
 
 #: manual/design/core.md:16
-msgid "The only Luna-Flow dependency is luna-generic 0.3.3, which provides algebraic traits (`Ring`, `Inverse`, `Conjugate`, `Field`, ...) but no analytic ones: there is no trait for square roots or trigonometric functions."
+msgid "The only Luna-Flow dependency is luna-generic 0.4.0, which provides algebraic traits (`Ring`, `Inverse`, `Conjugate`, `Field`, ...) but no analytic ones: there is no trait for square roots or trigonometric functions."
 msgstr ""
 
 #: manual/design/core.md:17
