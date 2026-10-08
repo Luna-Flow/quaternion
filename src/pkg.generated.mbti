@@ -19,16 +19,25 @@ pub fn[T : DoubleConvert + @luna-generic.Num + Mul + Add + Div + Eq] slerp(Quate
 
 // Types and methods
 type Quaternion[T] derive(Eq, Hash, @debug.Debug)
+pub fn[T : Add] Quaternion::add(Self[T], Self[T]) -> Self[T]
+pub fn[T : Neg] Quaternion::conjugate(Self[T]) -> Self[T]
+pub fn[T : Add + Mul + Div + Sub] Quaternion::div(Self[T], Self[T]) -> Self[T]
 pub fn[T : Mul + Add] Quaternion::dot(Self[T], Self[T]) -> T
+pub fn[T : Eq] Quaternion::equal(Self[T], Self[T]) -> Bool
 pub fn[T] Quaternion::from_vec((T, T, T, T)) -> Self[T]
+pub fn[T : Hash] Quaternion::hash(Self[T]) -> Int
+pub fn[T : Div + @luna-generic.Num] Quaternion::inv(Self[T]) -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert] Quaternion::magnitude(Self[T]) -> T
 pub fn[T, U] Quaternion::map(Self[T], (T) -> U) -> Self[U]
+pub fn[T : Mul + Sub + Add] Quaternion::mul(Self[T], Self[T]) -> Self[T]
+pub fn[T : Neg] Quaternion::neg(Self[T]) -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert + Div + Eq] Quaternion::normalize(Self[T]) -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Div + Eq] Quaternion::pow_by_T(Self[T], T) -> Self[T]
 pub fn[T : @luna-generic.Num + Mul + Add + Sub + Div] Quaternion::pow_by_int(Self[T], Int) -> Self[T]
 pub fn[T : @luna-generic.Num + Sub] Quaternion::rotate(Self[T], (T, T, T)) -> (T, T, T)
 pub fn[T : Mul] Quaternion::scale(Self[T], T) -> Self[T]
 pub fn[T : Mul + Add] Quaternion::square_len(Self[T]) -> T
+pub fn[T : Neg + Add] Quaternion::sub(Self[T], Self[T]) -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler(Self[T], order? : String, external? : Bool) -> (T, T, T)
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_XYZ(Self[T]) -> (T, T, T)
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_external_XZY(Self[T]) -> (T, T, T)
@@ -38,6 +47,7 @@ pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quate
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_XZY(Self[T]) -> (T, T, T)
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_YZX(Self[T]) -> (T, T, T)
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_ZYX(Self[T]) -> (T, T, T)
+pub fn[T : Show] Quaternion::to_string(Self[T]) -> String
 pub impl[T : Neg] @luna-generic.Conjugate for Quaternion[T]
 pub impl[T : Div + @luna-generic.Num] @luna-generic.Inverse for Quaternion[T]
 pub impl[T : Add] Add for Quaternion[T]
