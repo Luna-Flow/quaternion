@@ -405,10 +405,8 @@ test "slerp" {
 }
 
 ///|
-/// Converts the quaternion to Euler angles (roll, pitch, yaw) in different Orders, all measured in radians.
-/// 'roll' : the rotation angle around the X-axis
-/// 'pitch' : the rotation angle around the Y-axis
-/// 'yaw' : the rotation angle around the Z-axis
+/// Converts the quaternion to Euler angles in different Orders, all measured in radians.
+/// The k-th returned angle is the rotation around the k-th axis of `order`.
 /// 'order' in {"XYZ", "XZY", "YZX", "ZYX"} 
 /// 'external' is 'true', Result will be External rotation. Otherwise, Result will be Internal rotation
 pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler(
@@ -573,7 +571,7 @@ test "to_euler" {
 }
 
 ///|
-/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XYZ-Order
 pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_XYZ(
   self : Quaternion[T],
 ) -> (T, T, T) {
@@ -582,7 +580,7 @@ pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_
 }
 
 ///|
-/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal YZX-Order
 pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_YZX(
   self : Quaternion[T],
 ) -> (T, T, T) {
@@ -600,7 +598,7 @@ pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_
 }
 
 ///|
-/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal XZY-Order
+/// Converts the quaternion to Euler angles (roll, pitch, yaw) in internal ZYX-Order
 pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler_internal_ZYX(
   self : Quaternion[T],
 ) -> (T, T, T) {
