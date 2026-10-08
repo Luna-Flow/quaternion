@@ -11,138 +11,1463 @@ msgstr ""
 msgid "Generic quaternions for MoonBit with arithmetic, normalization, 3D rotation, interpolation and Euler-angle conversion."
 msgstr "算術演算、正規化、3D 回転、補間、オイラー角変換を備えた MoonBit 向けの汎用四元数ライブラリ。"
 
+#: manual/api/core.md:1
+msgid "core API"
+msgstr "core API"
+
+#: manual/api/core.md:3
+msgid "This page lists every public item of the package `Luna-Flow/quaternion` (source root `src`), grouped by purpose. The [generated interface](../../../src/pkg.generated.mbti) is the authority for signatures. The examples import the package under its default alias `@quaternion` and luna-generic as `@lf_alg`:"
+msgstr "このページでは、パッケージ `Luna-Flow/quaternion`（ソースルート `src`）のすべての公開項目を用途別にまとめます。シグネチャは[生成されたインターフェース](../../../src/pkg.generated.mbti)が正となります。例では本パッケージを既定の別名 `@quaternion` で、luna-generic を `@lf_alg` でインポートします。"
+
+#: manual/api/core.md:13
+msgid "The mathematics behind the operations is derived in the [core design](../design/core.md); the [core tutorial](../tutorial/core.md) walks through typical tasks."
+msgstr "各演算の背後にある数学は [core 設計](../design/core.md) で導出しています。典型的な作業は [core チュートリアル](../tutorial/core.md) で順に説明します。"
+
+#: manual/api/core.md:15
+msgid "The quaternion type"
+msgstr "四元数型"
+
+#: manual/api/core.md:19
+msgid "`Quaternion[T]` is the quaternion $w + xi + yj + zk$ with components of type `T`."
+msgstr "`Quaternion[T]` は、成分の型が `T` である四元数 $w + xi + yj + zk$ です。"
+
+#: manual/api/core.md:25
+msgid "A value stores a scalar (real) part $w$ and a vector part $(x, y, z)$. The type is abstract: build values with `Quaternion::from_vec`, `id`, `Quaternion::zero`, `Quaternion::one`, `from_axis_angle` or `from_euler`, and read them through `Quaternion::dot`, `Quaternion::map`, `to_string` or `Debug`. There are no component accessors (see [reading components](../tutorial/core.md#read-the-components-back))."
+msgstr "値はスカラー（実）部 $w$ とベクトル部 $(x, y, z)$ を保持します。この型は抽象型です。値は `Quaternion::from_vec`、`id`、`Quaternion::zero`、`Quaternion::one`、`from_axis_angle`、`from_euler` で作成し、`Quaternion::dot`、`Quaternion::map`、`to_string`、`Debug` を通して読み取ります。成分のアクセサはありません（[成分の読み取り](../tutorial/core.md#read-the-components-back)を参照）。"
+
+#: manual/api/core.md:27
+msgid "`T` is not constrained by the type. Each function asks only for the traits it uses: addition needs `Add`, the Hamilton product needs `Mul + Sub + Add`, the luna-generic structure needs `@lf_alg.Ring`, and anything with square roots or trigonometry needs `DoubleConvert`."
+msgstr "型そのものは `T` を制約しません。各関数は使用する trait だけを要求します。加算には `Add`、Hamilton 積には `Mul + Sub + Add`、luna-generic の代数構造には `@lf_alg.Ring`、平方根や三角関数を使うものには `DoubleConvert` が必要です。"
+
+#: manual/api/core.md:29
+msgid "The derived `Eq` and `Hash` compare components exactly. `Debug` shows the stored fields:"
+msgstr "導出された `Eq` と `Hash` は成分を厳密に比較します。`Debug` は格納されたフィールドを表示します。"
+
+#: manual/api/core.md:39
+msgid "[!NOTE] `q` and `-q` describe the same rotation, but they are different quaternions and compare unequal. Compare rotations with `Quaternion::dot` instead (see the [tutorial](../tutorial/core.md#compare-two-rotations))."
+msgstr "[!NOTE] `q` と `-q` は同じ回転を表しますが、異なる四元数であり、比較すると等しくありません。回転の比較には代わりに `Quaternion::dot` を使ってください（[チュートリアル](../tutorial/core.md#compare-two-rotations)を参照）。"
+
+#: manual/api/core.md:42
+msgid "Construction"
+msgstr "構築"
+
+#: manual/api/core.md:46
+msgid "`Quaternion::from_vec((w, x, y, z))` builds $w + xi + yj + zk$."
+msgstr "`Quaternion::from_vec((w, x, y, z))` は $w + xi + yj + zk$ を作ります。"
+
+#: manual/api/core.md:52
+msgid "The first tuple element is the scalar part. No trait is required, so any component type works."
+msgstr "タプルの最初の要素がスカラー部です。trait を要求しないため、任意の成分型で使えます。"
+
+#: manual/api/core.md:63
+msgid "`id()` returns the identity $1 + 0i + 0j + 0k$."
+msgstr "`id()` は単位元 $1 + 0i + 0j + 0k$ を返します。"
+
+#: manual/api/core.md:69
+msgid "It equals `Quaternion::one()` but asks for `Num`, which every luna-generic numeric type (`Int`, `Int64`, `Double`, ...) implements. As a rotation it is the identity rotation."
+msgstr "`Quaternion::one()` と等しい値ですが、`Num` を要求します。`Num` は luna-generic のすべての数値型（`Int`、`Int64`、`Double` など）が実装しています。回転としては恒等回転です。"
+
+#: manual/api/core.md:73
+msgid "`Quaternion::zero()` returns the additive identity $0 + 0i + 0j + 0k$."
+msgstr "`Quaternion::zero()` は加法単位元 $0 + 0i + 0j + 0k$ を返します。"
+
+#: manual/api/core.md:81
+msgid "`Quaternion::one()` returns the multiplicative identity $1 + 0i + 0j + 0k$."
+msgstr "`Quaternion::one()` は乗法単位元 $1 + 0i + 0j + 0k$ を返します。"
+
+#: manual/api/core.md:87
+msgid "`zero` and `one` are the luna-generic `Zero` and `One` methods promoted to static methods. They need fewer traits than `id`:"
+msgstr "`zero` と `one` は、静的メソッドとして昇格された luna-generic の `Zero` と `One` のメソッドです。`id` より少ない trait で済みます。"
+
+#: manual/api/core.md:101
+msgid "`from_axis_angle(axis, angle)` returns the unit quaternion of the rotation by `angle` radians around `axis`."
+msgstr "`from_axis_angle(axis, angle)` は、`axis` の周りに `angle` ラジアン回転する単位四元数を返します。"
+
+#: manual/api/core.md:107
+msgid "The result is $\\cos\\frac{\\theta}{2} + \\sin\\frac{\\theta}{2}\\,\\hat n$ with $\\hat n = \\text{axis}/|\\text{axis}|$. The axis does not have to be normalized, but it must be non-zero: a zero axis divides by zero and gives NaN components for `Double`. The rotation is counter-clockwise when you look down the axis toward the origin (right-hand rule). Sines, cosines and the axis length are computed in `Double`, so `T` needs `DoubleConvert`."
+msgstr "結果は $\\cos\\frac{\\theta}{2} + \\sin\\frac{\\theta}{2}\\,\\hat n$（$\\hat n = \\text{axis}/|\\text{axis}|$）です。軸は正規化されていなくても構いませんが、零であってはいけません。零の軸はゼロ除算となり、`Double` では NaN 成分になります。軸に沿って原点を見下ろしたとき、回転は反時計回り（右手の法則）です。正弦・余弦・軸の長さは `Double` で計算するため、`T` には `DoubleConvert` が必要です。"
+
+#: manual/api/core.md:118
+msgid "`from_euler(roll, pitch, yaw, order~)` builds a quaternion from three angles in radians."
+msgstr "`from_euler(roll, pitch, yaw, order~)` は、ラジアン単位の 3 つの角から四元数を作ります。"
+
+#: manual/api/core.md:124
+msgid "`order` defaults to `\"XYZ\"`. Write $q_X(\\alpha)$, $q_Y(\\alpha)$, $q_Z(\\alpha)$ for the rotations by $\\alpha$ around the coordinate axes. The accepted orders compute:"
+msgstr "`order` の既定値は `\"XYZ\"` です。座標軸の周りに $\\alpha$ だけ回転する四元数を $q_X(\\alpha)$、$q_Y(\\alpha)$、$q_Z(\\alpha)$ と書きます。受け付ける順序は次を計算します。"
+
+#: manual/api/core.md:126
+msgid "Result"
+msgstr "結果"
+
+#: manual/api/core.md:126
+msgid "Reading"
+msgstr "読み方"
+
+#: manual/api/core.md:128
+msgid "`\"XYZ\"` (default)"
+msgstr "`\"XYZ\"`（既定）"
+
+#: manual/api/core.md:128
+msgid "intrinsic X-Y-Z, equal to extrinsic Z-Y-X"
+msgstr "内因的 X-Y-Z。外因的 Z-Y-X と同じ"
+
+#: manual/api/core.md:129
+msgid "intrinsic Y-X-Z"
+msgstr "内因的 Y-X-Z"
+
+#: manual/api/core.md:130
+msgid "intrinsic Z-X-Y, angles taken by position"
+msgstr "内因的 Z-X-Y。角は位置で割り当て"
+
+#: manual/api/core.md:131
+msgid "see the warning below"
+msgstr "下の警告を参照"
+
+#: manual/api/core.md:133
+msgid "Any other string aborts with `order error. Please check input format and retry`."
+msgstr "それ以外の文字列は `order error. Please check input format and retry` で中断します。"
+
+#: manual/api/core.md:145
+msgid "[!WARNING] Known issues in the current implementation: `\"ZYX\"` and `\"YZX\"` return quaternions that are not unit length and do not correspond to any product of three axis rotations, so do not use them. `\"YXZ\"` assigns the angles by axis (roll about X, pitch about Y, yaw about Z), while `\"ZXY\"` assigns them by position (the first angle about Z). Prefer `\"XYZ\"`, or compose `from_axis_angle` rotations yourself."
+msgstr "[!WARNING] 現在の実装の既知の問題：`\"ZYX\"` と `\"YZX\"` は単位長でない四元数を返し、どの 3 つの軸回転の積にも対応しないため、使用しないでください。`\"YXZ\"` は角を軸で割り当て（roll は X、pitch は Y、yaw は Z の周り）、`\"ZXY\"` は位置で割り当てます（最初の角が Z の周り）。`\"XYZ\"` を使うか、`from_axis_angle` の回転を自分で合成してください。"
+
+#: manual/api/core.md:148
+msgid "`Quaternion::default` (deprecated method form)"
+msgstr "`Quaternion::default`（非推奨のメソッド形式）"
+
+#: manual/api/core.md:150
+msgid "`Default::default()` returns `id()`; the method form is deprecated, see [Deprecated](#deprecated)."
+msgstr "`Default::default()` は `id()` を返します。メソッド形式は非推奨です。[非推奨](#deprecated)を参照してください。"
+
+#: manual/api/core.md:152
+msgid "Arithmetic"
+msgstr "算術"
+
+#: manual/api/core.md:156
+msgid "`q + r` adds component-wise."
+msgstr "`q + r` は成分ごとに加算します。"
+
+#: manual/api/core.md:164
+msgid "`q - r` subtracts component-wise; it is computed as `q + -r`."
+msgstr "`q - r` は成分ごとに減算します。`q + -r` として計算されます。"
+
+#: manual/api/core.md:172
+msgid "`-q` negates every component."
+msgstr "`-q` はすべての成分の符号を反転します。"
+
+#: manual/api/core.md:180
+msgid "`q * r` is the Hamilton product."
+msgstr "`q * r` は Hamilton 積です。"
+
+#: manual/api/core.md:186
+msgid "In scalar–vector form, $(s_1, \\mathbf v_1)(s_2, \\mathbf v_2) = (s_1 s_2 - \\mathbf v_1\\cdot\\mathbf v_2,\\ s_1\\mathbf v_2 + s_2\\mathbf v_1 + \\mathbf v_1\\times\\mathbf v_2)$. The product is associative and distributes over `+`, but it is **not commutative**: $qr - rq = 2\\,\\mathbf v_q \\times \\mathbf v_r$. For rotations, `q * r` applies `r` first and then `q`."
+msgstr "スカラー–ベクトル形式では $(s_1, \\mathbf v_1)(s_2, \\mathbf v_2) = (s_1 s_2 - \\mathbf v_1\\cdot\\mathbf v_2,\\ s_1\\mathbf v_2 + s_2\\mathbf v_1 + \\mathbf v_1\\times\\mathbf v_2)$ です。この積は結合的で `+` に対して分配的ですが、**可換ではありません**：$qr - rq = 2\\,\\mathbf v_q \\times \\mathbf v_r$。回転としては、`q * r` は先に `r`、次に `q` を適用します。"
+
+#: manual/api/core.md:188
+msgid "The four operators are also available as methods (`q.add(r)`, `q.mul(r)`, ...):"
+msgstr "4 つの演算子はメソッドとしても使えます（`q.add(r)`、`q.mul(r)` など）。"
+
+#: manual/api/core.md:205
+msgid "`q / r` is right division: $q\\,r^{-1}$, the solution $x$ of $x\\,r = q$."
+msgstr "`q / r` は右除算です：$q\\,r^{-1}$、すなわち $x\\,r = q$ の解 $x$。"
+
+#: manual/api/core.md:211
+msgid "It computes $q\\,\\bar r / |r|^2$ with one division per component and no intermediate inverse. Dividing by the zero quaternion divides by zero in `T`: NaN components for `Double`, a runtime trap for `Int`. Over `Int` every component is truncated by integer division, so the result is only meaningful when the divisions are exact."
+msgstr "$q\\,\\bar r / |r|^2$ を、中間の逆元を作らず成分ごとに 1 回の除算で計算します。零四元数で割ると `T` でゼロ除算が起こり、`Double` では NaN 成分、`Int` では実行時トラップになります。`Int` ではすべての成分が整数除算で切り捨てられるため、割り切れる場合にのみ結果に意味があります。"
+
+#: manual/api/core.md:213
+msgid "[!IMPORTANT] Since 0.2.0, `/` is right division. Before 0.2.0 it computed the left quotient $r^{-1} q$; use `Quaternion::left_div` for that."
+msgstr "[!IMPORTANT] 0.2.0 から `/` は右除算です。0.2.0 より前は左商 $r^{-1} q$ を計算していました。その結果が必要なら `Quaternion::left_div` を使ってください。"
+
+#: manual/api/core.md:218
+msgid "`q.left_div(r)` is left division: $r^{-1} q$, the solution $x$ of $r\\,x = q$."
+msgstr "`q.left_div(r)` は左除算です：$r^{-1} q$、すなわち $r\\,x = q$ の解 $x$。"
+
+#: manual/api/core.md:224
+msgid "It computes $\\bar r\\,q / |r|^2$. The two quotients differ by $2\\,(\\mathbf v_q \\times \\mathbf v_r)/|r|^2$, so they agree exactly when the vector parts are parallel."
+msgstr "$\\bar r\\,q / |r|^2$ を計算します。2 つの商の差は $2\\,(\\mathbf v_q \\times \\mathbf v_r)/|r|^2$ なので、ベクトル部が平行なときに限り一致します。"
+
+#: manual/api/core.md:239
+msgid "`q.scale(s)` multiplies every component by the scalar `s`."
+msgstr "`q.scale(s)` はすべての成分にスカラー `s` を掛けます。"
+
+#: manual/api/core.md:245
+msgid "Scalars are central in $\\mathbb H$, so `q.scale(s)` equals both `q * s` and `s * q` with `s` read as a real quaternion."
+msgstr "スカラーは $\\mathbb H$ の中心に属するため、`s` を実四元数とみなせば `q.scale(s)` は `q * s` とも `s * q` とも等しくなります。"
+
+#: manual/api/core.md:249
+msgid "`q.conjugate()` returns $\\bar q = w - xi - yj - zk$."
+msgstr "`q.conjugate()` は $\\bar q = w - xi - yj - zk$ を返します。"
+
+#: manual/api/core.md:255
+msgid "It is the luna-generic `Conjugate` method, promoted. Conjugation reverses products: $\\overline{qr} = \\bar r\\,\\bar q$."
+msgstr "メソッドとして昇格された luna-generic の `Conjugate` のメソッドです。共役は積の順序を反転します：$\\overline{qr} = \\bar r\\,\\bar q$。"
+
+#: manual/api/core.md:259
+msgid "`q.inv()` returns the two-sided inverse $q^{-1} = \\bar q / |q|^2$."
+msgstr "`q.inv()` は両側逆元 $q^{-1} = \\bar q / |q|^2$ を返します。"
+
+#: manual/api/core.md:265
+msgid "It is the luna-generic `Inverse` method, promoted; generic code calls it as `@lf_alg.Inverse::inv(q)`. For a unit quaternion the inverse is the conjugate. The zero quaternion has no inverse: over `Double` the result has NaN components. Over `Int` the factor `1 / |q|^2` is truncated, so `inv` returns zero unless $|q|^2 = 1$."
+msgstr "メソッドとして昇格された luna-generic の `Inverse` のメソッドで、ジェネリックなコードからは `@lf_alg.Inverse::inv(q)` として呼び出します。単位四元数の逆元は共役です。零四元数には逆元がなく、`Double` では結果が NaN 成分になります。`Int` では係数 `1 / |q|^2` が切り捨てられるため、$|q|^2 = 1$ でない限り `inv` は零を返します。"
+
+#: manual/api/core.md:278
+msgid "`q.pow_by_int(n)` returns $q^n$ for an `Int` exponent."
+msgstr "`q.pow_by_int(n)` は `Int` の指数に対する $q^n$ を返します。"
+
+#: manual/api/core.md:284
+msgid "`n = 0` gives the identity and a negative `n` gives $(q^{-1})^{|n|}$. The power is computed by repeated squaring with $O(\\log |n|)$ multiplications. Powers of one quaternion commute with each other, so the order of the factors does not matter."
+msgstr "`n = 0` は単位元を、負の `n` は $(q^{-1})^{|n|}$ を与えます。べき乗は繰り返し二乗法で $O(\\log |n|)$ 回の乗算により計算します。同じ四元数のべき同士は可換なので、因子の順序は関係ありません。"
+
+#: manual/api/core.md:288
+msgid "`q.pow_by_T(t)` returns the real power $q^t$ through the polar form."
+msgstr "`q.pow_by_T(t)` は極形式を通して実数べき $q^t$ を返します。"
+
+#: manual/api/core.md:294
+msgid "Writing $q = |q|(\\cos\\varphi + \\hat n \\sin\\varphi)$, the result is $|q|^t(\\cos t\\varphi + \\hat n\\sin t\\varphi)$. The zero quaternion is returned unchanged. A real quaternion ($x = y = z = 0$) uses `@math.pow` on its scalar part, so a negative real part with a non-integer exponent gives NaN."
+msgstr "$q = |q|(\\cos\\varphi + \\hat n \\sin\\varphi)$ と書くと、結果は $|q|^t(\\cos t\\varphi + \\hat n\\sin t\\varphi)$ です。零四元数はそのまま返されます。実四元数（$x = y = z = 0$）はスカラー部に `@math.pow` を使うため、負の実部と非整数の指数では NaN になります。"
+
+#: manual/api/core.md:305
+msgid "[!WARNING] Known issue: `pow_by_T` recovers the angle as $\\varphi = \\arcsin|\\hat{\\mathbf v}|$, which lies in $[0, \\pi/2]$. It is wrong when the scalar part is negative ($\\varphi > \\pi/2$): the function then uses $\\pi - \\varphi$, so for example `q.pow_by_T(1.0)` returns `q` with the sign of its scalar part flipped. Use `pow_by_int` for integer exponents, and negate `q` first (which does not change the rotation) when you need fractional powers of a rotation with a negative scalar part."
+msgstr "[!WARNING] 既知の問題：`pow_by_T` は角を $\\varphi = \\arcsin|\\hat{\\mathbf v}|$ として求めるため、値は $[0, \\pi/2]$ に収まります。スカラー部が負（$\\varphi > \\pi/2$）のときは誤りで、関数は $\\pi - \\varphi$ を使います。例えば `q.pow_by_T(1.0)` はスカラー部の符号が反転した `q` を返します。整数の指数には `pow_by_int` を使い、スカラー部が負の回転の分数べきが必要な場合は先に `q` の符号を反転してください（回転は変わりません）。"
+
+#: manual/api/core.md:308
+msgid "Norms and inner product"
+msgstr "ノルムと内積"
+
+#: manual/api/core.md:312
+msgid "`q.dot(r)` is the Euclidean inner product $w_q w_r + x_q x_r + y_q y_r + z_q z_r$ of the four components."
+msgstr "`q.dot(r)` は 4 成分のユークリッド内積 $w_q w_r + x_q x_r + y_q y_r + z_q z_r$ です。"
+
+#: manual/api/core.md:318
+msgid "For unit quaternions, $|q\\cdot r| = \\cos(\\theta/2)$ where $\\theta$ is the angle of the rotation that takes one orientation to the other."
+msgstr "単位四元数では $|q\\cdot r| = \\cos(\\theta/2)$ です。ここで $\\theta$ は一方の姿勢を他方へ移す回転の角です。"
+
+#: manual/api/core.md:322
+msgid "`q.square_len()` returns $|q|^2 = w^2 + x^2 + y^2 + z^2 = q\\,\\bar q$."
+msgstr "`q.square_len()` は $|q|^2 = w^2 + x^2 + y^2 + z^2 = q\\,\\bar q$ を返します。"
+
+#: manual/api/core.md:328
+msgid "It needs only `Mul + Add`, so it is exact over `Int` and `BigInt`. The squared norm is multiplicative: $|qr|^2 = |q|^2|r|^2$."
+msgstr "`Mul + Add` しか必要としないため、`Int` や `BigInt` では厳密です。二乗ノルムは乗法的です：$|qr|^2 = |q|^2|r|^2$。"
+
+#: manual/api/core.md:332
+msgid "`q.magnitude()` returns $|q|$."
+msgstr "`q.magnitude()` は $|q|$ を返します。"
+
+#: manual/api/core.md:338
+msgid "The square root is taken in `Double` and converted back with `DoubleConvert::from_double`, which truncates for `Int`."
+msgstr "平方根は `Double` で計算し、`DoubleConvert::from_double` で元の型に戻します。`Int` では切り捨てになります。"
+
+#: manual/api/core.md:342
+msgid "`q.normalize()` returns $q / |q|$, the unit quaternion in the direction of `q`."
+msgstr "`q.normalize()` は $q / |q|$、すなわち `q` と同じ向きの単位四元数を返します。"
+
+#: manual/api/core.md:348
+msgid "The zero quaternion is returned unchanged. The result has norm 1 up to rounding. Over `Int` the computation truncates and is not meaningful."
+msgstr "零四元数はそのまま返されます。結果のノルムは丸め誤差の範囲で 1 です。`Int` では計算が切り捨てられ、意味を持ちません。"
+
+#: manual/api/core.md:361
+msgid "Rotations"
+msgstr "回転"
+
+#: manual/api/core.md:365
+msgid "`q.rotate(v)` rotates the 3D vector `v` by the unit quaternion `q`, that is it computes the vector part of $q\\,v\\,q^{-1}$."
+msgstr "`q.rotate(v)` は単位四元数 `q` で 3 次元ベクトル `v` を回転します。つまり $q\\,v\\,q^{-1}$ のベクトル部を計算します。"
+
+#: manual/api/core.md:371
+msgid "The implementation uses $\\mathbf t = 2\\,\\mathbf u \\times \\mathbf v$ and $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u \\times \\mathbf t$ for $q = (w, \\mathbf u)$, which needs no division. That formula equals $q v q^{-1}$ only when $|q| = 1$; `rotate` does not normalize for you. The rotation follows the right-hand rule around the axis of `q`."
+msgstr "$q = (w, \\mathbf u)$ に対し、実装は $\\mathbf t = 2\\,\\mathbf u \\times \\mathbf v$ と $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u \\times \\mathbf t$ を使い、除算を必要としません。この式が $q v q^{-1}$ と等しいのは $|q| = 1$ のときだけで、`rotate` は正規化を行いません。回転は `q` の軸の周りの右手の法則に従います。"
+
+#: manual/api/core.md:385
+msgid "`slerp(q1, q2, t)` interpolates spherically between the rotations `q1` and `q2`."
+msgstr "`slerp(q1, q2, t)` は回転 `q1` と `q2` の間を球面補間します。"
+
+#: manual/api/core.md:391
+msgid "Both inputs are normalized first. If their dot product is negative, `q2` is replaced by `-q2` (the same rotation) so the interpolation takes the shorter arc. With $\\cos\\Omega = q_1\\cdot q_2$ the result is"
+msgstr "まず両方の入力を正規化します。内積が負なら `q2` を `-q2`（同じ回転）に置き換え、短い方の弧を通るようにします。$\\cos\\Omega = q_1\\cdot q_2$ とすると、結果は次のとおりです。"
+
+#: manual/api/core.md:397
+msgid "When $\\cos\\Omega > 0.9995$ the function uses normalized linear interpolation instead, to avoid dividing by a tiny $\\sin\\Omega$. `t = 0` gives `q1` (normalized) and `t = 1` gives `q2` or `-q2`. Values of `t` outside $[0, 1]$ extrapolate along the same great circle."
+msgstr "$\\cos\\Omega > 0.9995$ のときは、非常に小さい $\\sin\\Omega$ で割るのを避けるため、正規化した線形補間を代わりに使います。`t = 0` は（正規化された）`q1` を、`t = 1` は `q2` または `-q2` を与えます。$[0, 1]$ の外の `t` は同じ大円に沿って外挿します。"
+
+#: manual/api/core.md:411
+msgid "`q.to_euler(order~, external~)` decomposes the rotation of `q` into three angles in radians."
+msgstr "`q.to_euler(order~, external~)` は `q` の回転をラジアン単位の 3 つの角に分解します。"
+
+#: manual/api/core.md:417
+msgid "`q` is normalized first. `order` names three distinct axes and defaults to `\"ZYX\"`; `external` defaults to `true`. The k-th returned angle belongs to the k-th axis of `order`:"
+msgstr "`q` はまず正規化されます。`order` は互いに異なる 3 軸を指定し、既定値は `\"ZYX\"` です。`external` の既定値は `true` です。返される k 番目の角は `order` の k 番目の軸に対応します。"
+
+#: manual/api/core.md:419
+msgid "extrinsic (`external=true`), order $ABC$ with angles $(a, b, c)$: rotate about the fixed axis $A$ by $a$, then the fixed $B$ by $b$, then the fixed $C$ by $c$, so $q = \\pm\\,q_C(c)\\,q_B(b)\\,q_A(a)$;"
+msgstr "外因的（`external=true`）、順序 $ABC$、角 $(a, b, c)$：固定軸 $A$ の周りに $a$、次に固定軸 $B$ の周りに $b$、最後に固定軸 $C$ の周りに $c$ 回転するので、$q = \\pm\\,q_C(c)\\,q_B(b)\\,q_A(a)$；"
+
+#: manual/api/core.md:420
+msgid "intrinsic (`external=false`): rotate about $A$, then about the moved $B$, then the moved $C$, so $q = \\pm\\,q_A(a)\\,q_B(b)\\,q_C(c)$."
+msgstr "内因的（`external=false`）：$A$ の周り、次に回転後の $B$ の周り、最後に回転後の $C$ の周りに回転するので、$q = \\pm\\,q_A(a)\\,q_B(b)\\,q_C(c)$。"
+
+#: manual/api/core.md:422
+msgid "The supported orders are `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\"`; any other string aborts with `order error. Please check input format and retry`. The middle angle lies in $[-\\pi/2, \\pi/2]$ and the outer angles in $(-\\pi, \\pi]$."
+msgstr "対応する順序は `\"XYZ\"`、`\"XZY\"`、`\"YZX\"`、`\"ZYX\"` です。それ以外の文字列は `order error. Please check input format and retry` で中断します。中央の角は $[-\\pi/2, \\pi/2]$、両端の角は $(-\\pi, \\pi]$ に入ります。"
+
+#: manual/api/core.md:424
+msgid "When the sine of the middle angle reaches $|\\sin b| \\ge 0.9998$ (about $88.85^\\circ$), the decomposition is near gimbal lock: the function prints a `UserWarning: Gimbal lock detected...` line to standard output, sets the middle angle to exactly $\\pm\\pi/2$ and the third angle to $0$."
+msgstr "中央の角の正弦が $|\\sin b| \\ge 0.9998$（約 $88.85^\\circ$）に達すると、分解はジンバルロックに近い状態です。関数は標準出力に `UserWarning: Gimbal lock detected...` という行を出力し、中央の角をちょうど $\\pm\\pi/2$、3 番目の角を $0$ に設定します。"
+
+#: manual/api/core.md:436
+msgid "[!WARNING] Known issues in the current implementation:"
+msgstr "[!WARNING] 現在の実装の既知の問題："
+
+#: manual/api/core.md:439
+msgid "`order=\"XZY\"` with `external=true`, and `order=\"YZX\"` with `external=false`, do not compute the named sequence; they return the angles of intrinsic X-Y-Z (in the order X, Y, Z for the first and Z, Y, X for the second). The other six combinations are correct away from gimbal lock."
+msgstr "`external=true` の `order=\"XZY\"` と `external=false` の `order=\"YZX\"` は、指定した系列を計算しません。内因的 X-Y-Z の角を返します（前者は X、Y、Z の順、後者は Z、Y、X の順）。それ以外の 6 つの組み合わせは、ジンバルロックから離れていれば正しく動作します。"
+
+#: manual/api/core.md:440
+msgid "In the gimbal-lock branch the returned angles do not reproduce the input rotation: the first angle is computed from a formula that does not isolate the remaining degree of freedom. Treat results with $|b| \\approx \\pi/2$ as unreliable."
+msgstr "ジンバルロックの分岐で返される角は入力の回転を再現しません。最初の角の計算式が、残る自由度を分離していないためです。$|b| \\approx \\pi/2$ の結果は信頼できないものとして扱ってください。"
+
+#: manual/api/core.md:441
+msgid "Between $|\\sin b| = 0.9998$ and $1$ the middle angle is snapped to $\\pm\\pi/2$, an error of up to about $0.02$ rad."
+msgstr "$|\\sin b| = 0.9998$ から $1$ の間では中央の角が $\\pm\\pi/2$ に丸められ、最大で約 $0.02$ rad の誤差が生じます。"
+
+#: manual/api/core.md:445
+msgid "`q.to_euler_external_XYZ()` is `q.to_euler(order=\"XYZ\", external=true)`: angles $(a, b, c)$ about X, Y, Z with $q = \\pm q_Z(c)\\,q_Y(b)\\,q_X(a)$."
+msgstr "`q.to_euler_external_XYZ()` は `q.to_euler(order=\"XYZ\", external=true)` です：X、Y、Z の周りの角 $(a, b, c)$ で、$q = \\pm q_Z(c)\\,q_Y(b)\\,q_X(a)$。"
+
+#: manual/api/core.md:453
+msgid "`q.to_euler_external_XZY()` is `q.to_euler(order=\"XZY\", external=true)`."
+msgstr "`q.to_euler_external_XZY()` は `q.to_euler(order=\"XZY\", external=true)` です。"
+
+#: manual/api/core.md:459
+msgid "It currently returns the intrinsic X-Y-Z angles $(a, b, c)$ with $q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$, not an X-Z-Y decomposition (see the warning above)."
+msgstr "現在は内因的 X-Y-Z の角 $(a, b, c)$（$q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$）を返し、X-Z-Y 分解ではありません（上の警告を参照）。"
+
+#: manual/api/core.md:463
+msgid "`q.to_euler_external_YZX()` is `q.to_euler(order=\"YZX\", external=true)`: angles about Y, Z, X with $q = \\pm q_X(c)\\,q_Z(b)\\,q_Y(a)$."
+msgstr "`q.to_euler_external_YZX()` は `q.to_euler(order=\"YZX\", external=true)` です：Y、Z、X の周りの角で、$q = \\pm q_X(c)\\,q_Z(b)\\,q_Y(a)$。"
+
+#: manual/api/core.md:471
+msgid "`q.to_euler_external_ZYX()` is `q.to_euler()`: angles about Z, Y, X with $q = \\pm q_X(c)\\,q_Y(b)\\,q_Z(a)$."
+msgstr "`q.to_euler_external_ZYX()` は `q.to_euler()` です：Z、Y、X の周りの角で、$q = \\pm q_X(c)\\,q_Y(b)\\,q_Z(a)$。"
+
+#: manual/api/core.md:479
+msgid "`q.to_euler_internal_XYZ()` is `q.to_euler(order=\"XYZ\", external=false)`: angles about X, Y, Z with $q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$. It inverts `from_euler(a, b, c)` with the default order."
+msgstr "`q.to_euler_internal_XYZ()` は `q.to_euler(order=\"XYZ\", external=false)` です：X、Y、Z の周りの角で、$q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$。既定の順序での `from_euler(a, b, c)` の逆になります。"
+
+#: manual/api/core.md:487
+msgid "`q.to_euler_internal_XZY()` is `q.to_euler(order=\"XZY\", external=false)`: angles about X, Z, Y with $q = \\pm q_X(a)\\,q_Z(b)\\,q_Y(c)$."
+msgstr "`q.to_euler_internal_XZY()` は `q.to_euler(order=\"XZY\", external=false)` です：X、Z、Y の周りの角で、$q = \\pm q_X(a)\\,q_Z(b)\\,q_Y(c)$。"
+
+#: manual/api/core.md:495
+msgid "`q.to_euler_internal_YZX()` is `q.to_euler(order=\"YZX\", external=false)`."
+msgstr "`q.to_euler_internal_YZX()` は `q.to_euler(order=\"YZX\", external=false)` です。"
+
+#: manual/api/core.md:501
+msgid "It currently returns $(c, b, a)$ with $q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$, the reversed intrinsic X-Y-Z angles, not a Y-Z-X decomposition (see the warning above)."
+msgstr "現在は $(c, b, a)$（$q = \\pm q_X(a)\\,q_Y(b)\\,q_Z(c)$）、つまり逆順の内因的 X-Y-Z の角を返し、Y-Z-X 分解ではありません（上の警告を参照）。"
+
+#: manual/api/core.md:505
+msgid "`q.to_euler_internal_ZYX()` is `q.to_euler(order=\"ZYX\", external=false)`: angles about Z, Y, X with $q = \\pm q_Z(a)\\,q_Y(b)\\,q_X(c)$."
+msgstr "`q.to_euler_internal_ZYX()` は `q.to_euler(order=\"ZYX\", external=false)` です：Z、Y、X の周りの角で、$q = \\pm q_Z(a)\\,q_Y(b)\\,q_X(c)$。"
+
+#: manual/api/core.md:511
+msgid "Every intrinsic variant is the extrinsic variant of the reversed order with the result reversed, because $q_A(a)\\,q_B(b)\\,q_C(c)$ is both intrinsic $ABC$ and extrinsic $CBA$."
+msgstr "$q_A(a)\\,q_B(b)\\,q_C(c)$ は内因的 $ABC$ でもあり外因的 $CBA$ でもあるため、各内因的版は逆順の外因的版の結果を反転したものです。"
+
+#: manual/api/core.md:513
+msgid "Conversion through `Double`"
+msgstr "`Double` を介した変換"
+
+#: manual/api/core.md:517
+msgid "`DoubleConvert` converts a component type to and from `Double`."
+msgstr "`DoubleConvert` は成分型と `Double` の間を相互に変換します。"
+
+#: manual/api/core.md:528
+msgid "Square roots, trigonometric functions and `@math.pow` are only available on `Double`, so `magnitude`, `normalize`, `from_axis_angle`, `from_euler`, `slerp`, `pow_by_T` and the Euler-angle conversions go through this trait. For `Double` both directions are the identity. For `Int`, `from_double` is `Double::to_int`, which truncates toward zero, so results of these functions over `Int` are truncated."
+msgstr "平方根・三角関数・`@math.pow` は `Double` でしか使えないため、`magnitude`、`normalize`、`from_axis_angle`、`from_euler`、`slerp`、`pow_by_T`、およびオイラー角変換はこの trait を経由します。`Double` ではどちらの方向も恒等写像です。`Int` では `from_double` は `Double::to_int` で、ゼロ方向に切り捨てるため、これらの関数の `Int` での結果は切り捨てられます。"
+
+#: manual/api/core.md:530
+msgid "The trait is declared `pub`, not `pub(open)`, so code outside this package cannot implement it: `Int` and `Double` are the only component types that work with the functions above. You can still call its methods directly:"
+msgstr "この trait は `pub(open)` ではなく `pub` として宣言されているため、このパッケージ外のコードは実装できません。上記の関数で使える成分型は `Int` と `Double` だけです。ただし、メソッドを直接呼ぶことはできます。"
+
+#: manual/api/core.md:540
+msgid "Other methods"
+msgstr "その他のメソッド"
+
+#: manual/api/core.md:544
+msgid "`q.map(f)` applies `f` to every component, possibly changing the component type."
+msgstr "`q.map(f)` は各成分に `f` を適用します。成分の型が変わっても構いません。"
+
+#: manual/api/core.md:559
+msgid "`q.to_string()` renders `q` as `w + xi + yj + zk` using `Show` of the components."
+msgstr "`q.to_string()` は成分の `Show` を使って `q` を `w + xi + yj + zk` として表示します。"
+
+#: manual/api/core.md:565
+msgid "Negative components keep their sign after the plus, as in `1 + -2i + 3j + 4k`. String interpolation `\"\\{q}\"` and `inspect` use the same text."
+msgstr "負の成分はプラスの後ろに符号付きで現れます（例：`1 + -2i + 3j + 4k`）。文字列補間 `\"\\{q}\"` と `inspect` も同じテキストを使います。"
+
+#: manual/api/core.md:569
+msgid "`q.equal(r)` (the `==` operator) compares the four components exactly."
+msgstr "`q.equal(r)`（`==` 演算子）は 4 つの成分を厳密に比較します。"
+
+#: manual/api/core.md:575
+msgid "For `Double` components this is IEEE equality: `0.0 == -0.0`, and a quaternion with a NaN component is not equal to itself."
+msgstr "`Double` の成分では IEEE の等価性です：`0.0 == -0.0` であり、NaN 成分を持つ四元数は自分自身と等しくありません。"
+
+#: manual/api/core.md:579
+msgid "`q.hash()` hashes the four components, consistently with `equal`."
+msgstr "`q.hash()` は `equal` と整合するように 4 つの成分をハッシュします。"
+
+#: manual/api/core.md:585
+msgid "Trait implementations"
+msgstr "trait の実装"
+
+#: manual/api/core.md:587
+msgid "`Quaternion[T]` implements these traits:"
+msgstr "`Quaternion[T]` は次の trait を実装します。"
+
+#: manual/api/core.md:589
+msgid "Trait"
+msgstr "Trait"
+
+#: manual/api/core.md:589
+msgid "Requirement on `T`"
+msgstr "`T` への要件"
+
+#: manual/api/core.md:589
+msgid "Meaning"
+msgstr "意味"
+
+#: manual/api/core.md:591
+msgid "component-wise"
+msgstr "成分ごと"
+
+#: manual/api/core.md:592
+msgid "Hamilton product"
+msgstr "Hamilton 積"
+
+#: manual/api/core.md:593
+msgid "right division $q r^{-1}$"
+msgstr "右除算 $q r^{-1}$"
+
+#: manual/api/core.md:594
+msgid "the same trait"
+msgstr "同じ trait"
+
+#: manual/api/core.md:594
+msgid "derived, component-wise"
+msgstr "導出、成分ごと"
+
+#: manual/api/core.md:597
+msgid "$0$ and $1$"
+msgstr "$0$ と $1$"
+
+#: manual/api/core.md:603
+msgid "The `Ring` instance assumes that multiplication of `T` is commutative, as it is for `Int`, `Int64`, `BigInt`, `Float` and `Double`; the Hamilton product is associative only over a commutative ring of scalars. `@lf_alg.Field` is deliberately **not** implemented, because quaternion multiplication is not commutative and luna-generic's `Field` is meant for commutative fields. `@lf_alg.Num` is not implemented either: quaternions have no `signum`/`abs` with the meaning `Num` expects."
+msgstr "`Ring` のインスタンスは `T` の乗法が可換であることを前提とします。これは `Int`、`Int64`、`BigInt`、`Float`、`Double` で成り立ちます。Hamilton 積が結合的なのは、スカラーが可換環をなす場合だけです。四元数の乗法は可換でなく、luna-generic の `Field` は可換体を想定しているため、`@lf_alg.Field` は意図的に実装して**いません**。`@lf_alg.Num` も実装していません。四元数には `Num` が想定する意味の `signum`/`abs` がないからです。"
+
+#: manual/api/core.md:617
+msgid "Deprecated"
+msgstr "非推奨"
+
+#: manual/api/core.md:619
+msgid "These method forms come from trait implementations and are kept for compatibility. They are deprecated and hidden from the documentation index; the traits themselves stay implemented."
+msgstr "これらのメソッド形式は trait 実装に由来し、互換性のために残されています。非推奨であり、ドキュメントの索引からは隠されています。trait 自体は引き続き実装されています。"
+
+#: manual/api/core.md:621
+msgid "Deprecated method"
+msgstr "非推奨のメソッド"
+
+#: manual/api/core.md:621
+msgid "Use instead"
+msgstr "代わりに使うもの"
+
+#: manual/api/core.md:625
+msgid "`q.to_string()` or `\"\\{q}\"`"
+msgstr "`q.to_string()` または `\"\\{q}\"`"
+
+#: manual/api/core.md:626
+msgid "`id()` or `Default::default()`"
+msgstr "`id()` または `Default::default()`"
+
+#: manual/api/core.md:627
+msgid "`Repr(q)` or `@debug.Debug::to_repr(q)`"
+msgstr "`Repr(q)` または `@debug.Debug::to_repr(q)`"
+
+#: manual/design/core.md:1
+msgid "core design"
+msgstr "core 設計"
+
+#: manual/design/core.md:3
+msgid "This page explains the mathematics that `Luna-Flow/quaternion` implements and why its API has the shape it has. Every formula below is the one the code in [`src/quaternion.mbt`](../../../src/quaternion.mbt) evaluates; where the implementation deviates from the mathematics, the deviation is stated."
+msgstr "このページでは、`Luna-Flow/quaternion` が実装する数学と、API が現在の形になっている理由を説明します。以下の式はすべて [`src/quaternion.mbt`](../../../src/quaternion.mbt) のコードが実際に評価する式であり、実装が数学から外れている箇所はそのことを明記します。"
+
+#: manual/design/core.md:5
+msgid "Design goal"
+msgstr "設計目標"
+
+#: manual/design/core.md:7
+msgid "The package gives MoonBit one quaternion type, `Quaternion[T]`, that serves two audiences:"
+msgstr "本パッケージは MoonBit に四元数型 `Quaternion[T]` を 1 つ提供し、2 種類の利用者に応えます。"
+
+#: manual/design/core.md:9
+msgid "algebraic code, which wants $\\mathbb H$ as a ring over an exact or approximate scalar type and uses it through the luna-generic traits;"
+msgstr "代数的なコード：$\\mathbb H$ を厳密または近似のスカラー型上の環として扱い、luna-generic の trait を通して利用するもの；"
+
+#: manual/design/core.md:10
+msgid "geometric code, which wants unit quaternions as 3D rotations: build them from an axis and an angle or from Euler angles, compose, apply, interpolate and decompose them."
+msgstr "幾何的なコード：単位四元数を 3 次元回転として扱い、軸と角またはオイラー角から作成し、合成・適用・補間・分解するもの。"
+
+#: manual/design/core.md:12
+msgid "Both are served by the same generic type. Each operation asks only for the traits of `T` it needs, so ring arithmetic works over `Int` exactly, while the operations that need square roots or trigonometry go through `Double`."
+msgstr "どちらも同じジェネリック型で扱えます。各演算は必要な `T` の trait だけを要求するため、環演算は `Int` 上で厳密に行え、平方根や三角関数が必要な演算は `Double` を経由します。"
+
+#: manual/design/core.md:14
+msgid "Mathematical background"
+msgstr "数学的背景"
+
+#: manual/design/core.md:16
+msgid "Quaternions as a real algebra"
+msgstr "実代数としての四元数"
+
+#: manual/design/core.md:18
+msgid "The quaternions $\\mathbb H$ are the 4-dimensional real vector space with basis $1, i, j, k$,"
+msgstr "四元数 $\\mathbb H$ は、$1, i, j, k$ を基底とする 4 次元実ベクトル空間で、"
+
+#: manual/design/core.md:24
+msgid "with a bilinear multiplication fixed by Hamilton's relations[^hamilton]"
+msgstr "その双線形な乗法は Hamilton の関係式で定まります[^hamilton]"
+
+#: manual/design/core.md:30
+msgid "W. R. Hamilton, \"On quaternions; or on a new system of imaginaries in algebra\", 1843. The relations are the ones he carved into Brougham Bridge in Dublin."
+msgstr "W. R. Hamilton, \"On quaternions; or on a new system of imaginaries in algebra\", 1843 年。これらの関係式は、彼がダブリンのブルーム橋（Brougham Bridge）に刻んだものです。"
+
+#: manual/design/core.md:32
+msgid "We write $q = (w, \\mathbf u)$ with the scalar part $w$ and the vector part $\\mathbf u = (x, y, z)$, and identify $\\mathbb R^3$ with the pure quaternions $\\{(0, \\mathbf u)\\}$. `Quaternion[T]` stores exactly this pair: a field `r` for $w$ and a triple `vec` for $\\mathbf u$. Real numbers $(s, \\mathbf 0)$ commute with everything, because the multiplication is $\\mathbb R$-bilinear."
+msgstr "$q = (w, \\mathbf u)$ と書き、$w$ をスカラー部、$\\mathbf u = (x, y, z)$ をベクトル部とし、$\\mathbb R^3$ を純四元数 $\\{(0, \\mathbf u)\\}$ と同一視します。`Quaternion[T]` はまさにこの組を保持します：$w$ にはフィールド `r`、$\\mathbf u$ には三つ組 `vec` を使います。乗法は $\\mathbb R$-双線形なので、実数 $(s, \\mathbf 0)$ はすべての元と可換です。"
+
+#: manual/design/core.md:34
+msgid "Products of the units"
+msgstr "基底同士の積"
+
+#: manual/design/core.md:36
+msgid "Everything about the product follows from the four relations. Multiply $ijk = -1$ on the right by $k$ and use $k^2 = -1$:"
+msgstr "積の性質はすべてこの 4 つの関係式から導かれます。$ijk = -1$ の右から $k$ を掛け、$k^2 = -1$ を使います。"
+
+#: manual/design/core.md:46
+msgid "Multiply $ijk = -1$ on the left by $i$ and use $i^2 = -1$: $-jk = -i$, so $jk = i$. The reversed products follow from these two:"
+msgstr "$ijk = -1$ の左から $i$ を掛け、$i^2 = -1$ を使うと $-jk = -i$、よって $jk = i$ です。逆順の積はこの 2 つから得られます。"
+
+#: manual/design/core.md:57
+msgid "So the units multiply like the cross product of the standard basis, with an extra $-1$ on the diagonal:"
+msgstr "したがって基底同士の積は、標準基底の外積に対角成分 $-1$ を加えたものになります。"
+
+#: manual/design/core.md:65
+msgid "The eight elements $\\pm 1, \\pm i, \\pm j, \\pm k$ form the quaternion group $Q_8$, which can be realized by $2\\times 2$ complex matrices.[^q8] The multiplication of $Q_8$ is associative, and by bilinearity so is the product of $\\mathbb H$."
+msgstr "8 つの元 $\\pm 1, \\pm i, \\pm j, \\pm k$ は四元数群 $Q_8$ をなし、$2\\times 2$ 複素行列で実現できます。[^q8] $Q_8$ の乗法は結合的であり、双線形性から $\\mathbb H$ の積も結合的です。"
+
+#: manual/design/core.md:67
+msgid "For example $1 \\mapsto I$, $i \\mapsto \\begin{pmatrix} i & 0 \\\\ 0 & -i\\end{pmatrix}$, $j \\mapsto \\begin{pmatrix} 0 & 1 \\\\ -1 & 0\\end{pmatrix}$, $k \\mapsto \\begin{pmatrix} 0 & i \\\\ i & 0\\end{pmatrix}$. These matrices satisfy Hamilton's relations, and matrix multiplication is associative."
+msgstr "例えば $1 \\mapsto I$、$i \\mapsto \\begin{pmatrix} i & 0 \\\\ 0 & -i\\end{pmatrix}$、$j \\mapsto \\begin{pmatrix} 0 & 1 \\\\ -1 & 0\\end{pmatrix}$、$k \\mapsto \\begin{pmatrix} 0 & i \\\\ i & 0\\end{pmatrix}$。これらの行列は Hamilton の関係式を満たし、行列の乗法は結合的です。"
+
+#: manual/design/core.md:69
+msgid "The Hamilton product"
+msgstr "Hamilton 積"
+
+#: manual/design/core.md:71
+msgid "Expanding $p = w_1 + x_1 i + y_1 j + z_1 k$ times $q = w_2 + x_2 i + y_2 j + z_2 k$ term by term with the table gives"
+msgstr "表を使って $p = w_1 + x_1 i + y_1 j + z_1 k$ と $q = w_2 + x_2 i + y_2 j + z_2 k$ の積を項ごとに展開すると、次が得られます。"
+
+#: manual/design/core.md:82
+msgid "The same product is clearer in scalar–vector form. For two pure quaternions $\\mathbf a$ and $\\mathbf b$, the squares of the units contribute $-a_1 b_1 - a_2 b_2 - a_3 b_3$, and the mixed terms pair up, for example $a_1 b_2\\, ij + a_2 b_1\\, ji = (a_1 b_2 - a_2 b_1)k$. Hence"
+msgstr "同じ積はスカラー–ベクトル形式の方が見通しがよくなります。2 つの純四元数 $\\mathbf a$ と $\\mathbf b$ について、基底の二乗は $-a_1 b_1 - a_2 b_2 - a_3 b_3$ を与え、混合項は対になります。例えば $a_1 b_2\\, ij + a_2 b_1\\, ji = (a_1 b_2 - a_2 b_1)k$ です。したがって"
+
+#: manual/design/core.md:88
+msgid "With bilinearity and the fact that scalars commute,"
+msgstr "双線形性とスカラーが可換であることから、"
+
+#: manual/design/core.md:97
+msgid "This is literally the `Mul` implementation: the scalar part is `self.r * other.r - dot(self.vec, other.vec)` and the vector part is `cross(self.vec, other.vec)` plus the two scaled vectors."
+msgstr "これはまさに `Mul` の実装です。スカラー部は `self.r * other.r - dot(self.vec, other.vec)`、ベクトル部は `cross(self.vec, other.vec)` に 2 つのスケーリングしたベクトルを加えたものです。"
+
+#: manual/design/core.md:99
+msgid "Swapping the factors only flips the sign of the cross product, so"
+msgstr "因子を入れ替えると外積の符号だけが反転するので、"
+
+#: manual/design/core.md:105
+msgid "and two quaternions commute exactly when their vector parts are parallel. In particular $\\mathbb H$ is not commutative: $ij = k$ but $ji = -k$."
+msgstr "2 つの四元数が可換であるのは、ベクトル部が平行なときに限ります。特に $\\mathbb H$ は可換ではありません：$ij = k$ ですが $ji = -k$ です。"
+
+#: manual/design/core.md:107
+msgid "The derivation used that the components commute with each other ($s_1\\mathbf v_2 = \\mathbf v_2 s_1$ and so on). The generic implementation therefore assumes that `T` has a commutative multiplication, which holds for every numeric type luna-generic provides."
+msgstr "この導出では成分同士が可換であること（$s_1\\mathbf v_2 = \\mathbf v_2 s_1$ など）を使いました。そのためジェネリックな実装は `T` の乗法が可換であることを前提とし、luna-generic が提供するすべての数値型はこれを満たします。"
+
+#: manual/design/core.md:109
+msgid "Conjugate and norm"
+msgstr "共役とノルム"
+
+#: manual/design/core.md:111
+msgid "The conjugate is $\\bar q = (w, -\\mathbf u)$. Multiplying a quaternion by its conjugate leaves a real number, because the cross product of parallel vectors vanishes:"
+msgstr "共役は $\\bar q = (w, -\\mathbf u)$ です。平行なベクトルの外積は零なので、四元数にその共役を掛けると実数が残ります。"
+
+#: manual/design/core.md:117
+msgid "and in the same way $\\bar q q = |q|^2$. `Quaternion::square_len` computes this $|q|^2$, and `Quaternion::dot` is the inner product of $\\mathbb R^4$ whose norm it is."
+msgstr "同様に $\\bar q q = |q|^2$ です。`Quaternion::square_len` はこの $|q|^2$ を計算し、`Quaternion::dot` はそれをノルムとする $\\mathbb R^4$ の内積です。"
+
+#: manual/design/core.md:119
+msgid "Conjugation reverses products. With $p = (s_1, \\mathbf v_1)$ and $q = (s_2, \\mathbf v_2)$,"
+msgstr "共役は積の順序を反転します。$p = (s_1, \\mathbf v_1)$、$q = (s_2, \\mathbf v_2)$ とすると、"
+
+#: manual/design/core.md:128
+msgid "and the two agree because $\\mathbf v_2\\times\\mathbf v_1 = -\\mathbf v_1\\times\\mathbf v_2$. So $\\overline{pq} = \\bar q\\,\\bar p$."
+msgstr "$\\mathbf v_2\\times\\mathbf v_1 = -\\mathbf v_1\\times\\mathbf v_2$ なので両者は一致します。よって $\\overline{pq} = \\bar q\\,\\bar p$ です。"
+
+#: manual/design/core.md:130
+msgid "The norm is multiplicative. Using associativity, $\\overline{pq} = \\bar q\\bar p$, and the fact that the real number $|q|^2$ commutes with $p$:"
+msgstr "ノルムは乗法的です。結合性、$\\overline{pq} = \\bar q\\bar p$、および実数 $|q|^2$ が $p$ と可換であることを使うと、"
+
+#: manual/design/core.md:139
+msgid "Over the integers this is Euler's four-square identity, which the [tutorial](../tutorial/core.md#exact-identities-over-int) checks with `Quaternion[Int]`."
+msgstr "整数上ではこれはオイラーの四平方恒等式であり、[チュートリアル](../tutorial/core.md#exact-identities-over-int)で `Quaternion[Int]` を使って確かめています。"
+
+#: manual/design/core.md:141
+msgid "Inverse and the two divisions"
+msgstr "逆元と 2 つの除算"
+
+#: manual/design/core.md:143
+msgid "If $q$ is not zero, then $|q|^2 > 0$, and $q\\bar q = \\bar q q = |q|^2$ shows that"
+msgstr "$q$ が零でなければ $|q|^2 > 0$ であり、$q\\bar q = \\bar q q = |q|^2$ より"
+
+#: manual/design/core.md:149
+msgid "is a two-sided inverse. This is the `Inverse` implementation: the conjugate scaled by `one() / square_len()`. Every non-zero quaternion is invertible, so $\\mathbb H$ is a *division ring* (a skew field). It is not a field, because it is not commutative."
+msgstr "は両側逆元です。これが `Inverse` の実装で、共役を `one() / square_len()` でスケーリングします。零でない四元数はすべて可逆なので、$\\mathbb H$ は*斜体*（除環）です。可換でないため、体ではありません。"
+
+#: manual/design/core.md:151
+msgid "Without commutativity, \"$q$ divided by $r$\" has two meanings, one for each side on which the unknown sits:"
+msgstr "可換性がないと、「$q$ を $r$ で割る」には未知数がどちら側にあるかに応じて 2 つの意味があります。"
+
+#: manual/design/core.md:160
+msgid "The implementation avoids forming $r^{-1}$ and divides once at the end. With $q = (s_q, \\mathbf v_q)$, $r = (s_r, \\mathbf v_r)$ and $\\bar r = (s_r, -\\mathbf v_r)$, the scalar–vector product gives"
+msgstr "実装は $r^{-1}$ を作らず、最後に 1 回だけ割ります。$q = (s_q, \\mathbf v_q)$、$r = (s_r, \\mathbf v_r)$、$\\bar r = (s_r, -\\mathbf v_r)$ とすると、スカラー–ベクトル積から"
+
+#: manual/design/core.md:169
+msgid "which are the `Div` implementation (with `c = cross(q.vec, r.vec)`) and `Quaternion::left_div` (with `c = cross(r.vec, self.vec)`). The quotients have the same scalar part and differ by"
+msgstr "これらはそれぞれ `Div` の実装（`c = cross(q.vec, r.vec)`）と `Quaternion::left_div`（`c = cross(r.vec, self.vec)`）です。2 つの商はスカラー部が等しく、差は次のとおりです。"
+
+#: manual/design/core.md:175
+msgid "**Example.** Take $q = 1 + 2i + 3j + 4k$ and $r = 5 + 6i + 7j + 8k$. Then $|r|^2 = 174$, $s_q s_r + \\mathbf v_q\\cdot\\mathbf v_r = 5 + 12 + 21 + 32 = 70$, $s_r\\mathbf v_q - s_q\\mathbf v_r = (4, 8, 12)$ and $\\mathbf v_q\\times\\mathbf v_r = (-4, 8, -4)$, so"
+msgstr "**例。** $q = 1 + 2i + 3j + 4k$、$r = 5 + 6i + 7j + 8k$ とします。すると $|r|^2 = 174$、$s_q s_r + \\mathbf v_q\\cdot\\mathbf v_r = 5 + 12 + 21 + 32 = 70$、$s_r\\mathbf v_q - s_q\\mathbf v_r = (4, 8, 12)$、$\\mathbf v_q\\times\\mathbf v_r = (-4, 8, -4)$ なので、"
+
+#: manual/design/core.md:184
+msgid "The [API page](../api/core.md#quaternionleft_div) checks these values and both defining equations."
+msgstr "[API ページ](../api/core.md#quaternionleft_div)で、これらの値と 2 つの定義式を確かめています。"
+
+#: manual/design/core.md:186
+msgid "Unit quaternions and rotations"
+msgstr "単位四元数と回転"
+
+#: manual/design/core.md:188
+msgid "A unit quaternion ($|q| = 1$) can be written"
+msgstr "単位四元数（$|q| = 1$）は次のように書けます。"
+
+#: manual/design/core.md:194
+msgid "which is exactly what `from_axis_angle(axis, angle)` returns, with $\\mathbf n$ the normalized axis. For unit $q$ we have $q^{-1} = \\bar q$. Consider the map $\\mathbf v \\mapsto q\\,\\mathbf v\\,\\bar q$ on pure quaternions. Write $q = (w, \\mathbf u)$. First,"
+msgstr "これはまさに `from_axis_angle(axis, angle)` が返すもので、$\\mathbf n$ は正規化した軸です。単位 $q$ では $q^{-1} = \\bar q$ です。純四元数上の写像 $\\mathbf v \\mapsto q\\,\\mathbf v\\,\\bar q$ を考えます。$q = (w, \\mathbf u)$ と書きます。まず、"
+
+#: manual/design/core.md:200
+msgid "Multiplying on the right by $\\bar q = (w, -\\mathbf u)$, the scalar part is"
+msgstr "右から $\\bar q = (w, -\\mathbf u)$ を掛けると、スカラー部は"
+
+#: manual/design/core.md:206
+msgid "so the image is again a pure quaternion, and the vector part is"
+msgstr "となるので像は再び純四元数であり、ベクトル部は"
+
+#: manual/design/core.md:216
+msgid "using $\\mathbf a\\times\\mathbf u = -\\mathbf u\\times\\mathbf a$ and $\\mathbf u\\times(\\mathbf u\\times\\mathbf v) = (\\mathbf u\\cdot\\mathbf v)\\mathbf u - |\\mathbf u|^2\\mathbf v$. Substituting $w = \\cos\\frac\\theta2$ and $\\mathbf u = \\sin\\frac\\theta2\\,\\mathbf n$, and the half-angle identities $\\cos^2\\frac\\theta2 - \\sin^2\\frac\\theta2 = \\cos\\theta$, $2\\sin^2\\frac\\theta2 = 1 - \\cos\\theta$, $2\\sin\\frac\\theta2\\cos\\frac\\theta2 = \\sin\\theta$:"
+msgstr "ここで $\\mathbf a\\times\\mathbf u = -\\mathbf u\\times\\mathbf a$ と $\\mathbf u\\times(\\mathbf u\\times\\mathbf v) = (\\mathbf u\\cdot\\mathbf v)\\mathbf u - |\\mathbf u|^2\\mathbf v$ を使いました。$w = \\cos\\frac\\theta2$、$\\mathbf u = \\sin\\frac\\theta2\\,\\mathbf n$ を代入し、半角の公式 $\\cos^2\\frac\\theta2 - \\sin^2\\frac\\theta2 = \\cos\\theta$、$2\\sin^2\\frac\\theta2 = 1 - \\cos\\theta$、$2\\sin\\frac\\theta2\\cos\\frac\\theta2 = \\sin\\theta$ を使うと、"
+
+#: manual/design/core.md:222
+msgid "This is Rodrigues' rotation formula: $\\mathbf v \\mapsto q\\mathbf v q^{-1}$ is the rotation by $\\theta$ about $\\mathbf n$, counter-clockwise by the right-hand rule. Since $|q\\mathbf v\\bar q| = |q||\\mathbf v||\\bar q| = |\\mathbf v|$, the map is an isometry, as a rotation must be."
+msgstr "これは Rodrigues の回転公式です：$\\mathbf v \\mapsto q\\mathbf v q^{-1}$ は $\\mathbf n$ の周りの角 $\\theta$ の回転で、右手の法則で反時計回りです。$|q\\mathbf v\\bar q| = |q||\\mathbf v||\\bar q| = |\\mathbf v|$ なので、この写像は回転にふさわしく等長写像です。"
+
+#: manual/design/core.md:224
+msgid "Three consequences shape the API:"
+msgstr "ここから API を形作る 3 つの帰結が得られます。"
+
+#: manual/design/core.md:226
+msgid "**Composition is multiplication.** $p\\,(q\\mathbf v q^{-1})\\,p^{-1} = (pq)\\,\\mathbf v\\,(pq)^{-1}$, so the rotation \"first $q$, then $p$\" is `p * q`."
+msgstr "**合成は乗法。** $p\\,(q\\mathbf v q^{-1})\\,p^{-1} = (pq)\\,\\mathbf v\\,(pq)^{-1}$ なので、「先に $q$、次に $p$」の回転は `p * q` です。"
+
+#: manual/design/core.md:227
+msgid "**Double cover.** $(-q)\\,\\mathbf v\\,(-q)^{-1} = q\\mathbf v q^{-1}$, so $q$ and $-q$ are the same rotation. Indeed the angle $\\theta + 2\\pi$ gives $-q$. Every rotation has exactly two unit quaternions, which is why `==` does not compare rotations and why `slerp` flips the sign of one input."
+msgstr "**二重被覆。** $(-q)\\,\\mathbf v\\,(-q)^{-1} = q\\mathbf v q^{-1}$ なので、$q$ と $-q$ は同じ回転です。実際、角 $\\theta + 2\\pi$ は $-q$ を与えます。各回転にはちょうど 2 つの単位四元数が対応します。`==` で回転を比較できず、`slerp` が一方の入力の符号を反転するのはこのためです。"
+
+#: manual/design/core.md:228
+msgid "**Cheap evaluation.** `Quaternion::rotate` evaluates $\\mathbf t = 2\\,\\mathbf u\\times\\mathbf v$ and $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u\\times\\mathbf t$. Expanding, $\\mathbf u\\times\\mathbf t = 2(\\mathbf u\\cdot\\mathbf v)\\mathbf u - 2|\\mathbf u|^2\\mathbf v$, so"
+msgstr "**安価な評価。** `Quaternion::rotate` は $\\mathbf t = 2\\,\\mathbf u\\times\\mathbf v$ と $\\mathbf v' = \\mathbf v + w\\,\\mathbf t + \\mathbf u\\times\\mathbf t$ を評価します。展開すると $\\mathbf u\\times\\mathbf t = 2(\\mathbf u\\cdot\\mathbf v)\\mathbf u - 2|\\mathbf u|^2\\mathbf v$ なので、"
+
+#: manual/design/core.md:232
+msgid "which equals the formula above exactly when $1 - 2|\\mathbf u|^2 = w^2 - |\\mathbf u|^2$, that is when $w^2 + |\\mathbf u|^2 = 1$. This is why `rotate` requires a unit quaternion: it needs no division, but it relies on the norm being 1."
+msgstr "これが上の式と一致するのは $1 - 2|\\mathbf u|^2 = w^2 - |\\mathbf u|^2$、すなわち $w^2 + |\\mathbf u|^2 = 1$ のときに限ります。`rotate` が単位四元数を要求するのはこのためです。除算は不要ですが、ノルムが 1 であることに依存しています。"
+
+#: manual/design/core.md:234
+msgid "The same formula, applied to the basis vectors, gives the rotation matrix of a unit quaternion:"
+msgstr "同じ式を基底ベクトルに適用すると、単位四元数の回転行列が得られます。"
+
+#: manual/design/core.md:244
+msgid "The package does not return this matrix, but the Euler-angle extraction below reads its entries."
+msgstr "本パッケージはこの行列を返しませんが、後述のオイラー角の抽出はその成分を読み取ります。"
+
+#: manual/design/core.md:246
+msgid "Euler angles"
+msgstr "オイラー角"
+
+#: manual/design/core.md:248
+msgid "Write $q_X(\\alpha)$, $q_Y(\\alpha)$, $q_Z(\\alpha)$ for the rotations by $\\alpha$ about the coordinate axes, and $R_X, R_Y, R_Z$ for their matrices. A sequence of three rotations about axes $A, B, C$ with angles $a, b, c$ can be read in two ways:"
+msgstr "座標軸の周りに $\\alpha$ だけ回転する四元数を $q_X(\\alpha)$、$q_Y(\\alpha)$、$q_Z(\\alpha)$、その行列を $R_X, R_Y, R_Z$ と書きます。軸 $A, B, C$ の周りの角 $a, b, c$ の 3 回の回転の列は、2 通りに読めます。"
+
+#: manual/design/core.md:250
+msgid "**extrinsic** (`external=true`): about the fixed axes, first $A$, then $B$, then $C$. Later rotations multiply on the left: $q = q_C(c)\\,q_B(b)\\,q_A(a)$."
+msgstr "**外因的**（`external=true`）：固定軸の周りに、$A$、$B$、$C$ の順に回転します。後の回転は左から掛かります：$q = q_C(c)\\,q_B(b)\\,q_A(a)$。"
+
+#: manual/design/core.md:251
+msgid "**intrinsic** (`external=false`): about the axes of the moving body, first $A$, then the moved $B$, then the twice-moved $C$: $q = q_A(a)\\,q_B(b)\\,q_C(c)$."
+msgstr "**内因的**（`external=false`）：物体とともに動く軸の周りに、$A$、回転後の $B$、2 回回転した後の $C$ の順に回転します：$q = q_A(a)\\,q_B(b)\\,q_C(c)$。"
+
+#: manual/design/core.md:253
+msgid "The same product read in both ways shows that intrinsic $ABC$ with angles $(a, b, c)$ is extrinsic $CBA$ with angles $(c, b, a)$. The implementation uses exactly this: every `to_euler_internal_*` function calls the extrinsic function of the reversed order and reverses the triple."
+msgstr "同じ積を 2 通りに読むと、角 $(a, b, c)$ の内因的 $ABC$ は角 $(c, b, a)$ の外因的 $CBA$ であることがわかります。実装はまさにこれを使っており、各 `to_euler_internal_*` 関数は逆順の外因的関数を呼び、三つ組を反転します。"
+
+#: manual/design/core.md:255
+msgid "**Extraction, extrinsic XYZ.** For $R = R_Z(c)\\,R_Y(b)\\,R_X(a)$, multiplying out the elementary matrices gives"
+msgstr "**抽出：外因的 XYZ。** $R = R_Z(c)\\,R_Y(b)\\,R_X(a)$ について、基本行列を掛け合わせると"
+
+#: manual/design/core.md:265
+msgid "Comparing with $R(q)$ entry by entry:"
+msgstr "$R(q)$ と成分ごとに比較すると、"
+
+#: manual/design/core.md:275
+msgid "valid while $\\cos b > 0$ (dividing both atan2 arguments by $\\cos b$ does not change the angle). These are the expressions in `to_euler_external_XYZ`, with $b = \\arcsin(\\cdot) \\in [-\\pi/2, \\pi/2]$. The functions `to_euler_external_YZX` and `to_euler_external_ZYX` are the same derivation with the axes permuted; a permutation that is not cyclic flips the sign inside the arcsine and the atan2 numerators. The module normalizes `q` before extracting, so the identities $w^2 + x^2 + y^2 + z^2 = 1$ used in the diagonal of $R(q)$ hold up to rounding."
+msgstr "これは $\\cos b > 0$ の間成り立ちます（atan2 の両引数を $\\cos b$ で割っても角は変わりません）。これらが `to_euler_external_XYZ` の式で、$b = \\arcsin(\\cdot) \\in [-\\pi/2, \\pi/2]$ です。`to_euler_external_YZX` と `to_euler_external_ZYX` は軸を置換した同じ導出です。巡回的でない置換では、逆正弦の中身と atan2 の分子の符号が反転します。モジュールは抽出前に `q` を正規化するので、$R(q)$ の対角成分で使った恒等式 $w^2 + x^2 + y^2 + z^2 = 1$ は丸め誤差の範囲で成り立ちます。"
+
+#: manual/design/core.md:277
+msgid "**Gimbal lock.** When $\\cos b = 0$, the entries $R_{32}, R_{33}, R_{21}, R_{11}$ all vanish and the first and third rotations act about the same physical axis. For $b = \\pi/2$ in the XYZ case,"
+msgstr "**ジンバルロック。** $\\cos b = 0$ のとき、成分 $R_{32}, R_{33}, R_{21}, R_{11}$ はすべて零になり、1 回目と 3 回目の回転は同じ物理的な軸の周りに作用します。XYZ の場合、$b = \\pi/2$ では"
+
+#: manual/design/core.md:283
+msgid "so only $a - c$ is determined (and $a + c$ for $b = -\\pi/2$). A conventional fix sets $c = 0$ and recovers $a$ from the entries that remain, here $a = \\operatorname{atan2}(R_{12}, R_{22})$. The implementation switches to a special branch when $|\\sin b| \\ge 0.9998$ (about $88.85^\\circ$): it prints a warning, sets $b = \\pm\\pi/2$ and $c = 0$, but takes the first angle from $\\operatorname{atan2}(R_{13}, R_{22})$ for XYZ, and from the regular-branch formula (whose arguments are near zero) for the other orders. Neither isolates $a \\mp c$, so the branch currently returns angles that do not reproduce the input; see [known deviations](#known-deviations)."
+msgstr "となり、決まるのは $a - c$ だけです（$b = -\\pi/2$ では $a + c$）。慣例的な対処は $c = 0$ とし、残った成分から $a$ を求めることで、ここでは $a = \\operatorname{atan2}(R_{12}, R_{22})$ です。実装は $|\\sin b| \\ge 0.9998$（約 $88.85^\\circ$）で特別な分岐に切り替わり、警告を出力して $b = \\pm\\pi/2$、$c = 0$ としますが、最初の角は XYZ では $\\operatorname{atan2}(R_{13}, R_{22})$ から、その他の順序では通常の分岐の式（引数がほぼ零）から求めます。どちらも $a \\mp c$ を分離しないため、この分岐は現在、入力を再現しない角を返します。[既知の逸脱](#known-deviations)を参照してください。"
+
+#: manual/design/core.md:285
+msgid "**Construction.** `from_euler(roll, pitch, yaw)` with the default `\"XYZ\"` multiplies out $q_X(\\text{roll})\\,q_Y(\\text{pitch})\\,q_Z(\\text{yaw})$ in closed form. With $c_r = \\cos\\frac{\\text{roll}}{2}$, $s_r = \\sin\\frac{\\text{roll}}{2}$ and so on, two applications of the Hamilton product give"
+msgstr "**構築。** 既定の `\"XYZ\"` での `from_euler(roll, pitch, yaw)` は、$q_X(\\text{roll})\\,q_Y(\\text{pitch})\\,q_Z(\\text{yaw})$ を閉じた形で展開します。$c_r = \\cos\\frac{\\text{roll}}{2}$、$s_r = \\sin\\frac{\\text{roll}}{2}$ などとすると、Hamilton 積を 2 回適用して"
+
+#: manual/design/core.md:291
+msgid "the expression in the source. `to_euler_internal_XYZ` inverts it."
+msgstr "これがソースの式です。`to_euler_internal_XYZ` はその逆です。"
+
+#: manual/design/core.md:293
+msgid "Spherical linear interpolation"
+msgstr "球面線形補間"
+
+#: manual/design/core.md:295
+msgid "Unit quaternions form the 3-sphere $S^3 \\subset \\mathbb R^4$, and the shortest path between two orientations is a great-circle arc. Let $q_1, q_2$ be unit with $\\cos\\Omega = q_1\\cdot q_2$, $0 < \\Omega < \\pi$. The unit vector"
+msgstr "単位四元数は 3 次元球面 $S^3 \\subset \\mathbb R^4$ をなし、2 つの姿勢の間の最短経路は大円の弧です。$q_1, q_2$ を単位四元数、$\\cos\\Omega = q_1\\cdot q_2$、$0 < \\Omega < \\pi$ とします。単位ベクトル"
+
+#: manual/design/core.md:301
+msgid "is orthogonal to $q_1$, and the arc is $\\gamma(\\varphi) = \\cos\\varphi\\, q_1 + \\sin\\varphi\\, q_\\perp$. At $\\varphi = t\\Omega$,"
+msgstr "は $q_1$ と直交し、弧は $\\gamma(\\varphi) = \\cos\\varphi\\, q_1 + \\sin\\varphi\\, q_\\perp$ です。$\\varphi = t\\Omega$ では、"
+
+#: manual/design/core.md:310
+msgid "which is the formula `slerp` evaluates. It moves at constant angular speed, and the rotation angle grows linearly in $t$. Because of the double cover, `slerp` first replaces $q_2$ by $-q_2$ when $q_1\\cdot q_2 < 0$, so that $\\Omega \\le \\pi/2$ and the rotation takes the short way around. It clamps $\\cos\\Omega$ to $[-1, 1]$ before `acos`, since rounding can push the dot product of two unit quaternions slightly past 1."
+msgstr "これが `slerp` の評価する式です。一定の角速度で動き、回転角は $t$ に比例して増えます。二重被覆のため、`slerp` は $q_1\\cdot q_2 < 0$ のときまず $q_2$ を $-q_2$ に置き換えて $\\Omega \\le \\pi/2$ とし、回転が短い方を回るようにします。丸めによって 2 つの単位四元数の内積がわずかに 1 を超えることがあるため、`acos` の前に $\\cos\\Omega$ を $[-1, 1]$ に制限します。"
+
+#: manual/design/core.md:312
+msgid "Powers"
+msgstr "べき乗"
+
+#: manual/design/core.md:314
+msgid "`pow_by_int` uses $q^{2m} = (q^m)^2$ and $q^{2m+1} = q\\,(q^m)^2$, which needs only associativity; all factors are powers of the same $q$, so they commute with each other. Negative exponents use $q^{-n} = (q^{-1})^n$."
+msgstr "`pow_by_int` は $q^{2m} = (q^m)^2$ と $q^{2m+1} = q\\,(q^m)^2$ を使い、結合性だけを必要とします。すべての因子は同じ $q$ のべきなので互いに可換です。負の指数には $q^{-n} = (q^{-1})^n$ を使います。"
+
+#: manual/design/core.md:316
+msgid "`pow_by_T` uses the polar form. Every non-zero $q$ is $q = |q|\\,(\\cos\\varphi + \\hat{\\mathbf n}\\sin\\varphi)$ with $\\varphi \\in [0, \\pi]$ and a unit vector $\\hat{\\mathbf n}$, and the span of $1$ and $\\hat{\\mathbf n}$ is a copy of $\\mathbb C$ (because $\\hat{\\mathbf n}^2 = -1$). De Moivre's formula then defines"
+msgstr "`pow_by_T` は極形式を使います。零でない $q$ はすべて $q = |q|\\,(\\cos\\varphi + \\hat{\\mathbf n}\\sin\\varphi)$（$\\varphi \\in [0, \\pi]$、$\\hat{\\mathbf n}$ は単位ベクトル）と書け、$1$ と $\\hat{\\mathbf n}$ が張る空間は $\\mathbb C$ の複製です（$\\hat{\\mathbf n}^2 = -1$ のため）。するとド・モアブルの公式により次が定義されます。"
+
+#: manual/design/core.md:322
+msgid "The implementation computes $\\varphi = \\arcsin\\lvert\\mathbf u\\rvert/|q|$, which is correct only for $\\varphi \\le \\pi/2$, that is for a non-negative scalar part; see [known deviations](#known-deviations)."
+msgstr "実装は $\\varphi = \\arcsin\\lvert\\mathbf u\\rvert/|q|$ を計算しますが、これが正しいのは $\\varphi \\le \\pi/2$、すなわちスカラー部が非負の場合だけです。[既知の逸脱](#known-deviations)を参照してください。"
+
+#: manual/design/core.md:324
+msgid "Design decisions"
+msgstr "設計上の決定"
+
+#: manual/design/core.md:326
+msgid "Generic components with per-function bounds"
+msgstr "ジェネリックな成分と関数ごとの制約"
+
+#: manual/design/core.md:328
+msgid "**Problem.** Quaternions are useful over exact integers (number theory, testing identities) and over `Double` (geometry), and the luna-generic ecosystem wants one type that fits both."
+msgstr "**問題。** 四元数は厳密な整数上（数論、恒等式の検証）でも `Double` 上（幾何）でも有用であり、luna-generic のエコシステムは両方に合う 1 つの型を必要としています。"
+
+#: manual/design/core.md:330
+msgid "**Options.** A `Double`-only type; a type parameterized by a single \"real number\" trait; or a type with no bound on `T` whose functions each require only what they use."
+msgstr "**選択肢。** `Double` 専用の型、単一の「実数」trait でパラメータ化した型、あるいは `T` に制約を課さず各関数が使うものだけを要求する型。"
+
+#: manual/design/core.md:332
+msgid "**Choice.** The last. `Quaternion[T]` has no bound; `+` needs `Add`, `*` needs `Mul + Sub + Add`, `square_len` needs `Mul + Add`, and only functions with square roots or trigonometry ask for `DoubleConvert`. This follows the Luna-Flow principle that code depends on the smallest trait composition that states its needs, and it lets `Quaternion[Int]` check algebraic identities exactly."
+msgstr "**選択。** 最後のものです。`Quaternion[T]` には制約がなく、`+` は `Add`、`*` は `Mul + Sub + Add`、`square_len` は `Mul + Add` を要求し、平方根や三角関数を使う関数だけが `DoubleConvert` を要求します。これは、必要なものを表す最小の trait の組み合わせに依存するという Luna-Flow の原則に従ったもので、`Quaternion[Int]` で代数的恒等式を厳密に確かめることもできます。"
+
+#: manual/design/core.md:334
+msgid "Scalar–vector storage"
+msgstr "スカラー–ベクトルによる格納"
+
+#: manual/design/core.md:336
+msgid "The type stores `r : T` and `vec : (T, T, T)` rather than four separate fields. The scalar–vector form is how the product, the conjugate, the inverse and the rotation are derived above, so the code reads like the derivations (`dot`, `cross`, `scale` on `vec`). The type is abstract, which keeps the representation free to change; the cost is that there are no component accessors yet."
+msgstr "この型は 4 つの独立したフィールドではなく、`r : T` と `vec : (T, T, T)` を保持します。上の積・共役・逆元・回転はスカラー–ベクトル形式で導出されているので、コードは導出そのもののように読めます（`vec` に対する `dot`、`cross`、`scale`）。型は抽象型なので表現を自由に変えられますが、その代償として成分のアクセサがまだありません。"
+
+#: manual/design/core.md:338
+msgid "Why `Ring` and not `Field`"
+msgstr "`Field` ではなく `Ring` である理由"
+
+#: manual/design/core.md:340
+msgid "luna-generic's `Field` is `Ring + Inverse + Div`, and generic code written against it is entitled to the laws of a commutative field, such as $a b = b a$ or $a / b \\cdot c = a c / b$. Quaternions satisfy every ring law and have inverses, but not commutativity, so claiming `Field` would let such code compute wrong answers silently. The package therefore implements `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring` and `Ring` (all lawful for $\\mathbb H$ over a commutative `T`), plus the operation traits `Inverse` and `Conjugate`, and stops there. Division is still available through `Div` and `left_div`, but generic code has to ask for it explicitly."
+msgstr "luna-generic の `Field` は `Ring + Inverse + Div` であり、それに対して書かれたジェネリックなコードは、$a b = b a$ や $a / b \\cdot c = a c / b$ のような可換体の法則に頼ってよいことになっています。四元数はすべての環の公理を満たし逆元も持ちますが、可換ではないため、`Field` を名乗るとそのようなコードが黙って誤った答えを出しかねません。そこで本パッケージは `Zero`、`One`、`AddMonoid`、`MulMonoid`、`Semiring`、`Ring`（可換な `T` 上の $\\mathbb H$ ではすべて成り立つ）に加えて演算 trait の `Inverse` と `Conjugate` を実装し、そこで止めています。除算は `Div` と `left_div` で引き続き使えますが、ジェネリックなコードは明示的に要求する必要があります。"
+
+#: manual/design/core.md:342
+msgid "`/` is right division"
+msgstr "`/` は右除算"
+
+#: manual/design/core.md:344
+msgid "**Problem.** With non-commuting multiplication, `q / r` must pick a side. Before 0.2.0 it computed $r^{-1} q$."
+msgstr "**問題。** 乗法が可換でない場合、`q / r` はどちらかの側を選ぶ必要があります。0.2.0 より前は $r^{-1} q$ を計算していました。"
+
+#: manual/design/core.md:346
+msgid "**Choice.** Since 0.2.0, `q / r` is $q\\,r^{-1}$, the solution of $x r = q$. This is the usual convention for a division ring and keeps `Div` consistent with `Inverse` in the way it is for the luna-generic scalar types: `a / b == a * b.inv()`. It also reads naturally for rotations: `to / from` is the rotation that, applied after `from`, gives `to`. The other quotient stays available as `left_div`, with a name that says which side the inverse is on. The change is breaking and is recorded in the changelog."
+msgstr "**選択。** 0.2.0 から `q / r` は $q\\,r^{-1}$、すなわち $x r = q$ の解です。これは斜体での通常の約束であり、luna-generic のスカラー型と同じように `Div` と `Inverse` の整合性を保ちます：`a / b == a * b.inv()`。回転としても自然に読めます：`to / from` は `from` の後に適用すると `to` になる回転です。もう一方の商は、逆元がどちら側にあるかを名前で示す `left_div` として引き続き提供されます。この変更は破壊的変更であり、変更履歴に記録されています。"
+
+#: manual/design/core.md:348
+msgid "The `Double` bridge"
+msgstr "`Double` への橋渡し"
+
+#: manual/design/core.md:350
+msgid "Square roots and trigonometric functions exist for `Double` only, and the package depends on nothing but luna-generic, which has no analytic traits. `DoubleConvert` is a two-method trait that converts a component to `Double` and back, so `magnitude`, `normalize`, `slerp`, `pow_by_T` and the Euler conversions stay generic in signature while computing in `Double`. It is implemented for `Double` (as the identity) and `Int` (truncating `from_double`). The trait is declared `pub` rather than `pub(open)`, so other packages cannot implement it for their own types."
+msgstr "平方根と三角関数は `Double` にしかなく、本パッケージは解析的な trait を持たない luna-generic にしか依存していません。`DoubleConvert` は成分を `Double` に変換して戻す 2 メソッドの trait で、これにより `magnitude`、`normalize`、`slerp`、`pow_by_T`、オイラー角変換は、`Double` で計算しながらシグネチャ上はジェネリックなままでいられます。`Double`（恒等写像）と `Int`（`from_double` は切り捨て）に実装されています。この trait は `pub(open)` ではなく `pub` として宣言されているため、他のパッケージが自分の型に実装することはできません。"
+
+#: manual/design/core.md:352
+msgid "Exact structural equality"
+msgstr "厳密な構造的等価性"
+
+#: manual/design/core.md:354
+msgid "`Eq` and `Hash` are derived and compare components exactly. Equality \"as rotations\" ($q \\sim -q$) or \"within a tolerance\" depends on the application, so it is left to the caller (the tutorial shows one way). Exact equality also keeps `Eq` consistent with `Hash`."
+msgstr "`Eq` と `Hash` は導出されたもので、成分を厳密に比較します。「回転として」の等価性（$q \\sim -q$）や「許容誤差内」の等価性は用途によって異なるため、呼び出し側に委ねます（チュートリアルで 1 つの方法を示しています）。厳密な等価性により `Eq` と `Hash` の整合性も保たれます。"
+
+#: manual/design/core.md:356
+msgid "Explicit method promotion"
+msgstr "明示的なメソッドの昇格"
+
+#: manual/design/core.md:358
+msgid "MoonBit 0.10 no longer turns trait implementations into methods implicitly. [`src/extends.mbt`](../../../src/extends.mbt) promotes the operators, `equal`, `hash`, `to_string`, `conjugate`, `zero`, `one` and `inv`, which are natural operations on a quaternion. The method forms `not_equal`, `hash_combine`, `output`, `default` and `to_repr` are kept, deprecated and hidden, for compatibility."
+msgstr "MoonBit 0.10 では trait の実装が暗黙にメソッドになることはなくなりました。[`src/extends.mbt`](../../../src/extends.mbt) は、四元数の自然な演算である演算子、`equal`、`hash`、`to_string`、`conjugate`、`zero`、`one`、`inv` を昇格します。メソッド形式の `not_equal`、`hash_combine`、`output`、`default`、`to_repr` は互換性のために残され、非推奨として隠されています。"
+
+#: manual/design/core.md:360
+msgid "Correctness and invariants"
+msgstr "正しさと不変条件"
+
+#: manual/design/core.md:362
+msgid "Algebraic laws"
+msgstr "代数的な法則"
+
+#: manual/design/core.md:364
+msgid "Over a commutative ring `T` with exact arithmetic (`Int`, `BigInt`), the implementation satisfies:"
+msgstr "厳密な算術を持つ可換環 `T`（`Int`、`BigInt`）上で、実装は次を満たします。"
+
+#: manual/design/core.md:366
+msgid "the ring laws: $(\\mathbb H, +, 0)$ is an abelian group, $(\\mathbb H, \\cdot, 1)$ a monoid, and $\\cdot$ distributes over $+$ on both sides;"
+msgstr "環の公理：$(\\mathbb H, +, 0)$ はアーベル群、$(\\mathbb H, \\cdot, 1)$ はモノイドであり、$\\cdot$ は $+$ に対して両側分配的；"
+
+#: manual/design/core.md:367
+msgid "$\\overline{pq} = \\bar q\\,\\bar p$, $\\bar{\\bar q} = q$, $q\\bar q = \\bar q q = |q|^2$ and $|pq|^2 = |p|^2|q|^2$;"
+msgstr "$\\overline{pq} = \\bar q\\,\\bar p$、$\\bar{\\bar q} = q$、$q\\bar q = \\bar q q = |q|^2$、$|pq|^2 = |p|^2|q|^2$；"
+
+#: manual/design/core.md:368
+msgid "for exact division (a field `T` such as rationals): $q\\,q^{-1} = q^{-1}q = 1$, $(q / r)\\,r = q$ and $r\\,(q.\\mathrm{left\\_div}(r)) = q$."
+msgstr "厳密な除算（有理数のように `T` が体の場合）：$q\\,q^{-1} = q^{-1}q = 1$、$(q / r)\\,r = q$、$r\\,(q.\\mathrm{left\\_div}(r)) = q$。"
+
+#: manual/design/core.md:370
+msgid "The package tests check the ring laws on integer samples, non-commutativity, and the two division identities."
+msgstr "パッケージのテストは、整数のサンプルで環の公理・非可換性・2 つの除算の恒等式を確かめています。"
+
+#: manual/design/core.md:372
+msgid "Floating-point error"
+msgstr "浮動小数点誤差"
+
+#: manual/design/core.md:374
+msgid "Over `Double` the laws hold up to rounding. Each component of $pq$ is a sum of four products of a component of $p$ with a component of $q$, evaluated with four roundings of products and three of additions. The standard bound for such an inner product[^higham] gives, componentwise,"
+msgstr "`Double` では、これらの法則は丸め誤差の範囲で成り立ちます。$pq$ の各成分は、$p$ の成分と $q$ の成分の 4 つの積の和であり、積で 4 回、加算で 3 回の丸めを伴って評価されます。このような内積に対する標準的な誤差限界[^higham]は、成分ごとに次を与えます。"
+
+#: manual/design/core.md:380
+msgid "where $\\sigma_m$ is the permutation of $q$'s components that appears in component $m$ and the second inequality is Cauchy–Schwarz. Summing over the four components, $\\lVert\\mathrm{fl}(pq) - pq\\rVert \\le 2\\gamma_4 |p||q|$, so by the multiplicativity of the norm"
+msgstr "ここで $\\sigma_m$ は成分 $m$ に現れる $q$ の成分の置換であり、2 つ目の不等式は Cauchy–Schwarz の不等式です。4 成分について和をとると $\\lVert\\mathrm{fl}(pq) - pq\\rVert \\le 2\\gamma_4 |p||q|$ となり、ノルムの乗法性から"
+
+#: manual/design/core.md:386
+msgid "N. J. Higham, *Accuracy and Stability of Numerical Algorithms*, 2nd ed., SIAM 2002, §3.1: $\\lvert\\mathrm{fl}(x^{\\mathsf T}y) - x^{\\mathsf T}y\\rvert \\le \\gamma_n \\lvert x\\rvert^{\\mathsf T}\\lvert y\\rvert$ for any order of summation."
+msgstr "N. J. Higham, *Accuracy and Stability of Numerical Algorithms*, 第 2 版, SIAM 2002, §3.1：任意の和の順序で $\\lvert\\mathrm{fl}(x^{\\mathsf T}y) - x^{\\mathsf T}y\\rvert \\le \\gamma_n \\lvert x\\rvert^{\\mathsf T}\\lvert y\\rvert$。"
+
+#: manual/design/core.md:388
+msgid "A product of $n$ unit quaternions therefore has norm $1 + \\delta$ with $|\\delta| \\lesssim 8nu$ to first order, where $u = 2^{-53} \\approx 1.1 \\times 10^{-16}$; in practice the errors partly cancel and the drift is smaller. Because `rotate` assumes $|q| = 1$, a drifted quaternion scales vectors by about $1 + 2\\delta$. Long chains should call `normalize` periodically; its result has norm $1$ within a few units of $u$ (for example $1 + 2i + 3j + 4k$ normalizes to a quaternion of computed norm $0.9999999999999999$)."
+msgstr "したがって $n$ 個の単位四元数の積のノルムは $1 + \\delta$ で、一次近似で $|\\delta| \\lesssim 8nu$ です（$u = 2^{-53} \\approx 1.1 \\times 10^{-16}$）。実際には誤差が部分的に打ち消し合い、ずれはこれより小さくなります。`rotate` は $|q| = 1$ を前提とするため、ずれた四元数はベクトルを約 $1 + 2\\delta$ 倍に拡大縮小します。長い積の連鎖では定期的に `normalize` を呼ぶべきです。その結果のノルムは $u$ の数倍以内で $1$ になります（例えば $1 + 2i + 3j + 4k$ を正規化すると、計算上のノルムは $0.9999999999999999$ になります）。"
+
+#: manual/design/core.md:390
+msgid "Division by zero and degenerate inputs"
+msgstr "ゼロ除算と退化した入力"
+
+#: manual/design/core.md:392
+msgid "The package does not check its inputs; degenerate cases follow the arithmetic of `T`:"
+msgstr "本パッケージは入力を検査しません。退化した場合は `T` の算術に従います。"
+
+#: manual/design/core.md:394
+msgid "Input"
+msgstr "入力"
+
+#: manual/design/core.md:396
+msgid "`inv`, `/`, `left_div` with a zero divisor"
+msgstr "除数が零の `inv`、`/`、`left_div`"
+
+#: manual/design/core.md:396
+msgid "NaN components"
+msgstr "NaN 成分"
+
+#: manual/design/core.md:396
+msgid "runtime trap (integer division by zero)"
+msgstr "実行時トラップ（整数のゼロ除算）"
+
+#: manual/design/core.md:397
+msgid "`normalize` of zero"
+msgstr "零の `normalize`"
+
+#: manual/design/core.md:397
+#: manual/design/core.md:398
+msgid "zero returned unchanged"
+msgstr "零をそのまま返す"
+
+#: manual/design/core.md:398
+msgid "`pow_by_T` of zero"
+msgstr "零の `pow_by_T`"
+
+#: manual/design/core.md:399
+msgid "`from_axis_angle` with a zero axis"
+msgstr "軸が零の `from_axis_angle`"
+
+#: manual/design/core.md:399
+msgid "NaN vector part"
+msgstr "NaN のベクトル部"
+
+#: manual/design/core.md:399
+msgid "runtime trap"
+msgstr "実行時トラップ"
+
+#: manual/design/core.md:400
+msgid "`slerp` of a zero input"
+msgstr "入力が零の `slerp`"
+
+#: manual/design/core.md:400
+msgid "the zero input is used unnormalized"
+msgstr "零の入力が正規化されずにそのまま使われる"
+
+#: manual/design/core.md:400
+msgid "not meaningful"
+msgstr "意味を持たない"
+
+#: manual/design/core.md:402
+msgid "Over `Int`, `inv` is zero unless $|q|^2 = 1$, and every function that goes through `DoubleConvert` truncates."
+msgstr "`Int` では $|q|^2 = 1$ でない限り `inv` は零になり、`DoubleConvert` を経由する関数はすべて切り捨てを行います。"
+
+#: manual/design/core.md:404
+msgid "Thresholds"
+msgstr "しきい値"
+
+#: manual/design/core.md:406
+msgid "`slerp` falls back to normalized linear interpolation when $\\cos\\Omega > 0.9995$, that is $\\Omega < 0.0316$ rad. There $\\sin\\Omega < 0.032$, and dividing by it would amplify rounding errors in the weights; the linear path, on the other hand, deviates from the arc by less than $5.1 \\times 10^{-7}$ rad on $S^3$ (about $10^{-6}$ rad of rotation angle) at the threshold, and less below it."
+msgstr "`slerp` は $\\cos\\Omega > 0.9995$、すなわち $\\Omega < 0.0316$ rad のとき、正規化した線形補間に切り替わります。そこでは $\\sin\\Omega < 0.032$ であり、これで割ると重みの丸め誤差が増幅されます。一方、しきい値において線形な経路と弧のずれは $S^3$ 上で $5.1 \\times 10^{-7}$ rad 未満（回転角にして約 $10^{-6}$ rad）であり、しきい値より下ではさらに小さくなります。"
+
+#: manual/design/core.md:408
+msgid "The Euler conversions treat $|\\sin b| \\ge 0.9998$ as gimbal lock. Rounding $b$ to $\\pm\\pi/2$ there costs up to $\\pi/2 - \\arcsin 0.9998 \\approx 0.020$ rad in the middle angle."
+msgstr "オイラー角の変換は $|\\sin b| \\ge 0.9998$ をジンバルロックとみなします。そこで $b$ を $\\pm\\pi/2$ に丸めると、中央の角に最大 $\\pi/2 - \\arcsin 0.9998 \\approx 0.020$ rad の誤差が生じます。"
+
+#: manual/design/core.md:410
+msgid "Complexity"
+msgstr "計算量"
+
+#: manual/design/core.md:412
+msgid "Every operation is $O(1)$ on four components: a Hamilton product costs 16 multiplications and 12 additions, `rotate` 18 multiplications and 12 additions. `pow_by_int(n)` uses $O(\\log |n|)$ products and recursion depth."
+msgstr "すべての演算は 4 成分に対する $O(1)$ です。Hamilton 積は乗算 16 回と加算 12 回、`rotate` は乗算 18 回と加算 12 回です。`pow_by_int(n)` は $O(\\log |n|)$ 回の積と同程度の再帰の深さを使います。"
+
+#: manual/design/core.md:414
+msgid "Known deviations"
+msgstr "既知の逸脱"
+
+#: manual/design/core.md:416
+msgid "These are deviations of the current implementation from the mathematics above. They are documented here rather than hidden, and are reported for fixing:"
+msgstr "以下は、現在の実装が上記の数学から外れている点です。隠さずにここに記載し、修正のために報告済みです。"
+
+#: manual/design/core.md:418
+msgid "`from_euler` with `\"ZYX\"` or `\"YZX\"` does not evaluate a product of axis rotations; the results are not unit quaternions. `\"ZXY\"` takes its angles by position while `\"YXZ\"` takes them by axis."
+msgstr "`\"ZYX\"` または `\"YZX\"` の `from_euler` は軸回転の積を評価しておらず、結果は単位四元数になりません。`\"ZXY\"` は角を位置で、`\"YXZ\"` は軸で割り当てます。"
+
+#: manual/design/core.md:419
+msgid "`to_euler_external_XZY` (and therefore `to_euler_internal_YZX`) evaluates the intrinsic X-Y-Z extraction instead of the named sequence."
+msgstr "`to_euler_external_XZY`（したがって `to_euler_internal_YZX` も）は、指定した系列ではなく内因的 X-Y-Z の抽出を評価します。"
+
+#: manual/design/core.md:420
+msgid "The gimbal-lock branch of the Euler extraction does not isolate the free angle (see above), and it reports the warning with `println`."
+msgstr "オイラー角の抽出におけるジンバルロックの分岐は自由な角を分離せず（上記参照）、警告を `println` で出力します。"
+
+#: manual/design/core.md:421
+msgid "`pow_by_T` computes $\\varphi$ with `asin`, which cannot exceed $\\pi/2$; $\\operatorname{atan2}(\\lvert\\mathbf u\\rvert, w)$ would cover $[0, \\pi]$."
+msgstr "`pow_by_T` は $\\varphi$ を `asin` で計算するため $\\pi/2$ を超えられません。$\\operatorname{atan2}(\\lvert\\mathbf u\\rvert, w)$ を使えば $[0, \\pi]$ 全体を扱えます。"
+
+#: manual/design/core.md:423
+msgid "Alternatives rejected"
+msgstr "採用しなかった案"
+
+#: manual/design/core.md:425
+msgid "**Implementing `Field`.** Rejected because generic `Field` code may rely on commutativity (see above)."
+msgstr "**`Field` の実装。** ジェネリックな `Field` のコードが可換性に依存しうるため採用しませんでした（上記参照）。"
+
+#: manual/design/core.md:426
+msgid "**Keeping `/` as left division.** It contradicted `a / b == a * b.inv()` and the usual reading of `to / from` for rotations."
+msgstr "**`/` を左除算のままにする。** `a / b == a * b.inv()` にも、回転における `to / from` の通常の読み方にも反していました。"
+
+#: manual/design/core.md:427
+msgid "**A `Double`-only type.** It would lose exact arithmetic over `Int` and the luna-generic ring structure for other scalar types."
+msgstr "**`Double` 専用の型。** `Int` 上の厳密な算術と、他のスカラー型での luna-generic の環構造が失われます。"
+
+#: manual/design/core.md:428
+msgid "**Storing four named fields or a rotation matrix.** Four fields hide the scalar–vector structure the formulas use; a matrix has nine entries, needs re-orthogonalization instead of a cheap normalization, and cannot be interpolated as simply."
+msgstr "**4 つの名前付きフィールドや回転行列での格納。** 4 つのフィールドでは式が使うスカラー–ベクトル構造が隠れます。行列は 9 成分を持ち、安価な正規化の代わりに再直交化が必要で、補間も簡単ではありません。"
+
+#: manual/design/core.md:429
+msgid "**Comparing with a tolerance in `Eq`.** A tolerance-based `==` is not transitive and cannot agree with `Hash`."
+msgstr "**`Eq` での許容誤差による比較。** 許容誤差に基づく `==` は推移的でなく、`Hash` と整合させることもできません。"
+
+#: manual/design/core.md:431
+msgid "Boundaries"
+msgstr "境界"
+
+#: manual/design/core.md:433
+msgid "The package deliberately does not:"
+msgstr "本パッケージは意図的に次のことを行いません。"
+
+#: manual/design/core.md:435
+msgid "provide rotation matrices, exponential and logarithm maps, or quaternion calculus (dual quaternions, derivatives of orientations);"
+msgstr "回転行列、指数写像・対数写像、四元数の微積分（双対四元数、姿勢の微分）を提供すること；"
+
+#: manual/design/core.md:436
+msgid "check its inputs or return `Result`: degenerate inputs follow the arithmetic of `T`, and `rotate` trusts that its receiver is a unit quaternion;"
+msgstr "入力を検査したり `Result` を返したりすること：退化した入力は `T` の算術に従い、`rotate` はレシーバが単位四元数であると信頼します；"
+
+#: manual/design/core.md:437
+msgid "implement luna-generic `Field` or `Num`, or make quaternions an ordered type;"
+msgstr "luna-generic の `Field` や `Num` を実装すること、あるいは四元数を順序付きの型にすること；"
+
+#: manual/design/core.md:438
+msgid "depend on `arithmetic`, `linear-algebra` or `luna-complex`; its only Luna-Flow dependency is luna-generic;"
+msgstr "`arithmetic`、`linear-algebra`、`luna-complex` に依存すること：唯一の Luna-Flow の依存先は luna-generic です；"
+
+#: manual/design/core.md:439
+msgid "choose a tolerance for comparing rotations; that is left to the caller."
+msgstr "回転の比較に使う許容誤差を決めること：それは呼び出し側に委ねます。"
+
 #: manual/index.md:1
 msgid "quaternion"
 msgstr "quaternion"
 
 #: manual/index.md:3
-msgid "`quaternion` is the Luna-Flow library for quaternions, the extension of complex numbers that is useful for 3D rotations and orientations. It provides arithmetic, normalization, rotation, interpolation and Euler-angle conversion. Everything lives in one package, `Luna-Flow/quaternion`, under `src`."
-msgstr "`quaternion` は Luna-Flow の四元数ライブラリです。四元数は複素数を拡張したもので、3D の回転や姿勢の表現に役立ちます。このライブラリは算術演算、正規化、回転、補間、オイラー角変換を提供します。すべては `src` にある単一のパッケージ `Luna-Flow/quaternion` に含まれます。"
+msgid "`quaternion` is the Luna-Flow library for Hamilton's quaternions $\\mathbb H$: the four-dimensional number system $w + xi + yj + zk$ in which $i^2 = j^2 = k^2 = ijk = -1$. Unit quaternions describe 3D rotations without the singularities of Euler angles, and they compose, invert and interpolate cheaply. The library provides one generic type, `Quaternion[T]`, with ring arithmetic, right and left division, norms, rotation of vectors, spherical interpolation and Euler-angle conversion."
+msgstr "`quaternion` は Hamilton の四元数 $\\mathbb H$ のための Luna-Flow ライブラリです。四元数は $i^2 = j^2 = k^2 = ijk = -1$ を満たす $w + xi + yj + zk$ の形の 4 次元の数の体系です。単位四元数はオイラー角の特異点なしに 3 次元回転を表し、合成・逆・補間を安価に行えます。本ライブラリはジェネリック型 `Quaternion[T]` を 1 つ提供し、環演算、右除算と左除算、ノルム、ベクトルの回転、球面補間、オイラー角変換を備えています。"
 
 #: manual/index.md:5
-msgid "The `Quaternion[T]` type"
-msgstr "`Quaternion[T]` 型"
+msgid "Packages"
+msgstr "パッケージ"
 
 #: manual/index.md:7
-msgid "`Quaternion[T]` stores a real part and a vector part of three components. The type is abstract: build values with the constructors below rather than with a struct literal. The component type `T` is generic, and each operation asks only for the traits it needs, for example `Add` for addition or `@luna-generic.Num` for the identity."
-msgstr "`Quaternion[T]` は実部と 3 成分のベクトル部を保持します。型は抽象型なので、構造体リテラルではなく下のコンストラクタで値を作ってください。成分の型 `T` は汎用で、各操作は必要な trait だけを要求します。たとえば加算には `Add`、単位元には `@luna-generic.Num` が必要です。"
+msgid "The module `Luna-Flow/quaternion` has a single package at the source root `src`, documented as `core`:"
+msgstr "モジュール `Luna-Flow/quaternion` には、ソースルート `src` に 1 つのパッケージだけがあり、ドキュメントでは `core` と呼びます。"
 
 #: manual/index.md:9
-msgid "Constructor"
-msgstr "コンストラクタ"
+msgid "Package"
+msgstr "パッケージ"
 
 #: manual/index.md:9
-msgid "Result"
-msgstr "結果"
+msgid "Import path"
+msgstr "インポートパス"
 
-#: manual/index.md:12
-msgid "The identity $1 + 0i + 0j + 0k$; `Quaternion::default()` returns the same value."
-msgstr "単位元 $1 + 0i + 0j + 0k$。`Quaternion::default()` も同じ値を返します。"
+#: manual/index.md:9
+msgid "Contents"
+msgstr "内容"
+
+#: manual/index.md:9
+msgid "Pages"
+msgstr "ページ"
+
+#: manual/index.md:11
+msgid "`Quaternion[T]`, its arithmetic and rotation functions, the `DoubleConvert` trait"
+msgstr "`Quaternion[T]`、その算術と回転の関数、`DoubleConvert` trait"
+
+#: manual/index.md:11
+msgid "[API](api/core.md) · [tutorial](tutorial/core.md) · [design](design/core.md)"
+msgstr "[API](api/core.md) · [チュートリアル](tutorial/core.md) · [設計](design/core.md)"
 
 #: manual/index.md:13
-msgid "The rotation by `angle` radians around `axis`, which does not need to be normalized."
-msgstr "`axis` のまわりに `angle` ラジアン回す回転。`axis` は正規化されていなくてもかまいません。"
+msgid "The sources are [`src/quaternion.mbt`](../../src/quaternion.mbt) (the type and all operations), [`src/double_conv.mbt`](../../src/double_conv.mbt) (`DoubleConvert`) and [`src/extends.mbt`](../../src/extends.mbt) (which trait methods are callable as methods). The generated interface [`src/pkg.generated.mbti`](../../src/pkg.generated.mbti) lists every public signature."
+msgstr "ソースは [`src/quaternion.mbt`](../../src/quaternion.mbt)（型とすべての演算）、[`src/double_conv.mbt`](../../src/double_conv.mbt)（`DoubleConvert`）、[`src/extends.mbt`](../../src/extends.mbt)（どの trait メソッドをメソッドとして呼べるか）です。生成されたインターフェース [`src/pkg.generated.mbti`](../../src/pkg.generated.mbti) にすべての公開シグネチャが記載されています。"
 
-#: manual/index.md:14
-msgid "The rotation given by Euler angles in radians; `order` defaults to `\"XYZ\"`."
-msgstr "ラジアン単位のオイラー角で表した回転。`order` の既定値は `\"XYZ\"` です。"
+#: manual/index.md:15
+msgid "At a glance"
+msgstr "概要"
 
-#: manual/index.md:16
-msgid "Operations"
-msgstr "演算"
+#: manual/index.md:17
+msgid "`Quaternion[T]` is generic in its component type. Ring operations work over exact types such as `Int`; functions that need square roots or trigonometry compute in `Double` through `DoubleConvert`, which is implemented for `Int` and `Double`."
+msgstr "`Quaternion[T]` は成分の型についてジェネリックです。環演算は `Int` のような厳密な型で行え、平方根や三角関数を必要とする関数は `DoubleConvert` を通して `Double` で計算します。この trait は `Int` と `Double` に実装されています。"
 
 #: manual/index.md:18
-msgid "Quaternions support `+`, `-`, unary `-`, and `*` (the Hamilton product), as well as `/`, `Eq`, `Hash` and `Show`; `to_string` prints the form `a + bi + cj + dk`. The type implements `Conjugate` and `Inverse` from `Luna-Flow/luna-generic`."
-msgstr "四元数は `+`、`-`、単項 `-`、`*`（ハミルトン積）に加えて、`/`、`Eq`、`Hash`、`Show` をサポートします。`to_string` は `a + bi + cj + dk` の形式で出力します。この型は `Luna-Flow/luna-generic` の `Conjugate` と `Inverse` を実装します。"
+msgid "`+`, `-`, unary `-` and `*` (the Hamilton product) are the usual operations. `*` is not commutative."
+msgstr "`+`、`-`、単項 `-`、`*`（Hamilton 積）が通常の演算です。`*` は可換ではありません。"
+
+#: manual/index.md:19
+msgid "`q / r` is right division $q\\,r^{-1}$; `q.left_div(r)` is left division $r^{-1} q$. Before 0.2.0, `/` computed $r^{-1} q$."
+msgstr "`q / r` は右除算 $q\\,r^{-1}$、`q.left_div(r)` は左除算 $r^{-1} q$ です。0.2.0 より前、`/` は $r^{-1} q$ を計算していました。"
 
 #: manual/index.md:20
-msgid "Method"
-msgstr "メソッド"
+msgid "The type implements luna-generic's `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring`, `Ring`, `Inverse` and `Conjugate`. It does not implement `Field`, because multiplication is not commutative."
+msgstr "この型は luna-generic の `Zero`、`One`、`AddMonoid`、`MulMonoid`、`Semiring`、`Ring`、`Inverse`、`Conjugate` を実装します。乗法が可換でないため、`Field` は実装しません。"
 
-#: manual/index.md:20
-msgid "Meaning"
-msgstr "意味"
-
-#: manual/index.md:22
-msgid "Multiplies every component by `s`."
-msgstr "すべての成分に `s` を掛けます。"
+#: manual/index.md:21
+msgid "Rotations: `from_axis_angle`, `from_euler`, `Quaternion::rotate`, `slerp`, `Quaternion::to_euler` and its eight fixed-order variants."
+msgstr "回転：`from_axis_angle`、`from_euler`、`Quaternion::rotate`、`slerp`、`Quaternion::to_euler` とその 8 つの順序固定版。"
 
 #: manual/index.md:23
-msgid "The dot product of the four components."
-msgstr "4 成分の内積です。"
-
-#: manual/index.md:24
-msgid "The squared norm and the norm."
-msgstr "ノルムの 2 乗とノルムです。"
+msgid "Where to start"
+msgstr "どこから読むか"
 
 #: manual/index.md:25
-msgid "The quaternion scaled to unit length; a zero quaternion is returned unchanged."
-msgstr "単位長に正規化した四元数です。ゼロ四元数はそのまま返されます。"
+msgid "**New to quaternions:** read the [tutorial](tutorial/core.md) from the quick start to \"Compare two rotations\". It needs no mathematics beyond vectors and angles."
+msgstr "**四元数が初めての方：** [チュートリアル](tutorial/core.md)をクイックスタートから「2 つの回転を比較する」まで読んでください。ベクトルと角度以上の数学は必要ありません。"
 
 #: manual/index.md:26
-msgid "Applies `f` to every component, possibly changing the component type."
-msgstr "各成分に `f` を適用します。成分の型が変わってもかまいません。"
+msgid "**Using the library:** the [API reference](api/core.md) lists every function with its exact signature, conventions, edge cases and known issues. Check the Euler-angle conventions there before converting angles."
+msgstr "**ライブラリを使う方：** [API リファレンス](api/core.md)に、各関数の正確なシグネチャ、規約、境界条件、既知の問題が載っています。角度を変換する前に、そこでオイラー角の規約を確認してください。"
 
 #: manual/index.md:27
-msgid "Integer and real powers."
-msgstr "整数乗と実数乗です。"
-
-#: manual/index.md:28
-msgid "Rotates a 3D vector; the receiver should be a unit quaternion."
-msgstr "3D ベクトルを回転します。レシーバは単位四元数である必要があります。"
+msgid "**Contributing or reviewing:** the [design page](design/core.md) derives the Hamilton product, the rotation formula, division, slerp and the Euler-angle extraction from Hamilton's relations, explains each design decision, and lists the places where the implementation currently deviates from the mathematics."
+msgstr "**貢献・レビューする方：** [設計ページ](design/core.md)は Hamilton の関係式から Hamilton 積、回転公式、除算、slerp、オイラー角の抽出を導出し、各設計判断を説明し、実装が現在数学から外れている箇所を列挙しています。"
 
 #: manual/index.md:29
-msgid "Three Euler angles in radians for the chosen axis order."
-msgstr "選択した軸順序における 3 つのオイラー角（ラジアン）です。"
+msgid "Installation and toolchain"
+msgstr "インストールとツールチェーン"
 
 #: manual/index.md:31
-msgid "`slerp(q1, q2, t)` interpolates spherically between two rotations. It normalizes both inputs, takes the shorter path, and falls back to normalized linear interpolation when the two rotations are almost equal."
-msgstr "`slerp(q1, q2, t)` は 2 つの回転の間を球面線形補間します。両方の入力を正規化して短い方の経路をとり、2 つの回転がほぼ等しい場合は正規化した線形補間に切り替えます。"
-
-#: manual/index.md:33
-msgid "`to_euler` accepts the orders `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\"` (the default) and returns extrinsic angles unless `external` is `false`. Each combination is also available directly, as `to_euler_external_ZYX`, `to_euler_internal_XYZ` and so on. `from_euler` accepts `\"XYZ\"`, `\"YXZ\"`, `\"ZYX\"`, `\"YZX\"` and `\"ZXY\"`. An unsupported order aborts. Near gimbal lock, `to_euler` prints a warning and fixes one of the angles."
-msgstr "`to_euler` は `\"XYZ\"`、`\"XZY\"`、`\"YZX\"`、`\"ZYX\"`（既定）の順序を受け付け、`external` が `false` でない限り外因性（extrinsic）の角度を返します。各組み合わせは `to_euler_external_ZYX` や `to_euler_internal_XYZ` などとして直接呼ぶこともできます。`from_euler` は `\"XYZ\"`、`\"YXZ\"`、`\"ZYX\"`、`\"YZX\"`、`\"ZXY\"` を受け付けます。未対応の順序を指定すると中止します。ジンバルロックの近くでは、`to_euler` は警告を出力し、角度の 1 つを固定します。"
-
-#: manual/index.md:35
-msgid "Algebraic structure and division semantics"
-msgstr "代数構造と除算のセマンティクス"
+msgid "The library needs MoonBit with `moonc` 0.10 or later and depends on `Luna-Flow/luna-generic` 0.3.3. Add it to a module with:"
+msgstr "本ライブラリには `moonc` 0.10 以降の MoonBit が必要で、`Luna-Flow/luna-generic` 0.3.3 に依存します。次のコマンドでモジュールに追加します。"
 
 #: manual/index.md:37
-msgid "`Quaternion[T]` implements `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring` and `Ring` from luna-generic when `T : Ring` (`T` is expected to be commutative, e.g. `Int`, `Double`). Multiplication is the Hamilton product and is **not commutative**."
-msgstr "`T : Ring`（`Int` や `Double` などの可換環を想定）のとき、`Quaternion[T]` は luna-generic の `Zero`、`One`、`AddMonoid`、`MulMonoid`、`Semiring`、`Ring` を実装します。乗算は Hamilton 積で、**可換ではありません**。"
-
-#: manual/index.md:38
-msgid "`Field` is deliberately **not** implemented: quaternions form a division ring (skew field), and generic code written against `Field` may assume `a * b == b * a`."
-msgstr "`Field` は意図的に実装**しません**。四元数は斜体（除算環）であり、`Field` 向けの汎用コードは `a * b == b * a` を仮定する可能性があるためです。"
+msgid "and import `\"Luna-Flow/quaternion\"` in the `moon.pkg` of the package that uses it. The code is target-independent and is tested on the `wasm`, `wasm-gc`, `js` and `native` backends."
+msgstr "そして、それを使うパッケージの `moon.pkg` で `\"Luna-Flow/quaternion\"` をインポートします。コードはターゲットに依存せず、`wasm`、`wasm-gc`、`js`、`native` の各バックエンドでテストされています。"
 
 #: manual/index.md:39
-msgid "`q / r` is **right division**: `q / r == q * r.inv()`, the solution `x` of `x * r == q`. This is the conventional meaning of `/` in a division ring and keeps `Div` consistent with `Inverse`."
-msgstr "`q / r` は**右除算**です：`q / r == q * r.inv()`、すなわち `x * r == q` の解です。除算環における `/` の慣用的な意味であり、`Div` と `Inverse` の整合性を保ちます。"
-
-#: manual/index.md:40
-msgid "`q.left_div(r)` is **left division**: `r.inv() * q`, the solution `x` of `r * x == q`."
-msgstr "`q.left_div(r)` は**左除算**です：`r.inv() * q`、すなわち `r * x == q` の解です。"
+msgid "Validation"
+msgstr "検証"
 
 #: manual/index.md:41
-msgid "`Quaternion::zero()` / `Quaternion::one()` return the additive and multiplicative identities; `q.inv()` and `q.conjugate()` are available as methods."
-msgstr "`Quaternion::zero()` / `Quaternion::one()` は加法・乗法の単位元を返します。`q.inv()` と `q.conjugate()` はメソッドとして呼び出せます。"
+msgid "From the repository root:"
+msgstr "リポジトリのルートで次を実行します。"
 
-#: manual/index.md:43
-msgid "Converting through `Double`"
-msgstr "`Double` を介した変換"
+#: manual/index.md:49
+msgid "`moon info` regenerates `src/pkg.generated.mbti`; a change in that file is a change of the public API."
+msgstr "`moon info` は `src/pkg.generated.mbti` を再生成します。このファイルの変更は公開 API の変更を意味します。"
 
-#: manual/index.md:45
-msgid "Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions."
-msgstr "いくつかの関数は `Double` 上で平方根や三角関数を計算するため、成分の型が `DoubleConvert` trait を実装している必要があります。この trait は値と `Double` の相互変換を行います。パッケージは `Double` と `Int` 向けの実装を提供しています。ほかの数値型に実装すれば、その型を `magnitude`、`normalize`、`slerp`、オイラー角の関数で使えます。"
+#: manual/tutorial/core.md:1
+msgid "core tutorial"
+msgstr "core チュートリアル"
 
-#: manual/index.md:47
-msgid "Example"
-msgstr "例"
+#: manual/tutorial/core.md:3
+msgid "This tutorial gets you from an empty project to rotating vectors, composing and interpolating orientations, and converting them to Euler angles with `Luna-Flow/quaternion`. It ends with generic code over luna-generic traits and the mistakes that are easy to make. The mathematics is kept light here; the [core design](../design/core.md) derives it."
+msgstr "このチュートリアルでは、`Luna-Flow/quaternion` を使って、空のプロジェクトからベクトルの回転、姿勢の合成と補間、オイラー角との変換までを進めます。最後に luna-generic の trait を使ったジェネリックなコードと、陥りやすい誤りを扱います。ここでは数学は控えめにし、導出は [core 設計](../design/core.md) に任せます。"
 
-#: manual/index.md:56
-msgid "`rotated` is approximately `(0.0, 1.0, 0.0)`, and `halfway` is the rotation by $\\pi/4$ around the same axis."
-msgstr "`rotated` はおよそ `(0.0, 1.0, 0.0)` になり、`halfway` は同じ軸のまわりに $\\pi/4$ 回す回転になります。"
+#: manual/tutorial/core.md:5
+msgid "Quick start"
+msgstr "クイックスタート"
 
-#: manual/index.md:58
-msgid "The generated interface `src/pkg.generated.mbti` lists every public signature."
-msgstr "生成されたインターフェース `src/pkg.generated.mbti` にすべての公開シグネチャが載っています。"
+#: manual/tutorial/core.md:7
+msgid "Add the module to your project:"
+msgstr "プロジェクトにモジュールを追加します。"
+
+#: manual/tutorial/core.md:13
+msgid "Import the package in your `moon.pkg`. The examples also use luna-generic (for generic code) and `moonbitlang/core/math` (for $\\pi$):"
+msgstr "`moon.pkg` でパッケージをインポートします。例では luna-generic（ジェネリックなコード用）と `moonbitlang/core/math`（$\\pi$ 用）も使います。"
+
+#: manual/tutorial/core.md:23
+msgid "The smallest useful program rotates the x axis by a quarter turn around the z axis:"
+msgstr "最小限の実用的なプログラムとして、x 軸を z 軸の周りに 4 分の 1 回転させます。"
+
+#: manual/tutorial/core.md:34
+msgid "It prints:"
+msgstr "出力は次のとおりです。"
+
+#: manual/tutorial/core.md:41
+msgid "The x axis lands on the y axis, up to a rounding error of about $2 \\times 10^{-16}$ in the first coordinate."
+msgstr "x 軸は y 軸に移ります。最初の座標には約 $2 \\times 10^{-16}$ の丸め誤差があります。"
+
+#: manual/tutorial/core.md:43
+msgid "Everyday tasks"
+msgstr "日常的な作業"
+
+#: manual/tutorial/core.md:45
+msgid "Build quaternions and multiply them"
+msgstr "四元数を作って掛け合わせる"
+
+#: manual/tutorial/core.md:47
+msgid "`Quaternion::from_vec((w, x, y, z))` builds $w + xi + yj + zk$. The usual operators work, and `*` is the Hamilton product. The basis units multiply like $ij = k$ but $ji = -k$, so the order of factors matters:"
+msgstr "`Quaternion::from_vec((w, x, y, z))` は $w + xi + yj + zk$ を作ります。通常の演算子が使え、`*` は Hamilton 積です。基底同士は $ij = k$ ですが $ji = -k$ と掛け合わされるので、因子の順序が重要です。"
+
+#: manual/tutorial/core.md:61
+msgid "Integer components are exact, which makes `Quaternion[Int]` handy for checking identities. Use `Double` components for rotations."
+msgstr "整数の成分は厳密なので、`Quaternion[Int]` は恒等式の確認に便利です。回転には `Double` の成分を使ってください。"
+
+#: manual/tutorial/core.md:63
+msgid "Rotate vectors and compose rotations"
+msgstr "ベクトルを回転し、回転を合成する"
+
+#: manual/tutorial/core.md:65
+msgid "`from_axis_angle(axis, angle)` gives the unit quaternion of a rotation, and `rotate` applies it to a 3D vector. To apply `first` and then `second`, multiply them as `second * first`, like matrices acting on column vectors:"
+msgstr "`from_axis_angle(axis, angle)` は回転の単位四元数を与え、`rotate` はそれを 3 次元ベクトルに適用します。`first` の後に `second` を適用するには、列ベクトルに作用する行列と同じように `second * first` と掛けます。"
+
+#: manual/tutorial/core.md:80
+msgid "`rotate` assumes a unit quaternion. Quaternions built by `from_axis_angle` are unit; call `normalize()` on anything you assembled yourself."
+msgstr "`rotate` は単位四元数を前提とします。`from_axis_angle` で作った四元数は単位四元数です。自分で組み立てたものには `normalize()` を呼んでください。"
+
+#: manual/tutorial/core.md:82
+msgid "Undo a rotation and find the rotation between two orientations"
+msgstr "回転を元に戻し、2 つの姿勢の間の回転を求める"
+
+#: manual/tutorial/core.md:84
+msgid "The inverse of a unit quaternion is its conjugate. To find the rotation `delta` that takes orientation `from` to orientation `to` (so that `delta * from == to`), divide on the right: `to / from` is $to \\cdot from^{-1}$. `left_div` solves the other equation, `from * x == to`, which gives the rotation expressed in the frame of `from`:"
+msgstr "単位四元数の逆元はその共役です。姿勢 `from` を姿勢 `to` に移す回転 `delta`（つまり `delta * from == to`）を求めるには、右側で割ります：`to / from` は $to \\cdot from^{-1}$ です。`left_div` はもう一方の方程式 `from * x == to` を解き、`from` の座標系で表した回転を与えます。"
+
+#: manual/tutorial/core.md:99
+msgid "Compare two rotations"
+msgstr "2 つの回転を比較する"
+
+#: manual/tutorial/core.md:101
+msgid "`q` and `-q` describe the same rotation, so `==` is the wrong test for \"same orientation\". For unit quaternions, $|q \\cdot r| = \\cos(\\theta/2)$ where $\\theta$ is the angle between the two orientations:"
+msgstr "`q` と `-q` は同じ回転を表すので、`==` は「同じ姿勢か」の判定には向きません。単位四元数では $|q \\cdot r| = \\cos(\\theta/2)$ で、$\\theta$ は 2 つの姿勢の間の角です。"
+
+#: manual/tutorial/core.md:122
+msgid "Interpolate between orientations"
+msgstr "姿勢の間を補間する"
+
+#: manual/tutorial/core.md:124
+msgid "`slerp(q1, q2, t)` moves along the shortest great-circle arc at constant angular speed:"
+msgstr "`slerp(q1, q2, t)` は最短の大円の弧に沿って一定の角速度で動きます。"
+
+#: manual/tutorial/core.md:139
+msgid "The x axis turns by $22.5^\\circ$ per step, as constant angular speed promises."
+msgstr "一定の角速度のとおり、x 軸は 1 ステップごとに $22.5^\\circ$ 回転します。"
+
+#: manual/tutorial/core.md:141
+msgid "Convert to and from Euler angles"
+msgstr "オイラー角との変換"
+
+#: manual/tutorial/core.md:143
+msgid "`from_euler(roll, pitch, yaw)` uses the order `\"XYZ\"` by default, which is $q_X(\\text{roll})\\,q_Y(\\text{pitch})\\,q_Z(\\text{yaw})$: intrinsic rotations about X, then the new Y, then the new Z. The matching inverse is `to_euler(order=\"XYZ\", external=false)`. The default of `to_euler` is a different convention, extrinsic Z-Y-X, which returns the same three angles in reverse order:"
+msgstr "`from_euler(roll, pitch, yaw)` は既定で順序 `\"XYZ\"` を使います。これは $q_X(\\text{roll})\\,q_Y(\\text{pitch})\\,q_Z(\\text{yaw})$、つまり X、新しい Y、新しい Z の周りの内因的回転です。対応する逆変換は `to_euler(order=\"XYZ\", external=false)` です。`to_euler` の既定値は別の規約である外因的 Z-Y-X で、同じ 3 つの角を逆順で返します。"
+
+#: manual/tutorial/core.md:157
+msgid "The k-th angle returned by `to_euler` always belongs to the k-th axis of `order`. Read the [API notes](../api/core.md#quaterniontoeuler) before using other orders: some combinations have known issues."
+msgstr "`to_euler` が返す k 番目の角は、常に `order` の k 番目の軸に対応します。他の順序を使う前に [API の説明](../api/core.md#quaterniontoeuler) を読んでください。一部の組み合わせには既知の問題があります。"
+
+#: manual/tutorial/core.md:159
+msgid "Read the components back"
+msgstr "成分を読み取る"
+
+#: manual/tutorial/core.md:161
+msgid "`Quaternion` is abstract and has no field accessors. The dot product with a basis quaternion reads one component, and `Debug` shows all four:"
+msgstr "`Quaternion` は抽象型で、フィールドのアクセサがありません。基底四元数との内積で 1 つの成分を読み取れ、`Debug` は 4 つすべてを表示します。"
+
+#: manual/tutorial/core.md:177
+msgid "For finite components the dot product with a basis quaternion returns the component exactly."
+msgstr "成分が有限であれば、基底四元数との内積はその成分を厳密に返します。"
+
+#: manual/tutorial/core.md:179
+msgid "Going further"
+msgstr "さらに進んで"
+
+#: manual/tutorial/core.md:181
+msgid "Generic code over luna-generic traits"
+msgstr "luna-generic の trait を使ったジェネリックなコード"
+
+#: manual/tutorial/core.md:183
+msgid "`Quaternion[T]` implements luna-generic's `Ring` whenever `T` does, so ring-generic algorithms accept quaternions. This function computes $x^n$ by repeated squaring for any `Ring`:"
+msgstr "`T` が luna-generic の `Ring` を実装していれば `Quaternion[T]` も実装するので、環に対するジェネリックなアルゴリズムは四元数を受け付けます。次の関数は任意の `Ring` について繰り返し二乗法で $x^n$ を計算します。"
+
+#: manual/tutorial/core.md:204
+msgid "Quaternions are not a `Field`, so algorithms that require `Field` (and may assume $ab = ba$) do not accept them. That is deliberate; the [design page](../design/core.md#why-ring-and-not-field) explains why."
+msgstr "四元数は `Field` ではないので、`Field` を要求する（そして $ab = ba$ を前提としうる）アルゴリズムは四元数を受け付けません。これは意図的なものです。理由は[設計ページ](../design/core.md#why-ring-and-not-field)で説明しています。"
+
+#: manual/tutorial/core.md:206
+msgid "Exact identities over `Int`"
+msgstr "`Int` 上の厳密な恒等式"
+
+#: manual/tutorial/core.md:208
+msgid "Exact components make the norm identity $|pq|^2 = |p|^2|q|^2$ checkable without rounding. Over `Int` it is Euler's four-square identity: a product of two sums of four squares is again a sum of four squares, and the Hamilton product tells you which one:"
+msgstr "厳密な成分なら、ノルムの恒等式 $|pq|^2 = |p|^2|q|^2$ を丸めなしで確かめられます。`Int` 上ではこれはオイラーの四平方恒等式です。4 つの平方の和 2 つの積は再び 4 つの平方の和になり、どの和になるかは Hamilton 積が教えてくれます。"
+
+#: manual/tutorial/core.md:220
+msgid "Functions that need square roots or trigonometry (`magnitude`, `normalize`, `inv`'s division, `slerp`, Euler conversions) truncate over `Int`; keep `Int` for ring arithmetic."
+msgstr "平方根や三角関数を必要とする関数（`magnitude`、`normalize`、`inv` の除算、`slerp`、オイラー角変換）は `Int` では切り捨てを行います。`Int` は環演算に使ってください。"
+
+#: manual/tutorial/core.md:222
+msgid "Long chains of rotations"
+msgstr "長い回転の連鎖"
+
+#: manual/tutorial/core.md:224
+msgid "Every Hamilton product in `Double` rounds, so the norm of a product of many unit quaternions drifts away from 1, by roughly $n \\cdot 10^{-16}$ after $n$ products. `rotate` then scales vectors slightly. Renormalize now and then:"
+msgstr "`Double` での Hamilton 積は毎回丸めを伴うため、多数の単位四元数の積のノルムは 1 からずれていき、$n$ 回の積の後でおよそ $n \\cdot 10^{-16}$ になります。すると `rotate` はベクトルをわずかに拡大縮小します。ときどき正規化し直してください。"
+
+#: manual/tutorial/core.md:240
+msgid "Performance"
+msgstr "性能"
+
+#: manual/tutorial/core.md:242
+msgid "All operations work on four scalars and run in constant time, except `pow_by_int`, which uses $O(\\log n)$ multiplications. `q.rotate(v)` costs two cross products and is cheaper than computing `q * v * q.inv()` with full Hamilton products. Every function returns a new value; nothing is mutated."
+msgstr "すべての演算は 4 つのスカラーに対して定数時間で動作します。例外は `pow_by_int` で、$O(\\log n)$ 回の乗算を使います。`q.rotate(v)` のコストは外積 2 回で、完全な Hamilton 積で `q * v * q.inv()` を計算するより安価です。すべての関数は新しい値を返し、何も変更しません。"
+
+#: manual/tutorial/core.md:244
+msgid "Common pitfalls"
+msgstr "よくある落とし穴"
+
+#: manual/tutorial/core.md:246
+msgid "**`/` changed in 0.2.0.** `q / r` is now $q\\,r^{-1}$ (right division). Code written for 0.1.x that relied on `/` computing $r^{-1} q$ must call `q.left_div(r)`."
+msgstr "**`/` は 0.2.0 で変わりました。** `q / r` は現在 $q\\,r^{-1}$（右除算）です。0.1.x 向けに書かれ、`/` が $r^{-1} q$ を計算することに依存していたコードは `q.left_div(r)` を呼ぶ必要があります。"
+
+#: manual/tutorial/core.md:247
+msgid "**Order of factors.** `a * b` rotates by `b` first. Swapping the factors gives a different rotation unless both turn about the same axis."
+msgstr "**因子の順序。** `a * b` は先に `b` で回転します。両方が同じ軸の周りの回転でない限り、因子を入れ替えると別の回転になります。"
+
+#: manual/tutorial/core.md:248
+msgid "**Non-unit quaternions in `rotate`.** `rotate` does not normalize. For a non-unit $q$ its formula is not $q v q^{-1}$, and the result generally does not even have the length of the input. Normalize first."
+msgstr "**`rotate` での単位でない四元数。** `rotate` は正規化を行いません。単位でない $q$ ではその式は $q v q^{-1}$ ではなく、結果は一般に入力と同じ長さですらありません。先に正規化してください。"
+
+#: manual/tutorial/core.md:249
+msgid "**`==` on rotations.** `q` and `-q` are the same rotation but unequal values. Floating-point results rarely compare equal anyway; compare with a tolerance."
+msgstr "**回転に対する `==`。** `q` と `-q` は同じ回転ですが、値としては等しくありません。浮動小数点の結果はそもそも厳密に一致することがまれなので、許容誤差で比較してください。"
+
+#: manual/tutorial/core.md:250
+msgid "**Division by zero.** `inv`, `/` and `left_div` divide by $|r|^2$. A zero quaternion gives NaN components over `Double` and a runtime trap over `Int`. `normalize` and `pow_by_T` return the zero quaternion unchanged."
+msgstr "**ゼロ除算。** `inv`、`/`、`left_div` は $|r|^2$ で割ります。零四元数は `Double` では NaN 成分を、`Int` では実行時トラップを生じます。`normalize` と `pow_by_T` は零四元数をそのまま返します。"
+
+#: manual/tutorial/core.md:251
+msgid "**`Int` components and transcendental functions.** `magnitude`, `normalize`, `inv` and friends truncate over `Int`; `inv` of anything but a unit is zero."
+msgstr "**`Int` の成分と超越関数。** `magnitude`、`normalize`、`inv` などは `Int` では切り捨てを行い、単位元以外の `inv` は零になります。"
+
+#: manual/tutorial/core.md:252
+msgid "**Euler conventions.** `from_euler` defaults to `\"XYZ\"` and `to_euler` to extrinsic `\"ZYX\"`. Name both explicitly. Avoid `from_euler` with `\"ZYX\"` or `\"YZX\"`, `to_euler` with `\"XZY\"` extrinsic or `\"YZX\"` intrinsic, and results near gimbal lock ($|\\text{pitch}| \\approx 90^\\circ$), which have known issues listed in the [API](../api/core.md#quaterniontoeuler). Near gimbal lock `to_euler` also prints a warning line to standard output."
+msgstr "**オイラー角の規約。** `from_euler` の既定は `\"XYZ\"`、`to_euler` の既定は外因的 `\"ZYX\"` です。どちらも明示的に指定してください。`\"ZYX\"` や `\"YZX\"` での `from_euler`、外因的 `\"XZY\"` や内因的 `\"YZX\"` での `to_euler`、ジンバルロック付近（$|\\text{pitch}| \\approx 90^\\circ$）の結果は避けてください。これらには [API](../api/core.md#quaterniontoeuler) に記載した既知の問題があります。ジンバルロック付近では、`to_euler` は標準出力に警告を 1 行出力します。"
+
+#: manual/tutorial/core.md:253
+msgid "**Fractional powers.** `pow_by_T` is wrong for quaternions with a negative scalar part; negate the quaternion first when it represents a rotation."
+msgstr "**分数べき。** `pow_by_T` はスカラー部が負の四元数では誤った結果になります。回転を表している場合は、先に符号を反転してください。"
+
+#: manual/tutorial/core.md:254
+msgid "**Own component types.** `DoubleConvert` is not open for implementation outside this package, so only `Int` and `Double` work with the functions that need it."
+msgstr "**独自の成分型。** `DoubleConvert` はこのパッケージ外で実装できないため、それを必要とする関数で使えるのは `Int` と `Double` だけです。"
+
+#: manual/tutorial/core.md:256
+msgid "Next steps"
+msgstr "次のステップ"
+
+#: manual/tutorial/core.md:258
+msgid "The [core API](../api/core.md) lists every function with its exact signature and edge cases."
+msgstr "[core API](../api/core.md) には、各関数の正確なシグネチャと境界条件が記載されています。"
+
+#: manual/tutorial/core.md:259
+msgid "The [core design](../design/core.md) derives the Hamilton product, the rotation formula, slerp and the Euler-angle extraction."
+msgstr "[core 設計](../design/core.md) では、Hamilton 積、回転公式、slerp、オイラー角の抽出を導出しています。"
+
+#: manual/tutorial/core.md:260
+msgid "[luna-generic](https://lunaflow.cn/en/luna-generic/) defines the `Ring`, `Inverse` and `Conjugate` traits used here."
+msgstr "[luna-generic](https://lunaflow.cn/en/luna-generic/) は、ここで使っている `Ring`、`Inverse`、`Conjugate` の trait を定義しています。"
+
+#~ msgid "`quaternion` is the Luna-Flow library for quaternions, the extension of complex numbers that is useful for 3D rotations and orientations. It provides arithmetic, normalization, rotation, interpolation and Euler-angle conversion. Everything lives in one package, `Luna-Flow/quaternion`, under `src`."
+#~ msgstr "`quaternion` は Luna-Flow の四元数ライブラリです。四元数は複素数を拡張したもので、3D の回転や姿勢の表現に役立ちます。このライブラリは算術演算、正規化、回転、補間、オイラー角変換を提供します。すべては `src` にある単一のパッケージ `Luna-Flow/quaternion` に含まれます。"
+
+#~ msgid "`Quaternion[T]` stores a real part and a vector part of three components. The type is abstract: build values with the constructors below rather than with a struct literal. The component type `T` is generic, and each operation asks only for the traits it needs, for example `Add` for addition or `@luna-generic.Num` for the identity."
+#~ msgstr "`Quaternion[T]` は実部と 3 成分のベクトル部を保持します。型は抽象型なので、構造体リテラルではなく下のコンストラクタで値を作ってください。成分の型 `T` は汎用で、各操作は必要な trait だけを要求します。たとえば加算には `Add`、単位元には `@luna-generic.Num` が必要です。"
+
+#~ msgid "Constructor"
+#~ msgstr "コンストラクタ"
+
+#~ msgid "The rotation by `angle` radians around `axis`, which does not need to be normalized."
+#~ msgstr "`axis` のまわりに `angle` ラジアン回す回転。`axis` は正規化されていなくてもかまいません。"
+
+#~ msgid "The rotation given by Euler angles in radians; `order` defaults to `\"XYZ\"`."
+#~ msgstr "ラジアン単位のオイラー角で表した回転。`order` の既定値は `\"XYZ\"` です。"
+
+#~ msgid "Operations"
+#~ msgstr "演算"
+
+#~ msgid "Quaternions support `+`, `-`, unary `-`, and `*` (the Hamilton product), as well as `/`, `Eq`, `Hash` and `Show`; `to_string` prints the form `a + bi + cj + dk`. The type implements `Conjugate` and `Inverse` from `Luna-Flow/luna-generic`."
+#~ msgstr "四元数は `+`、`-`、単項 `-`、`*`（ハミルトン積）に加えて、`/`、`Eq`、`Hash`、`Show` をサポートします。`to_string` は `a + bi + cj + dk` の形式で出力します。この型は `Luna-Flow/luna-generic` の `Conjugate` と `Inverse` を実装します。"
+
+#~ msgid "The dot product of the four components."
+#~ msgstr "4 成分の内積です。"
+
+#~ msgid "The squared norm and the norm."
+#~ msgstr "ノルムの 2 乗とノルムです。"
+
+#~ msgid "The quaternion scaled to unit length; a zero quaternion is returned unchanged."
+#~ msgstr "単位長に正規化した四元数です。ゼロ四元数はそのまま返されます。"
+
+#~ msgid "Integer and real powers."
+#~ msgstr "整数乗と実数乗です。"
+
+#~ msgid "Rotates a 3D vector; the receiver should be a unit quaternion."
+#~ msgstr "3D ベクトルを回転します。レシーバは単位四元数である必要があります。"
+
+#~ msgid "Three Euler angles in radians for the chosen axis order."
+#~ msgstr "選択した軸順序における 3 つのオイラー角（ラジアン）です。"
+
+#~ msgid "`slerp(q1, q2, t)` interpolates spherically between two rotations. It normalizes both inputs, takes the shorter path, and falls back to normalized linear interpolation when the two rotations are almost equal."
+#~ msgstr "`slerp(q1, q2, t)` は 2 つの回転の間を球面線形補間します。両方の入力を正規化して短い方の経路をとり、2 つの回転がほぼ等しい場合は正規化した線形補間に切り替えます。"
+
+#~ msgid "`to_euler` accepts the orders `\"XYZ\"`, `\"XZY\"`, `\"YZX\"` and `\"ZYX\"` (the default) and returns extrinsic angles unless `external` is `false`. Each combination is also available directly, as `to_euler_external_ZYX`, `to_euler_internal_XYZ` and so on. `from_euler` accepts `\"XYZ\"`, `\"YXZ\"`, `\"ZYX\"`, `\"YZX\"` and `\"ZXY\"`. An unsupported order aborts. Near gimbal lock, `to_euler` prints a warning and fixes one of the angles."
+#~ msgstr "`to_euler` は `\"XYZ\"`、`\"XZY\"`、`\"YZX\"`、`\"ZYX\"`（既定）の順序を受け付け、`external` が `false` でない限り外因性（extrinsic）の角度を返します。各組み合わせは `to_euler_external_ZYX` や `to_euler_internal_XYZ` などとして直接呼ぶこともできます。`from_euler` は `\"XYZ\"`、`\"YXZ\"`、`\"ZYX\"`、`\"YZX\"`、`\"ZXY\"` を受け付けます。未対応の順序を指定すると中止します。ジンバルロックの近くでは、`to_euler` は警告を出力し、角度の 1 つを固定します。"
+
+#~ msgid "Algebraic structure and division semantics"
+#~ msgstr "代数構造と除算のセマンティクス"
+
+#~ msgid "`Quaternion[T]` implements `Zero`, `One`, `AddMonoid`, `MulMonoid`, `Semiring` and `Ring` from luna-generic when `T : Ring` (`T` is expected to be commutative, e.g. `Int`, `Double`). Multiplication is the Hamilton product and is **not commutative**."
+#~ msgstr "`T : Ring`（`Int` や `Double` などの可換環を想定）のとき、`Quaternion[T]` は luna-generic の `Zero`、`One`、`AddMonoid`、`MulMonoid`、`Semiring`、`Ring` を実装します。乗算は Hamilton 積で、**可換ではありません**。"
+
+#~ msgid "`Field` is deliberately **not** implemented: quaternions form a division ring (skew field), and generic code written against `Field` may assume `a * b == b * a`."
+#~ msgstr "`Field` は意図的に実装**しません**。四元数は斜体（除算環）であり、`Field` 向けの汎用コードは `a * b == b * a` を仮定する可能性があるためです。"
+
+#~ msgid "`q / r` is **right division**: `q / r == q * r.inv()`, the solution `x` of `x * r == q`. This is the conventional meaning of `/` in a division ring and keeps `Div` consistent with `Inverse`."
+#~ msgstr "`q / r` は**右除算**です：`q / r == q * r.inv()`、すなわち `x * r == q` の解です。除算環における `/` の慣用的な意味であり、`Div` と `Inverse` の整合性を保ちます。"
+
+#~ msgid "`Quaternion::zero()` / `Quaternion::one()` return the additive and multiplicative identities; `q.inv()` and `q.conjugate()` are available as methods."
+#~ msgstr "`Quaternion::zero()` / `Quaternion::one()` は加法・乗法の単位元を返します。`q.inv()` と `q.conjugate()` はメソッドとして呼び出せます。"
+
+#~ msgid "Several functions compute square roots and trigonometric functions on `Double`, so they require the component type to implement the `DoubleConvert` trait, which converts a value to and from `Double`. The package implements it for `Double` and `Int`; implement it for another numeric type to use that type with `magnitude`, `normalize`, `slerp` and the Euler-angle functions."
+#~ msgstr "いくつかの関数は `Double` 上で平方根や三角関数を計算するため、成分の型が `DoubleConvert` trait を実装している必要があります。この trait は値と `Double` の相互変換を行います。パッケージは `Double` と `Int` 向けの実装を提供しています。ほかの数値型に実装すれば、その型を `magnitude`、`normalize`、`slerp`、オイラー角の関数で使えます。"
+
+#~ msgid "Example"
+#~ msgstr "例"
+
+#~ msgid "`rotated` is approximately `(0.0, 1.0, 0.0)`, and `halfway` is the rotation by $\\pi/4$ around the same axis."
+#~ msgstr "`rotated` はおよそ `(0.0, 1.0, 0.0)` になり、`halfway` は同じ軸のまわりに $\\pi/4$ 回す回転になります。"
+
+#~ msgid "The generated interface `src/pkg.generated.mbti` lists every public signature."
+#~ msgstr "生成されたインターフェース `src/pkg.generated.mbti` にすべての公開シグネチャが載っています。"
