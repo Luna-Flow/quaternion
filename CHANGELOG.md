@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- `Luna-Flow/luna-generic` is bumped from 0.3.3 to 0.4.0. The package uses only `Zero`, `One`, `Num`, `AddMonoid`, `MulMonoid`, `Semiring`, `Ring`, `Conjugate` and `Inverse`, none of which changed, so no code change is needed and nothing deprecated in 0.4.0 is used. `Quaternion::inv` divides by the squared norm and does not call `Float::inv` or `Double::inv`, so the new abort on zero in those instances does not reach it.
+
 ## 0.2.0
 
 ### Breaking
