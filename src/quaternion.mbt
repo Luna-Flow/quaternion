@@ -217,8 +217,8 @@ test "quaternions form a ring" {
   assert_true(ring_laws_hold(q3, q1, q2))
   // non-commutative, which is why `Field` is not implemented
   assert_true(q1 * q2 != q2 * q1)
-  inspect((Quaternion::zero() : Quaternion[Int]), content="0 + 0i + 0j + 0k")
-  inspect((Quaternion::one() : Quaternion[Int]), content="1 + 0i + 0j + 0k")
+  inspect((Quaternion::zero() : Quaternion[Int32]), content="0 + 0i + 0j + 0k")
+  inspect((Quaternion::one() : Quaternion[Int32]), content="1 + 0i + 0j + 0k")
 }
 
 ///|
@@ -245,7 +245,7 @@ test "basic arithmetic" {
   inspect(q1 * q2, content="-60 + 12i + 30j + 24k")
   inspect(q2 * q1, content="-60 + 20i + 14j + 32k")
   inspect(
-    q1.map(Int::to_double) / q2.map(Int::to_double),
+    q1.map(Int32::to_double) / q2.map(Int32::to_double),
     content=(
       #|0.40229885057471265 + 0.04597701149425287i + 0j + 0.09195402298850575k
     ),
@@ -411,8 +411,8 @@ test "slerp" {
 /// 'external' is 'true', Result will be External rotation. Otherwise, Result will be Internal rotation
 pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Sub + Div + Eq] Quaternion::to_euler(
   self : Quaternion[T],
-  order? : String = "ZYX",
-  external? : Bool = true,
+  order~ : String = "ZYX",
+  external~ : Bool = true,
 ) -> (T, T, T) {
   if external {
     match order {
@@ -613,7 +613,7 @@ pub fn[T : DoubleConvert + Mul + Add + Sub] from_euler(
   roll : T,
   pitch : T,
   yaw : T,
-  order? : String = "XYZ",
+  order~ : String = "XYZ",
 ) -> Quaternion[T] {
   let half_roll = DoubleConvert::to_double(roll) * 0.5
   let half_pitch = DoubleConvert::to_double(pitch) * 0.5
@@ -703,7 +703,7 @@ test "from_euler" {
 /// Computes the power of a quaternion. Like q^2
 pub fn[T : @lg.Num + Mul + Add + Sub + Div] Quaternion::pow_by_int(
   self : Quaternion[T],
-  exponent : Int,
+  exponent : Int32,
 ) -> Quaternion[T] {
   if exponent == 0 {
     Quaternion::{
