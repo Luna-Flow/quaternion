@@ -778,10 +778,15 @@ pub fn[T : @lg.Num + DoubleConvert + Mul + Add + Div + Eq] Quaternion::pow_by_T(
 test "pow" {
   let q : Quaternion[Double] = Quaternion::from_vec((2, 2, 3, 4))
   inspect(q.pow_by_int(2), content="-25 + 8i + 12j + 16k")
-  inspect(
-    q.pow_by_T(2.0),
-    content="-25.00000000000001 + 7.999999999999995i + 11.999999999999995j + 15.99999999999999k",
-  )
+  // pow_by_T goes through the host exp/ln/sin/cos, whose last digit differs
+  // between platforms, so compare with a tolerance instead of the printed text.
+  let p = q.pow_by_T(2.0)
+  let (i, j, k) = p.vec
+  let close = (a : Double, b : Double) => (a - b).abs() < 1.0e-12
+  assert_true(close(p.r, -25.0))
+  assert_true(close(i, 8.0))
+  assert_true(close(j, 12.0))
+  assert_true(close(k, 16.0))
 }
 
 /// convert quaternion to rotation matrix
