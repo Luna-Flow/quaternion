@@ -25,7 +25,7 @@ pub fn[T : Add + Mul + Div + Sub] Quaternion::div(Self[T], Self[T]) -> Self[T]
 pub fn[T : Mul + Add] Quaternion::dot(Self[T], Self[T]) -> T
 pub fn[T : Eq] Quaternion::equal(Self[T], Self[T]) -> Bool
 pub fn[T] Quaternion::from_vec((T, T, T, T)) -> Self[T]
-pub fn[T : Hash] Quaternion::hash(Self[T]) -> Int
+pub fn[T : Hash] Quaternion::hash(Self[T]) -> Int32
 pub fn[T : Div + @luna-generic.Num] Quaternion::inv(Self[T]) -> Self[T]
 pub fn[T : Add + Mul + Div + Sub] Quaternion::left_div(Self[T], Self[T]) -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert] Quaternion::magnitude(Self[T]) -> T
@@ -35,7 +35,7 @@ pub fn[T : Neg] Quaternion::neg(Self[T]) -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert + Div + Eq] Quaternion::normalize(Self[T]) -> Self[T]
 pub fn[T : @luna-generic.Zero + @luna-generic.One] Quaternion::one() -> Self[T]
 pub fn[T : @luna-generic.Num + DoubleConvert + Mul + Add + Div + Eq] Quaternion::pow_by_T(Self[T], T) -> Self[T]
-pub fn[T : @luna-generic.Num + Mul + Add + Sub + Div] Quaternion::pow_by_int(Self[T], Int) -> Self[T]
+pub fn[T : @luna-generic.Num + Mul + Add + Sub + Div] Quaternion::pow_by_int(Self[T], Int32) -> Self[T]
 pub fn[T : @luna-generic.Num + Sub] Quaternion::rotate(Self[T], (T, T, T)) -> (T, T, T)
 pub fn[T : Mul] Quaternion::scale(Self[T], T) -> Self[T]
 pub fn[T : Mul + Add] Quaternion::square_len(Self[T]) -> T
@@ -74,5 +74,5 @@ pub trait DoubleConvert {
   fn to_double(Self) -> Double
   fn from_double(Double) -> Self
 }
-pub impl DoubleConvert for Int
+pub impl DoubleConvert for Int32
 pub impl DoubleConvert for Double
