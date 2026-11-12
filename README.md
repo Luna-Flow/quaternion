@@ -8,7 +8,7 @@
 moon add Luna-Flow/quaternion@0.2.0
 ```
 
-Then import `"Luna-Flow/quaternion"` in your package's `moon.pkg`. The library requires MoonBit with `moonc` 0.10 or later and depends on `Luna-Flow/luna-generic` 0.4.0.
+Then import `"Luna-Flow/quaternion"` in your package's `moon.pkg`. The library requires MoonBit with `moonc` 0.10.20 or later (verified with `moon 0.1.20261104` and `moonc v0.10.20`; older 0.10 compilers ignore `#derive`) and depends on `Luna-Flow/luna-generic` 0.4.0.
 
 ## Example
 
