@@ -1,6 +1,6 @@
 # quaternion
 
-This manual documents the `v0.2.0` release of `Luna-Flow/quaternion`.
+This manual documents the `v0.2.1` release of `Luna-Flow/quaternion`.
 
 ## Overview
 
@@ -15,7 +15,7 @@ The 0.2.0 release centers on three changes:
 ## Install
 
 ```bash
-moon add Luna-Flow/quaternion@0.2.0
+moon add Luna-Flow/quaternion@0.2.1
 ```
 
 Then import `"Luna-Flow/quaternion"` in your `moon.pkg`. The package needs the MoonBit toolchain 0.10.20 or later (`moonc` ≥ 0.10.20) and depends on `Luna-Flow/luna-generic` 0.3.3. The code is target-independent and is tested on the `wasm`, `wasm-gc`, `js` and `native` backends.
