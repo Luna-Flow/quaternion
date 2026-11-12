@@ -18,7 +18,8 @@ pub fn[T : DoubleConvert + @luna-generic.Num + Mul + Add + Div + Eq] slerp(Quate
 // Errors
 
 // Types and methods
-type Quaternion[T] derive(Eq, Hash, @debug.Debug)
+#derive(Eq, Hash, @debug.Debug)
+type Quaternion[T]
 pub fn[T : Add] Quaternion::add(Self[T], Self[T]) -> Self[T]
 pub fn[T : Neg] Quaternion::conjugate(Self[T]) -> Self[T]
 pub fn[T : Add + Mul + Div + Sub] Quaternion::div(Self[T], Self[T]) -> Self[T]
