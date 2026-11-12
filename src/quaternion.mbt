@@ -1,9 +1,10 @@
 ///|
 /// Quaternion struct with real component `r` and vector components `vec`
+#derive(Eq, Hash, Debug)
 struct Quaternion[T] {
   r : T
   vec : (T, T, T)
-} derive(Eq, Hash, Debug)
+}
 
 ///|
 /// Computes the cross product of two 3D vectors.
