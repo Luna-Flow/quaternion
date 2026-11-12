@@ -1199,8 +1199,8 @@ msgid "Install"
 msgstr "安装"
 
 #: manual/index.md:21
-msgid "Then import `\"Luna-Flow/quaternion\"` in your `moon.pkg`. The package needs the MoonBit toolchain 0.10 or later (`moonc` ≥ 0.10) and depends on `Luna-Flow/luna-generic` 0.3.3. The code is target-independent and is tested on the `wasm`, `wasm-gc`, `js` and `native` backends."
-msgstr "然后在 `moon.pkg` 中导入 `\"Luna-Flow/quaternion\"`。本包需要 MoonBit 工具链 0.10 或更高版本（`moonc` ≥ 0.10），并依赖 `Luna-Flow/luna-generic` 0.3.3。代码与目标平台无关，并在 `wasm`、`wasm-gc`、`js` 与 `native` 后端上测试。"
+msgid "Then import `\"Luna-Flow/quaternion\"` in your `moon.pkg`. The package needs the MoonBit toolchain 0.10.20 or later (`moonc` ≥ 0.10.20) and depends on `Luna-Flow/luna-generic` 0.3.3. The code is target-independent and is tested on the `wasm`, `wasm-gc`, `js` and `native` backends."
+msgstr "然后在 `moon.pkg` 中导入 `\"Luna-Flow/quaternion\"`。本包需要 MoonBit 工具链 0.10.20 或更高版本（`moonc` ≥ 0.10.20），并依赖 `Luna-Flow/luna-generic` 0.3.3。代码与目标平台无关，并在 `wasm`、`wasm-gc`、`js` 与 `native` 后端上测试。"
 
 #: manual/index.md:23
 msgid "Pages"
