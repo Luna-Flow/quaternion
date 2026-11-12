@@ -1167,7 +1167,7 @@ msgid "quaternion"
 msgstr ""
 
 #: manual/index.md:3
-msgid "This manual documents the `v0.2.0` release of `Luna-Flow/quaternion`."
+msgid "This manual documents the `v0.2.1` release of `Luna-Flow/quaternion`."
 msgstr ""
 
 #: manual/index.md:5

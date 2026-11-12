@@ -1167,8 +1167,8 @@ msgid "quaternion"
 msgstr "quaternion"
 
 #: manual/index.md:3
-msgid "This manual documents the `v0.2.0` release of `Luna-Flow/quaternion`."
-msgstr "本手册记录 `Luna-Flow/quaternion` 的 `v0.2.0` 版本。"
+msgid "This manual documents the `v0.2.1` release of `Luna-Flow/quaternion`."
+msgstr "本手册记录 `Luna-Flow/quaternion` 的 `v0.2.1` 版本。"
 
 #: manual/index.md:5
 msgid "Overview"

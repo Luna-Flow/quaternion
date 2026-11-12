@@ -21,7 +21,7 @@ This tutorial gets you from an empty project to rotating vectors, composing and 
 Add the module to your project:
 
 ```bash
-moon add Luna-Flow/quaternion@0.2.0
+moon add Luna-Flow/quaternion@0.2.1
 ```
 
 Import the package in your `moon.pkg`. The examples also use luna-generic (for generic code) and `moonbitlang/core/math` (for $\pi$):

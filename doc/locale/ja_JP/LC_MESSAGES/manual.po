@@ -1167,8 +1167,8 @@ msgid "quaternion"
 msgstr "quaternion"
 
 #: manual/index.md:3
-msgid "This manual documents the `v0.2.0` release of `Luna-Flow/quaternion`."
-msgstr "このマニュアルは `Luna-Flow/quaternion` の `v0.2.0` リリースを説明します。"
+msgid "This manual documents the `v0.2.1` release of `Luna-Flow/quaternion`."
+msgstr "このマニュアルは `Luna-Flow/quaternion` の `v0.2.1` リリースを説明します。"
 
 #: manual/index.md:5
 msgid "Overview"
